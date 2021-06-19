@@ -7,7 +7,7 @@
 // Although these are re-exported from lit-element.ts, we add
 // them here to effectively pre-fetch them and avoid the extra
 // waterfall when loading the lit package unbundled
-import "@lit/reactive-element";
-import "lit-html";
+import "../../reactive-element/src/reactive-element.ts";
+import "../../lit-html/src/lit-html.ts";
 
-export * from "lit-element/lit-element.ts";
+export * from "../../lit-element/src/lit-element.ts";

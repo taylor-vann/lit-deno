@@ -11,7 +11,7 @@ import { LOCALE_STATUS_EVENT } from "../internal/locale-status-event.ts";
 import { joinStringsAndValues } from "../internal/str-tag.ts";
 import { defaultMsg } from "../internal/default-msg.ts";
 
-import type { TemplateResult } from "lit";
+import type { TemplateResult } from "../../../lit/src/index.ts";
 import type { LocaleStatusEventDetail } from "../internal/locale-status-event.ts";
 import type {
   LocaleModule,

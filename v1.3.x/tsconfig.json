@@ -8,6 +8,5 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-  },
-  "include": ["src/**/*.ts"],
+  }
 }

@@ -5,6 +5,7 @@
  */
 
 // IMPORTANT: these imports must be type-only
+import type { LitExtraGlobals, TrustedHTML } from "../../deps.ts"
 import type { Directive, DirectiveResult, PartInfo } from "./directive.ts";
 
 const DEV_MODE = true;
@@ -30,7 +31,7 @@ const wrap = ENABLE_SHADYDOM_NOPATCH &&
   ? extraGlobals.ShadyDOM!.wrap
   : (node: Node) => node;
 
-const trustedTypes = (globalThis as unknown as Partial<Window>).trustedTypes;
+const trustedTypes = (globalThis as LitExtraGlobals).trustedTypes;
 
 /**
  * Our TrustedTypePolicy for HTML which is declared using the html template
@@ -42,7 +43,7 @@ const trustedTypes = (globalThis as unknown as Partial<Window>).trustedTypes;
  */
 const policy = trustedTypes
   ? trustedTypes.createPolicy("lit-html", {
-    createHTML: (s) => s,
+    createHTML: (s: string) => s,
   })
   : undefined;
 

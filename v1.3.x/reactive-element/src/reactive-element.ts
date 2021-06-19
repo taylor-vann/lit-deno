@@ -10,6 +10,8 @@
  * @packageDocumentation
  */
 
+import type {LitExtraGlobals} from "../../deps.ts"
+
 import {
   adoptStyles,
   CSSResultGroup,

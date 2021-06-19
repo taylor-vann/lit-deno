@@ -46,10 +46,10 @@
  *
  * @packageDocumentation
  */
-import { PropertyValues, ReactiveElement } from "@lit/reactive-element";
-import { ChildPart, noChange, render, RenderOptions } from "lit-html";
-export * from "@lit/reactive-element";
-export * from "lit-html";
+import { PropertyValues, ReactiveElement } from "../../reactive-element/src/reactive-element.ts";
+import { ChildPart, noChange, render, RenderOptions } from "../../lit-html/src/lit-html.ts";
+export * from "../../reactive-element/src/reactive-element.ts";
+export * from "../../lit-html/src/lit-html.ts";
 
 // For backwards compatibility export ReactiveElement as UpdatingElement. Note,
 // IE transpilation requires exporting like this.

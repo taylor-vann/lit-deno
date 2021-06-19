@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+import type {LitExtraGlobals, LitCSSStyleSheet, LitShadowRoot} from "../../deps.ts";
+
 const extraGlobals = window as LitExtraGlobals;
 
 /**
@@ -62,7 +64,7 @@ export class CSSResult {
     let styleSheet = styleSheetCache.get(this.cssText);
     if (supportsAdoptingStyleSheets && styleSheet === undefined) {
       styleSheetCache.set(this.cssText, (styleSheet = new CSSStyleSheet()));
-      styleSheet.replaceSync(this.cssText);
+      (styleSheet as LitCSSStyleSheet).replaceSync(this.cssText);
     }
     return styleSheet;
   }
@@ -136,7 +138,7 @@ export const adoptStyles = (
   styles: Array<CSSResultOrNative>,
 ) => {
   if (supportsAdoptingStyleSheets) {
-    (renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) =>
+    (renderRoot as LitShadowRoot).adoptedStyleSheets = styles.map((s) =>
       s instanceof CSSStyleSheet ? s : s.styleSheet!
     );
   } else {

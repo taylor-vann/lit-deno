@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-export * from "@lit/reactive-element";
-export * from "lit-html";
+export * from "../../reactive-element/src/reactive-element.ts";
+export * from "../../lit-html/src/lit-html.ts";
 export * from "./lit-element.ts";
 export * from "./decorators.ts";
 

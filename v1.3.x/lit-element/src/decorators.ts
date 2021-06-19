@@ -11,12 +11,5 @@
  * not an arrow function.
  */
 
-export * from "@lit/reactive-element/decorators/base.ts";
-export * from "@lit/reactive-element/decorators/custom-element.ts";
-export * from "@lit/reactive-element/decorators/property.ts";
-export * from "@lit/reactive-element/decorators/state.ts";
-export * from "@lit/reactive-element/decorators/event-options.ts";
-export * from "@lit/reactive-element/decorators/query.ts";
-export * from "@lit/reactive-element/decorators/query-all.ts";
-export * from "@lit/reactive-element/decorators/query-async.ts";
-export * from "@lit/reactive-element/decorators/query-assigned-nodes.ts";
+
+export * from "../../reactive-element/src/decorators.ts";

@@ -28,10 +28,9 @@ interface ShadyDOM {
   flush: () => void;
   noPatch: boolean | string;
   wrap: (node: Node) => Node;
-  patchElementProto: (node: Object) => void;
 }
 
-interface LitExtendedWindow extends Window {
+type LitExtendedWindow = Window & {
   ShadyCSS?: ShadyCSS;
   ShadyDOM?: ShadyDOM;
 
@@ -42,16 +41,26 @@ interface LitExtendedWindow extends Window {
   litHtmlPlatformSupport: (template: unknown, childPart: unknown) => void;
 }
 
-type LitExtraGlobals = typeof globalThis & LitExtendedWindow;
+export type TrustedHTML = string
 
-// Augment existing types with styling API
-interface ShadowRoot {
-  adoptedStyleSheets: CSSStyleSheet[];
+interface TrustedHTMLPolicy {
+  createHTML: (s: string) => string;
 }
 
-declare var ShadowRoot: { prototype: ShadowRoot; new (): ShadowRoot };
+interface TrustedTypesPolicy {
+  createPolicy: (s: string, policy: TrustedHTMLPolicy) => TrustedHTMLPolicy;
+  emptyScript: string;
+}
+ 
+interface LitDenoExtendedWindow extends Window {
+  trustedTypes: TrustedTypesPolicy;
+}
 
-interface CSSStyleSheet {
+export type LitExtraGlobals = typeof globalThis & LitExtendedWindow & LitDenoExtendedWindow;
+
+export type LitShadowRoot = ShadowRoot & { adoptedStyleSheets: CSSStyleSheet[] };
+
+export type LitCSSStyleSheet = CSSStyleSheet & {
   replaceSync(cssText: string): void;
   replace(cssText: string): Promise<unknown>;
 }

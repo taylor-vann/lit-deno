@@ -22,8 +22,8 @@
  * @packageDocumentation
  */
 
-import "@lit/reactive-element/polyfill-support.ts";
-import "lit-html/polyfill-support.ts";
+import "../../reactive-element/src/polyfill-support.ts";
+import "../../lit-html/src/polyfill-support.ts";
 
 interface RenderOptions {
   readonly renderBefore?: ChildNode | null;
