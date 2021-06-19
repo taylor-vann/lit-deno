@@ -8,7 +8,6 @@
 import type { LitExtraGlobals, TrustedHTML } from "../deps.ts";
 import type { Directive, DirectiveResult, PartInfo } from "./directive.ts";
 
-const DEV_MODE = true;
 const ENABLE_EXTRA_SECURITY_HOOKS = true;
 const ENABLE_SHADYDOM_NOPATCH = true;
 
@@ -18,10 +17,6 @@ const ENABLE_SHADYDOM_NOPATCH = true;
  * @internal
  */
 export const INTERNAL = true;
-
-if (DEV_MODE) {
-  console.warn("lit-html is in dev mode. Not recommended for production!");
-}
 
 const extraGlobals = window as LitExtraGlobals;
 
@@ -380,10 +375,6 @@ export const render = (
 if (ENABLE_EXTRA_SECURITY_HOOKS) {
   render.setSanitizer = setSanitizer;
   render.createSanitizer = createSanitizer;
-  if (DEV_MODE) {
-    render._testOnlyClearSanitizerFactoryDoNotCallOrElse =
-      _testOnlyClearSanitizerFactoryDoNotCallOrElse;
-  }
 }
 
 const walker = d.createTreeWalker(
@@ -520,19 +511,6 @@ const getTemplateHtml = (
         regex = tagEndRegex;
         rawTextEndRegex = undefined;
       }
-    }
-
-    if (DEV_MODE) {
-      // If we have a attrNameEndIndex, which indicates that we should
-      // rewrite the attribute name, assert that we're in a valid attribute
-      // position - either in a tag, or a quoted attribute value.
-      console.assert(
-        attrNameEndIndex === -1 ||
-          regex === tagEndRegex ||
-          regex === singleQuoteAttrEndRegex ||
-          regex === doubleQuoteAttrEndRegex,
-        "unexpected parse state B",
-      );
     }
 
     // We have four cases:

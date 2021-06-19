@@ -1,4 +1,5 @@
 import { css, html, LitElement, customElement } from "./deps.ts";
+// import { css, customElement, html, LitElement } from "../../v2.0.x/lit.ts";
 
 @customElement("deno-element")
 class DenoElement extends LitElement {
