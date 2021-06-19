@@ -3,10 +3,11 @@ if (true) {
   console.warn("lit-html is in dev mode. Not recommended for production!");
 }
 const extraGlobals = window;
-const wrap = true && extraGlobals.ShadyDOM?.inUse &&
+const wrap =
+  true && extraGlobals.ShadyDOM?.inUse &&
     extraGlobals.ShadyDOM?.noPatch === true
-  ? extraGlobals.ShadyDOM.wrap
-  : (node) => node;
+    ? extraGlobals.ShadyDOM.wrap
+    : (node) => node;
 const trustedTypes = globalThis.trustedTypes;
 const policy = trustedTypes
   ? trustedTypes.createPolicy("lit-html", {
@@ -224,9 +225,7 @@ class Template {
                   index: nodeIndex,
                   name: m[2],
                   strings: statics,
-                  ctor: m[1] === "."
-                    ? PropertyPart
-                    : m[1] === "?"
+                  ctor: m[1] === "." ? PropertyPart : m[1] === "?"
                     ? BooleanAttributePart
                     : m[1] === "@"
                     ? EventPart
@@ -455,8 +454,7 @@ class ChildPart {
   _commitText(value) {
     const node2 = wrap(this._$startNode).nextSibling;
     if (
-      node2 !== null && node2.nodeType === 3 &&
-      (this._$endNode === null
+      node2 !== null && node2.nodeType === 3 && (this._$endNode === null
         ? wrap(node2).nextSibling === null
         : node2 === wrap(this._$endNode).previousSibling)
     ) {
