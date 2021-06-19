@@ -39,9 +39,10 @@ type LitExtendedWindow = Window & {
   litElementPlatformSupport: (options: { [index: string]: any }) => void;
 
   litHtmlPlatformSupport: (template: unknown, childPart: unknown) => void;
-}
+};
 
-export type TrustedHTML = string
+/* The following types are added for suppor in Deno */
+export type TrustedHTML = string;
 
 interface TrustedHTMLPolicy {
   createHTML: (s: string) => TrustedHTML;
@@ -51,16 +52,22 @@ interface TrustedTypesPolicy {
   createPolicy: (s: string, policy: TrustedHTMLPolicy) => TrustedHTMLPolicy;
   emptyScript: string;
 }
- 
-interface LitDenoExtendedWindow extends Window {
+
+interface LitDenoWindow extends Window {
   trustedTypes: TrustedTypesPolicy;
 }
+/* */
 
-export type LitExtraGlobals = typeof globalThis & LitExtendedWindow & LitDenoExtendedWindow;
+export type LitExtraGlobals =
+  & typeof globalThis
+  & LitExtendedWindow
+  & LitDenoWindow; // suport types for deno
 
-export type LitShadowRoot = ShadowRoot & { adoptedStyleSheets: CSSStyleSheet[] };
+export type LitShadowRoot = ShadowRoot & {
+  adoptedStyleSheets: CSSStyleSheet[];
+};
 
 export type LitCSSStyleSheet = CSSStyleSheet & {
   replaceSync(cssText: string): void;
   replace(cssText: string): Promise<unknown>;
-}
+};

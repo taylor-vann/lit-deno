@@ -6,11 +6,11 @@
 
 import { updateWhenLocaleChanges } from "./localized-controller.ts";
 
-import type { ReactiveElement } from "../../../reactive-element/src/reactive-element.ts";
+import type { ReactiveElement } from "../../reactive-element/reactive-element.ts";
 import type {
   ClassDescriptor,
   Constructor,
-} from "../../../reactive-element/src/decorators/base.ts";
+} from "../../reactive-element/decorators/base.ts";
 
 /**
  * Class decorator to enable re-rendering the given LitElement whenever a new

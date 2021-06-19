@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "lib": ["dom", "esnext", "dom.iterable"],
     "strict": true
   }
 }

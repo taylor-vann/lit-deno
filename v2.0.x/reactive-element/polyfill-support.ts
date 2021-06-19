@@ -16,6 +16,8 @@
  * @packageDocumentation
  */
 
+import type { LitExtraGlobals } from "../deps.ts";
+
 interface RenderOptions {
   readonly renderBefore?: ChildNode | null;
   scope?: string;
