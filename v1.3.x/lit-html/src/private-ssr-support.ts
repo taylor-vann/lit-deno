@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {Directive, PartInfo} from './directive.ts';
-import {_Σ as p, AttributePart, noChange, Part} from './lit-html.ts';
-export type {Template} from './lit-html.ts';
+import { Directive, PartInfo } from "./directive.ts";
+import { _Σ as p, AttributePart, noChange, Part } from "./lit-html.ts";
+export type { Template } from "./lit-html.ts";
 
 /**
  * END USERS SHOULD NOT RELY ON THIS OBJECT.
@@ -26,8 +26,8 @@ export const _Σ = {
   HTML_RESULT: p._HTML_RESULT,
   getTemplateHtml: p._getTemplateHtml,
   overrideDirectiveResolve: (
-    directiveClass: new (part: PartInfo) => Directive & {render(): unknown},
-    resolveOverrideFn: (directive: Directive, values: unknown[]) => unknown
+    directiveClass: new (part: PartInfo) => Directive & { render(): unknown },
+    resolveOverrideFn: (directive: Directive, values: unknown[]) => unknown,
   ) =>
     class extends directiveClass {
       _$resolve(this: Directive, _part: Part, values: unknown[]): unknown {
@@ -37,7 +37,7 @@ export const _Σ = {
   getAttributePartCommittedValue: (
     part: AttributePart,
     value: unknown,
-    index: number | undefined
+    index: number | undefined,
   ) => {
     // Use the part setter to resolve directives/concatenate multiple parts
     // into a final value (captured by passing in a commitValue override)

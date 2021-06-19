@@ -7,29 +7,29 @@
 import {
   html,
   LitElement,
-  UpdatingElement,
-  ReactiveElement,
-  Part,
   nothing,
-} from '../lit-element.ts';
-import {directive, AsyncDirective} from 'lit-html/async-directive.ts';
+  Part,
+  ReactiveElement,
+  UpdatingElement,
+} from "../lit-element.ts";
+import { AsyncDirective, directive } from "lit-html/async-directive.ts";
 import {
   canTestLitElement,
   generateElementName,
   nextFrame,
   stripExpressionComments,
-} from './test-helpers.ts';
-import {assert} from '@esm-bundle/chai';
+} from "./test-helpers.ts";
+import { assert } from "@esm-bundle/chai";
 
-import {createRef, ref} from 'lit-html/directives/ref.ts';
+import { createRef, ref } from "lit-html/directives/ref.ts";
 
 const extraGlobals = window as LitExtraGlobals;
 
-(canTestLitElement ? suite : suite.skip)('LitElement', () => {
+(canTestLitElement ? suite : suite.skip)("LitElement", () => {
   let container: HTMLElement;
 
   setup(() => {
-    container = document.createElement('div');
+    container = document.createElement("div");
     document.body.appendChild(container);
   });
 
@@ -39,7 +39,7 @@ const extraGlobals = window as LitExtraGlobals;
     }
   });
 
-  test('renders initial content into shadowRoot', async () => {
+  test("renders initial content into shadowRoot", async () => {
     const rendered = `hello world`;
     const name = generateElementName();
     customElements.define(
@@ -48,7 +48,7 @@ const extraGlobals = window as LitExtraGlobals;
         render() {
           return html`${rendered}`;
         }
-      }
+      },
     );
     const el = document.createElement(name);
     container.appendChild(el);
@@ -57,14 +57,14 @@ const extraGlobals = window as LitExtraGlobals;
         assert.ok(el.shadowRoot);
         assert.equal(
           stripExpressionComments(el.shadowRoot!.innerHTML),
-          rendered
+          rendered,
         );
         resolve();
       });
     });
   });
 
-  test('can set render target to light dom', async () => {
+  test("can set render target to light dom", async () => {
     const rendered = `hello world`;
     const name = generateElementName();
     customElements.define(
@@ -77,7 +77,7 @@ const extraGlobals = window as LitExtraGlobals;
         createRenderRoot() {
           return this;
         }
-      }
+      },
     );
     const el = document.createElement(name);
     container.appendChild(el);
@@ -86,7 +86,7 @@ const extraGlobals = window as LitExtraGlobals;
     assert.equal(stripExpressionComments(el.innerHTML), rendered);
   });
 
-  test('renders when created via constructor', async () => {
+  test("renders when created via constructor", async () => {
     const rendered = `hello world`;
     class E extends LitElement {
       render() {
@@ -101,13 +101,13 @@ const extraGlobals = window as LitExtraGlobals;
     assert.equal(stripExpressionComments(el.shadowRoot!.innerHTML), rendered);
   });
 
-  test('updates/renders attributes, properties, and event listeners via `lit-html`', async () => {
+  test("updates/renders attributes, properties, and event listeners via `lit-html`", async () => {
     class E extends LitElement {
       _event?: Event;
 
       render() {
-        const attr = 'attr';
-        const prop = 'prop';
+        const attr = "attr";
+        const prop = "prop";
         const event = function (this: E, e: Event) {
           this._event = e;
         };
@@ -118,15 +118,15 @@ const extraGlobals = window as LitExtraGlobals;
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
-    const d = el.shadowRoot!.querySelector('div')!;
-    assert.equal(d.getAttribute('attr'), 'attr');
-    assert.equal((d as any).prop, 'prop');
-    const e = new Event('zug');
+    const d = el.shadowRoot!.querySelector("div")!;
+    assert.equal(d.getAttribute("attr"), "attr");
+    assert.equal((d as any).prop, "prop");
+    const e = new Event("zug");
     d.dispatchEvent(e);
     assert.equal(el._event, e);
   });
 
-  test('event listeners are invoked with the right `this` value', async () => {
+  test("event listeners are invoked with the right `this` value", async () => {
     class E extends LitElement {
       event?: Event;
 
@@ -142,33 +142,33 @@ const extraGlobals = window as LitExtraGlobals;
     const el = new E();
     container.appendChild(el);
     await el.updateComplete;
-    const div = el.shadowRoot!.querySelector('div')!;
-    const event = new Event('test');
+    const div = el.shadowRoot!.querySelector("div")!;
+    const event = new Event("test");
     div.dispatchEvent(event);
     assert.equal(el.event, event);
   });
 
-  test('can set properties and attributes on sub-element', async () => {
+  test("can set properties and attributes on sub-element", async () => {
     class E extends LitElement {
       static get properties() {
-        return {foo: {}, attr: {}, bool: {type: Boolean}};
+        return { foo: {}, attr: {}, bool: { type: Boolean } };
       }
-      foo = 'hi';
+      foo = "hi";
       bool = false;
 
       render() {
         return html`${this.foo}`;
       }
     }
-    customElements.define('x-2448', E);
+    customElements.define("x-2448", E);
 
     class F extends LitElement {
       inner: E | null = null;
 
       static get properties() {
-        return {bar: {}, bool: {type: Boolean}};
+        return { bar: {}, bool: { type: Boolean } };
       }
-      bar = 'outer';
+      bar = "outer";
       bool = false;
 
       render() {
@@ -180,7 +180,7 @@ const extraGlobals = window as LitExtraGlobals;
       }
 
       firstUpdated() {
-        this.inner = this.shadowRoot!.querySelector('x-2448');
+        this.inner = this.shadowRoot!.querySelector("x-2448");
       }
 
       get updateComplete() {
@@ -191,40 +191,40 @@ const extraGlobals = window as LitExtraGlobals;
     const el = new F();
     container.appendChild(el);
     await el.updateComplete;
-    assert.equal(el.inner!.shadowRoot!.textContent, 'outer');
-    assert.equal((el.inner! as any).attr, 'outer');
-    assert.equal(el.inner!.getAttribute('attr'), 'outer');
+    assert.equal(el.inner!.shadowRoot!.textContent, "outer");
+    assert.equal((el.inner! as any).attr, "outer");
+    assert.equal(el.inner!.getAttribute("attr"), "outer");
     assert.equal(el.inner!.bool, false);
-    el.bar = 'test';
+    el.bar = "test";
     el.bool = true;
     await el.updateComplete;
-    assert.equal(el.inner!.shadowRoot!.textContent, 'test');
-    assert.equal((el.inner! as any).attr, 'test');
-    assert.equal(el.inner!.getAttribute('attr'), 'test');
+    assert.equal(el.inner!.shadowRoot!.textContent, "test");
+    assert.equal((el.inner! as any).attr, "test");
+    assert.equal(el.inner!.getAttribute("attr"), "test");
     assert.equal(el.inner!.bool, true);
   });
 
-  test('adds a version number', () => {
-    assert.equal(window['litElementVersions'].length, 1);
+  test("adds a version number", () => {
+    assert.equal(window["litElementVersions"].length, 1);
   });
 
-  test('event fired during rendering element can trigger an update', async () => {
+  test("event fired during rendering element can trigger an update", async () => {
     class E extends LitElement {
       connectedCallback() {
         super.connectedCallback();
         this.dispatchEvent(
-          new CustomEvent('foo', {bubbles: true, detail: 'foo'})
+          new CustomEvent("foo", { bubbles: true, detail: "foo" }),
         );
       }
     }
-    customElements.define('x-child-61012', E);
+    customElements.define("x-child-61012", E);
 
     class F extends LitElement {
       static get properties() {
-        return {foo: {type: String}};
+        return { foo: { type: String } };
       }
 
-      foo = '';
+      foo = "";
 
       render() {
         return html`<x-child-61012 @foo=${this._handleFoo}></x-child-61012
@@ -239,24 +239,24 @@ const extraGlobals = window as LitExtraGlobals;
     customElements.define(generateElementName(), F);
     const el = new F();
     container.appendChild(el);
-    // eslint-disable-next-line no-empty
+
     while (!(await el.updateComplete)) {}
-    assert.equal(el.shadowRoot!.textContent, 'foo');
+    assert.equal(el.shadowRoot!.textContent, "foo");
   });
 
-  test('exceptions in `render` throw but do not prevent further updates', async () => {
+  test("exceptions in `render` throw but do not prevent further updates", async () => {
     // TODO(sorvell): console errors produced by wtr and upset it.
     const consoleError = console.error;
     console.error = () => {};
     let shouldThrow = false;
     class A extends LitElement {
-      static properties = {foo: {}};
+      static properties = { foo: {} };
       foo = 5;
       updatedFoo = 0;
 
       render() {
         if (shouldThrow) {
-          throw new Error('test error');
+          throw new Error("test error");
         }
         return html`${this.foo}`;
       }
@@ -265,7 +265,7 @@ const extraGlobals = window as LitExtraGlobals;
     const a = new A();
     container.appendChild(a);
     await a.updateComplete;
-    assert.equal(a.shadowRoot!.textContent, '5');
+    assert.equal(a.shadowRoot!.textContent, "5");
     shouldThrow = true;
     a.foo = 10;
     let threw = false;
@@ -276,17 +276,17 @@ const extraGlobals = window as LitExtraGlobals;
     }
     assert.isTrue(threw);
     assert.equal(a.foo, 10);
-    assert.equal(a.shadowRoot!.textContent, '5');
+    assert.equal(a.shadowRoot!.textContent, "5");
     shouldThrow = false;
     a.foo = 20;
     // TODO(sorvell): Make sure to wait beyond error timing or wtr is sad.
     await new Promise((r) => setTimeout(r));
     assert.equal(a.foo, 20);
-    assert.equal(a.shadowRoot!.textContent, '20');
+    assert.equal(a.shadowRoot!.textContent, "20");
     console.error = consoleError;
   });
 
-  test('if `render` is unimplemented, do not overwrite renderRoot', async () => {
+  test("if `render` is unimplemented, do not overwrite renderRoot", async () => {
     class A extends LitElement {
       addedDom: HTMLElement | null = null;
       createRenderRoot() {
@@ -295,18 +295,18 @@ const extraGlobals = window as LitExtraGlobals;
     }
     customElements.define(generateElementName(), A);
     const a = new A();
-    const testDom = document.createElement('div');
+    const testDom = document.createElement("div");
     a.appendChild(testDom);
     container.appendChild(a);
     await a.updateComplete;
     assert.equal(
       testDom.parentNode,
       a,
-      'testDom should be a child of the component'
+      "testDom should be a child of the component",
     );
   });
 
-  test('can use ReactiveElement', async () => {
+  test("can use ReactiveElement", async () => {
     class A extends ReactiveElement {}
     customElements.define(generateElementName(), A);
     const a = new A();
@@ -315,7 +315,7 @@ const extraGlobals = window as LitExtraGlobals;
     assert.ok(a.hasUpdated);
   });
 
-  test('can use UpdatingElement', async () => {
+  test("can use UpdatingElement", async () => {
     class A extends UpdatingElement {}
     customElements.define(generateElementName(), A);
     const a = new A();
@@ -325,21 +325,21 @@ const extraGlobals = window as LitExtraGlobals;
   });
 
   (extraGlobals.ShadyDOM && extraGlobals.ShadyDOM.inUse ? test.skip : test)(
-    'can customize shadowRootOptions',
+    "can customize shadowRootOptions",
     async () => {
       class A extends LitElement {
-        static shadowRootOptions: ShadowRootInit = {mode: 'closed'};
+        static shadowRootOptions: ShadowRootInit = { mode: "closed" };
       }
       customElements.define(generateElementName(), A);
       const a = new A();
       container.appendChild(a);
       await a.updateComplete;
       assert.equal(a.shadowRoot, undefined);
-    }
+    },
   );
 
-  suite('directives', () => {
-    suite('disconnection handling', () => {
+  suite("directives", () => {
+    suite("disconnection handling", () => {
       let host: Host;
       const log: string[] = [];
 
@@ -356,19 +356,19 @@ const extraGlobals = window as LitExtraGlobals;
           reconnected() {
             log.push(`reconnect-${this.id}`);
           }
-        }
+        },
       );
 
       class Child extends LitElement {
         static properties = {
-          attr: {type: String},
-          prop: {type: String},
+          attr: { type: String },
+          prop: { type: String },
         };
-        attr = 'default';
-        prop = 'default';
+        attr = "default";
+        prop = "default";
         render() {
-          return html`<div attr=${d('child-attr')} .prop=${d('child-prop')}>
-            ${d('child-node')}
+          return html`<div attr=${d("child-attr")} .prop=${d("child-prop")}>
+            ${d("child-node")}
           </div>`;
         }
         get child() {
@@ -376,12 +376,12 @@ const extraGlobals = window as LitExtraGlobals;
           return this.shadowRoot!.firstElementChild as Child;
         }
       }
-      customElements.define('disc-child', Child);
+      customElements.define("disc-child", Child);
 
       class Host extends LitElement {
         render() {
-          return html`<disc-child attr=${d('host-attr')} .prop=${d('host-prop')}
-            >${d('host-node')}</disc-child
+          return html`<disc-child attr=${d("host-attr")} .prop=${d("host-prop")}
+            >${d("host-node")}</disc-child
           >`;
         }
         get child() {
@@ -389,17 +389,17 @@ const extraGlobals = window as LitExtraGlobals;
           return this.shadowRoot!.firstElementChild as Child;
         }
       }
-      customElements.define('disc-host', Host);
+      customElements.define("disc-host", Host);
 
       const assertRendering = (host: Host) => {
         let child = host.child;
-        assert.equal(child.getAttribute('attr'), 'host-attr');
-        assert.equal(child.prop, 'host-prop');
-        assert.equal(child.textContent?.trim(), 'host-node');
+        assert.equal(child.getAttribute("attr"), "host-attr");
+        assert.equal(child.prop, "host-prop");
+        assert.equal(child.textContent?.trim(), "host-node");
         child = child.child;
-        assert.equal(child.getAttribute('attr'), 'child-attr');
-        assert.equal(child.prop, 'child-prop');
-        assert.equal(child.textContent?.trim(), 'child-node');
+        assert.equal(child.getAttribute("attr"), "child-attr");
+        assert.equal(child.prop, "child-prop");
+        assert.equal(child.textContent?.trim(), "child-node");
       };
 
       setup(() => {
@@ -413,21 +413,21 @@ const extraGlobals = window as LitExtraGlobals;
         }
       });
 
-      test('directives render on connection', async () => {
+      test("directives render on connection", async () => {
         container.appendChild(host);
         await nextFrame();
         assertRendering(host);
         assert.deepEqual(log, [
-          'render-host-attr',
-          'render-host-prop',
-          'render-host-node',
-          'render-child-attr',
-          'render-child-prop',
-          'render-child-node',
+          "render-host-attr",
+          "render-host-prop",
+          "render-host-node",
+          "render-child-attr",
+          "render-child-prop",
+          "render-child-node",
         ]);
       });
 
-      test('directives disconnect on disconnection', async () => {
+      test("directives disconnect on disconnection", async () => {
         container.appendChild(host);
         await nextFrame();
         assertRendering(host);
@@ -437,16 +437,16 @@ const extraGlobals = window as LitExtraGlobals;
         // Note: directive disconnection/reconnection is synchronous to
         // connected/disconnectedCallback
         assert.deepEqual(log, [
-          'disconnect-host-attr',
-          'disconnect-host-prop',
-          'disconnect-host-node',
-          'disconnect-child-attr',
-          'disconnect-child-prop',
-          'disconnect-child-node',
+          "disconnect-host-attr",
+          "disconnect-host-prop",
+          "disconnect-host-node",
+          "disconnect-child-attr",
+          "disconnect-child-prop",
+          "disconnect-child-node",
         ]);
       });
 
-      test('directives reconnect on reconnection', async () => {
+      test("directives reconnect on reconnection", async () => {
         container.appendChild(host);
         await nextFrame();
         assertRendering(host);
@@ -455,16 +455,16 @@ const extraGlobals = window as LitExtraGlobals;
         container.appendChild(host);
         assertRendering(host);
         assert.deepEqual(log, [
-          'reconnect-host-attr',
-          'reconnect-host-prop',
-          'reconnect-host-node',
-          'reconnect-child-attr',
-          'reconnect-child-prop',
-          'reconnect-child-node',
+          "reconnect-host-attr",
+          "reconnect-host-prop",
+          "reconnect-host-node",
+          "reconnect-child-attr",
+          "reconnect-child-prop",
+          "reconnect-child-node",
         ]);
       });
 
-      test('directives reconnect on reconnection', async () => {
+      test("directives reconnect on reconnection", async () => {
         container.appendChild(host);
         await nextFrame();
         assertRendering(host);
@@ -475,16 +475,16 @@ const extraGlobals = window as LitExtraGlobals;
         await nextFrame();
         assertRendering(host);
         assert.deepEqual(log, [
-          'reconnect-host-attr',
-          'reconnect-host-prop',
-          'reconnect-host-node',
-          'reconnect-child-attr',
-          'reconnect-child-prop',
-          'reconnect-child-node',
+          "reconnect-host-attr",
+          "reconnect-host-prop",
+          "reconnect-host-node",
+          "reconnect-child-attr",
+          "reconnect-child-prop",
+          "reconnect-child-node",
         ]);
       });
 
-      test('directives reconnect and render on reconnection with pending render', async () => {
+      test("directives reconnect and render on reconnection with pending render", async () => {
         container.appendChild(host);
         await nextFrame();
         assertRendering(host);
@@ -495,29 +495,29 @@ const extraGlobals = window as LitExtraGlobals;
         container.appendChild(host);
         assertRendering(host);
         assert.deepEqual(log, [
-          'reconnect-host-attr',
-          'reconnect-host-prop',
-          'reconnect-host-node',
-          'reconnect-child-attr',
-          'reconnect-child-prop',
-          'reconnect-child-node',
+          "reconnect-host-attr",
+          "reconnect-host-prop",
+          "reconnect-host-node",
+          "reconnect-child-attr",
+          "reconnect-child-prop",
+          "reconnect-child-node",
         ]);
         log.length = 0;
         await nextFrame();
         assertRendering(host);
         assert.deepEqual(log, [
-          'render-host-attr',
-          'render-host-prop',
-          'render-host-node',
-          'render-child-attr',
-          'render-child-prop',
-          'render-child-node',
+          "render-host-attr",
+          "render-host-prop",
+          "render-host-node",
+          "render-child-attr",
+          "render-child-prop",
+          "render-child-node",
         ]);
       });
     });
   });
 
-  test('bind refs between elements', async () => {
+  test("bind refs between elements", async () => {
     class RefChild extends LitElement {
       static properties = {
         bool: {},
@@ -529,23 +529,25 @@ const extraGlobals = window as LitExtraGlobals;
       cb = (_el: Element | undefined) => {};
       render() {
         return html` <span>
-          ${this.bool
+          ${
+          this.bool
             ? html`<div id="true" ${ref(this.ref)} ${ref(this.cb)}></div>`
-            : html`<div id="false" ${ref(this.ref)} ${ref(this.cb)}></div>`}
+            : html`<div id="false" ${ref(this.ref)} ${ref(this.cb)}></div>`
+        }
         </span>`;
       }
       get trueDiv() {
-        return this.shadowRoot!.querySelector('#true');
+        return this.shadowRoot!.querySelector("#true");
       }
       get falseDiv() {
-        return this.shadowRoot!.querySelector('#false');
+        return this.shadowRoot!.querySelector("#false");
       }
     }
-    customElements.define('ref-child', RefChild);
+    customElements.define("ref-child", RefChild);
 
     class RefHost extends LitElement {
       static properties = {
-        bool: {type: Boolean},
+        bool: { type: Boolean },
       };
       bool = false;
       elRef = createRef();
@@ -563,10 +565,10 @@ const extraGlobals = window as LitExtraGlobals;
         ></ref-child>`;
       }
       get child() {
-        return this.shadowRoot!.querySelector('ref-child') as RefChild;
+        return this.shadowRoot!.querySelector("ref-child") as RefChild;
       }
     }
-    customElements.define('x-host', RefHost);
+    customElements.define("x-host", RefHost);
 
     const host = container.appendChild(new RefHost());
     await host.updateComplete;
@@ -595,7 +597,7 @@ const extraGlobals = window as LitExtraGlobals;
     assert.equal(host.count, 3);
   });
 
-  test('directive as controller can be added/removed via connect/disconnect', async () => {
+  test("directive as controller can be added/removed via connect/disconnect", async () => {
     const log: string[] = [];
     const controllerDirective = directive(
       class extends AsyncDirective {
@@ -632,7 +634,7 @@ const extraGlobals = window as LitExtraGlobals;
         reconnected() {
           this.ensureHost();
         }
-      }
+      },
     );
 
     class Host extends LitElement {
@@ -649,12 +651,12 @@ const extraGlobals = window as LitExtraGlobals;
         this.x = 0;
       }
       render() {
-        return html` ${this.bool
-          ? html`<div ${controllerDirective()}></div>`
-          : nothing}`;
+        return html` ${
+          this.bool ? html`<div ${controllerDirective()}></div>` : nothing
+        }`;
       }
     }
-    customElements.define('controller-host', Host);
+    customElements.define("controller-host", Host);
 
     const host = container.appendChild(new Host());
     await host.updateComplete;

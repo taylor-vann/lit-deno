@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {Part, noChange} from '../lit-html.ts';
-import {directive} from '../directive.ts';
-import {isPrimitive} from '../directive-helpers.ts';
-import {AsyncDirective} from '../async-directive.ts';
+import { noChange, Part } from "../lit-html.ts";
+import { directive } from "../directive.ts";
+import { isPrimitive } from "../directive-helpers.ts";
+import { AsyncDirective } from "../async-directive.ts";
 
 const isPromise = (x: unknown) => {
-  return !isPrimitive(x) && typeof (x as {then?: unknown}).then === 'function';
+  return !isPrimitive(x) &&
+    typeof (x as { then?: unknown }).then === "function";
 };
 // Effectively infinity, but a SMI.
 const _infinity = 0x7fffffff;
@@ -95,4 +96,4 @@ export const until = directive(UntilDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {UntilDirective};
+export type { UntilDirective };

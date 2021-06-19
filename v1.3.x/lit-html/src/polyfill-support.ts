@@ -47,7 +47,6 @@ interface DirectiveParent {
 }
 
 interface PatchableChildPartConstructor {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-misused-new
   new (...args: any[]): PatchableChildPart;
 }
 
@@ -66,7 +65,6 @@ interface PatchableTemplate {
 }
 
 interface PatchableTemplateConstructor {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-misused-new
   new (...args: any[]): PatchableTemplate;
   createElement(html: string, options?: RenderOptions): HTMLTemplateElement;
 }
@@ -89,10 +87,10 @@ const ENABLE_SHADYDOM_NOPATCH = true;
  * * ChildPart.prototype._$getTemplate
  * * ChildPart.prototype._$setValue
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['litHtmlPlatformSupport'] ??= (
+
+(globalThis as any)["litHtmlPlatformSupport"] ??= (
   Template: PatchableTemplateConstructor,
-  ChildPart: PatchableChildPartConstructor
+  ChildPart: PatchableChildPartConstructor,
 ) => {
   const extraGlobals = window as LitExtraGlobals;
 
@@ -111,12 +109,11 @@ const ENABLE_SHADYDOM_NOPATCH = true;
   //   'color: lightgreen; font-style: italic'
   // );
 
-  const wrap =
-    ENABLE_SHADYDOM_NOPATCH &&
-    extraGlobals.ShadyDOM?.inUse &&
-    extraGlobals.ShadyDOM?.noPatch === true
-      ? extraGlobals.ShadyDOM!.wrap
-      : (node: Node) => node;
+  const wrap = ENABLE_SHADYDOM_NOPATCH &&
+      extraGlobals.ShadyDOM?.inUse &&
+      extraGlobals.ShadyDOM?.noPatch === true
+    ? extraGlobals.ShadyDOM!.wrap
+    : (node: Node) => node;
 
   const needsPrepareStyles = (name: string | undefined) =>
     name !== undefined && !styledScopes.has(name);
@@ -134,8 +131,8 @@ const ENABLE_SHADYDOM_NOPATCH = true;
     const scopeCss = cssForScope(name);
     const hasScopeCss = scopeCss.length !== 0;
     if (hasScopeCss) {
-      const style = document.createElement('style');
-      style.textContent = scopeCss.join('\n');
+      const style = document.createElement("style");
+      style.textContent = scopeCss.join("\n");
       // Note, it's important to add the style to the *end* of the template so
       // it doesn't mess up part indices.
       template.content.appendChild(style);
@@ -151,7 +148,7 @@ const ENABLE_SHADYDOM_NOPATCH = true;
     // template. It must be moved to the *end* of the template so it doesn't
     // mess up part indices.
     if (hasScopeCss && extraGlobals.ShadyCSS!.nativeShadow) {
-      template.content.appendChild(template.content.querySelector('style')!);
+      template.content.appendChild(template.content.querySelector("style")!);
     }
   };
 
@@ -176,7 +173,7 @@ const ENABLE_SHADYDOM_NOPATCH = true;
       const scopeCss = cssForScope(scope);
       // Remove styles and store textContent.
       const styles = element.content.querySelectorAll(
-        'style'
+        "style",
       ) as NodeListOf<HTMLStyleElement>;
       // Store the css in this template in the scope css and remove the <style>
       // from the template _before_ the node-walk captures part indices
@@ -184,14 +181,14 @@ const ENABLE_SHADYDOM_NOPATCH = true;
         ...Array.from(styles).map((style) => {
           style.parentNode?.removeChild(style);
           return style.textContent!;
-        })
+        }),
       );
     }
     return element;
   };
 
   const renderContainer = document.createDocumentFragment();
-  const renderContainerMarker = document.createComment('');
+  const renderContainerMarker = document.createComment("");
 
   const childPartProto = ChildPart.prototype;
   /**
@@ -201,7 +198,7 @@ const ENABLE_SHADYDOM_NOPATCH = true;
   childPartProto._$setValue = function (
     this: PatchableChildPart,
     value: unknown,
-    directiveParent: DirectiveParent = this
+    directiveParent: DirectiveParent = this,
   ) {
     const container = wrap(this._$startNode).parentNode!;
     const scope = this.options?.scope;
@@ -230,14 +227,14 @@ const ENABLE_SHADYDOM_NOPATCH = true;
       // is not being rendered.
       const template = (value as ShadyTemplateResult)?._$litType$
         ? (this._$committedValue as PatchableTemplateInstance)._$template.el
-        : document.createElement('template');
+        : document.createElement("template");
       prepareStyles(scope!, template);
 
       // Note, this is the temporary startNode.
       renderContainer.removeChild(renderContainerMarker);
       // When using native Shadow DOM, include prepared style in shadowRoot.
       if (extraGlobals.ShadyCSS?.nativeShadow) {
-        const style = template.content.querySelector('style');
+        const style = template.content.querySelector("style");
         if (style !== null) {
           renderContainer.appendChild(style.cloneNode(true));
         }
@@ -257,7 +254,7 @@ const ENABLE_SHADYDOM_NOPATCH = true;
    */
   childPartProto._$getTemplate = function (
     this: PatchableChildPart,
-    result: ShadyTemplateResult
+    result: ShadyTemplateResult,
   ) {
     const scope = this.options?.scope;
     let templateCache = scopedTemplateCache.get(scope);
@@ -268,7 +265,7 @@ const ENABLE_SHADYDOM_NOPATCH = true;
     if (template === undefined) {
       templateCache.set(
         result.strings,
-        (template = new Template(result, this.options))
+        (template = new Template(result, this.options)),
       );
     }
     return template;
@@ -276,7 +273,6 @@ const ENABLE_SHADYDOM_NOPATCH = true;
 };
 
 if (ENABLE_SHADYDOM_NOPATCH) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-misused-new
-  (globalThis as any)['litHtmlPlatformSupport'].noPatchSupported =
+  (globalThis as any)["litHtmlPlatformSupport"].noPatchSupported =
     ENABLE_SHADYDOM_NOPATCH;
 }

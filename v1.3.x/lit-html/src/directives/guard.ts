@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {noChange, Part} from '../lit-html.ts';
-import {directive, Directive, DirectiveParameters} from '../directive.ts';
+import { noChange, Part } from "../lit-html.ts";
+import { Directive, directive, DirectiveParameters } from "../directive.ts";
 
 // A sentinal that indicates guard() hasn't rendered anything yet
 const initialValue = {};
@@ -85,4 +85,4 @@ export const guard = directive(GuardDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {GuardDirective};
+export type { GuardDirective };

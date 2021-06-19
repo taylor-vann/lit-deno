@@ -10,20 +10,20 @@
  * an @ExportDecoratedItems annotation must be defined as a regular function,
  * not an arrow function.
  */
-import {PropertyDeclaration, ReactiveElement} from '../reactive-element.ts';
-import {ClassElement} from './base.ts';
+import { PropertyDeclaration, ReactiveElement } from "../reactive-element.ts";
+import { ClassElement } from "./base.ts";
 
 const standardProperty = (
   options: PropertyDeclaration,
-  element: ClassElement
+  element: ClassElement,
 ) => {
   // When decorating an accessor, pass it through and add property metadata.
   // Note, the `hasOwnProperty` check in `createProperty` ensures we don't
   // stomp over the user's accessor.
   if (
-    element.kind === 'method' &&
+    element.kind === "method" &&
     element.descriptor &&
-    !('value' in element.descriptor)
+    !("value" in element.descriptor)
   ) {
     return {
       ...element,
@@ -36,9 +36,9 @@ const standardProperty = (
     // must return some kind of descriptor, so return a descriptor for an
     // unused prototype field. The finisher calls createProperty().
     return {
-      kind: 'field',
+      kind: "field",
       key: Symbol(),
-      placement: 'own',
+      placement: "own",
       descriptor: {},
       // store the original key so subsequent decorators have access to it.
       originalKey: element.key,
@@ -51,8 +51,8 @@ const standardProperty = (
       //     initializer: descriptor.initializer,
       //   }
       // ],
-      initializer(this: {[key: string]: unknown}) {
-        if (typeof element.initializer === 'function') {
+      initializer(this: { [key: string]: unknown }) {
+        if (typeof element.initializer === "function") {
           this[element.key as string] = element.initializer.call(this);
         }
       },
@@ -66,7 +66,7 @@ const standardProperty = (
 const legacyProperty = (
   options: PropertyDeclaration,
   proto: Object,
-  name: PropertyKey
+  name: PropertyKey,
 ) => {
   (proto.constructor as typeof ReactiveElement).createProperty(name, options);
 };
@@ -105,7 +105,6 @@ const legacyProperty = (
  * @ExportDecoratedItems
  */
 export function property(options?: PropertyDeclaration) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (protoOrDescriptor: Object | ClassElement, name?: PropertyKey): any =>
     name !== undefined
       ? legacyProperty(options!, protoOrDescriptor as Object, name)

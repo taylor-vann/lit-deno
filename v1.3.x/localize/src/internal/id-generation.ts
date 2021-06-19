@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {fnv1a64} from './fnv1a64.ts';
+import { fnv1a64 } from "./fnv1a64.ts";
 
 /**
  * Delimiter used between each template string component before hashing. Used to
@@ -12,19 +12,19 @@ import {fnv1a64} from './fnv1a64.ts';
  *
  * This is the "record separator" ASCII character.
  */
-export const HASH_DELIMITER = '\x1e';
+export const HASH_DELIMITER = "\x1e";
 
 /**
  * Id prefix on html-tagged templates to distinguish e.g. `<b>x</b>` from
  * html`<b>x</b>`.
  */
-const HTML_PREFIX = 'h';
+const HTML_PREFIX = "h";
 
 /**
  * Id prefix on plain string templates to distinguish e.g. `<b>x</b>` from
  * html`<b>x</b>`.
  */
-const STRING_PREFIX = 's';
+const STRING_PREFIX = "s";
 
 /**
  * Generate a unique ID for a lit-localize message.
@@ -55,12 +55,12 @@ const STRING_PREFIX = 's';
  */
 export function generateMsgId(
   strings: string | string[] | TemplateStringsArray,
-  isHtmlTagged: boolean
+  isHtmlTagged: boolean,
 ): string {
   return (
     (isHtmlTagged ? HTML_PREFIX : STRING_PREFIX) +
     fnv1a64(
-      typeof strings === 'string' ? strings : strings.join(HASH_DELIMITER)
+      typeof strings === "string" ? strings : strings.join(HASH_DELIMITER),
     )
   );
 }

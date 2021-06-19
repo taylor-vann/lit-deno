@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {AttributePart, noChange, nothing} from '../lit-html.ts';
+import { AttributePart, noChange, nothing } from "../lit-html.ts";
 import {
-  directive,
   Directive,
+  directive,
   DirectiveParameters,
   PartInfo,
   PartType,
-} from '../directive.ts';
-import {isSingleExpression, setCommittedValue} from '../directive-helpers.ts';
+} from "../directive.ts";
+import { isSingleExpression, setCommittedValue } from "../directive-helpers.ts";
 
 class LiveDirective extends Directive {
   constructor(partInfo: PartInfo) {
@@ -25,11 +25,11 @@ class LiveDirective extends Directive {
       )
     ) {
       throw new Error(
-        'The `live` directive is not allowed on child or event bindings'
+        "The `live` directive is not allowed on child or event bindings",
       );
     }
     if (!isSingleExpression(partInfo)) {
-      throw new Error('`live` bindings can only contain a single expression');
+      throw new Error("`live` bindings can only contain a single expression");
     }
   }
 
@@ -48,7 +48,6 @@ class LiveDirective extends Directive {
     // method for each part type. Should that be moved into the AttributePart
     // interface?
     if (part.type === PartType.PROPERTY) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (value === (element as any)[name]) {
         return noChange;
       }
@@ -96,4 +95,4 @@ export const live = directive(LiveDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {LiveDirective};
+export type { LiveDirective };

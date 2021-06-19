@@ -3,8 +3,8 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {nothing, ElementPart} from '../lit-html.ts';
-import {directive, AsyncDirective} from '../async-directive.ts';
+import { ElementPart, nothing } from "../lit-html.ts";
+import { AsyncDirective, directive } from "../async-directive.ts";
 
 /**
  * Creates a new Ref object, which is container for a reference to an element.
@@ -22,7 +22,7 @@ class Ref<T = Element> {
   readonly value?: T;
 }
 
-export type {Ref};
+export type { Ref };
 
 interface RefInternal {
   value: Element | undefined;
@@ -45,7 +45,7 @@ class RefDirective extends AsyncDirective {
     return nothing;
   }
 
-  update(part: ElementPart, [ref]: Parameters<this['render']>) {
+  update(part: ElementPart, [ref]: Parameters<this["render"]>) {
     const refChanged = ref !== this._ref;
     if (refChanged && this._ref !== undefined) {
       // The ref passed to the directive has changed;
@@ -63,7 +63,7 @@ class RefDirective extends AsyncDirective {
   }
 
   private _updateRefValue(element: Element | undefined) {
-    if (typeof this._ref === 'function') {
+    if (typeof this._ref === "function") {
       // If the current ref was called with a previous value, call with
       // `undefined`; We do this to ensure callbacks are called in a consistent
       // way regardless of whether a ref might be moving up in the tree (in
@@ -84,7 +84,7 @@ class RefDirective extends AsyncDirective {
   }
 
   private get _lastElementForRef() {
-    return typeof this._ref === 'function'
+    return typeof this._ref === "function"
       ? lastElementForCallback.get(this._ref)
       : this._ref?.value;
   }
@@ -137,4 +137,4 @@ export const ref = directive(RefDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {RefDirective};
+export type { RefDirective };

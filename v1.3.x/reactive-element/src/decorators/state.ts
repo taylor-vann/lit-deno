@@ -11,7 +11,7 @@
  * not an arrow function.
  */
 
-import {property} from './property.ts';
+import { property } from "./property.ts";
 
 export interface InternalPropertyDeclaration<Type = unknown> {
   /**

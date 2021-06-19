@@ -11,15 +11,15 @@
  * not an arrow function.
  */
 
-import {ReactiveElement} from '../reactive-element.ts';
-import {decorateProperty} from './base.ts';
+import { ReactiveElement } from "../reactive-element.ts";
+import { decorateProperty } from "./base.ts";
 
 // TODO(sorvell): Remove when https://github.com/webcomponents/polyfills/issues/397 is addressed.
 // x-browser support for matches
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const ElementProto = Element.prototype as any;
-const legacyMatches =
-  ElementProto.msMatchesSelector || ElementProto.webkitMatchesSelector;
+const legacyMatches = ElementProto.msMatchesSelector ||
+  ElementProto.webkitMatchesSelector;
 
 /**
  * A property decorator that converts a class property into a getter that
@@ -49,26 +49,25 @@ const legacyMatches =
  * @category Decorator
  */
 export function queryAssignedNodes(
-  slotName = '',
+  slotName = "",
   flatten = false,
-  selector = ''
+  selector = "",
 ) {
   return decorateProperty({
     descriptor: (_name: PropertyKey) => ({
       get(this: ReactiveElement) {
         const slotSelector = `slot${
-          slotName ? `[name=${slotName}]` : ':not([name])'
+          slotName ? `[name=${slotName}]` : ":not([name])"
         }`;
         const slot = this.renderRoot?.querySelector(slotSelector);
-        let nodes = (slot as HTMLSlotElement)?.assignedNodes({flatten});
+        let nodes = (slot as HTMLSlotElement)?.assignedNodes({ flatten });
         if (nodes && selector) {
           nodes = nodes.filter(
             (node) =>
               node.nodeType === Node.ELEMENT_NODE &&
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               ((node as any).matches
                 ? (node as Element).matches(selector)
-                : legacyMatches.call(node as Element, selector))
+                : legacyMatches.call(node as Element, selector)),
           );
         }
         return nodes;

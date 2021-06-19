@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {LitElement} from '../lit-element.ts';
-import {generateElementName} from './test-helpers.ts';
-import {assert} from '@esm-bundle/chai';
+import { LitElement } from "../lit-element.ts";
+import { generateElementName } from "./test-helpers.ts";
+import { assert } from "@esm-bundle/chai";
 
 // Note, since tests are not built with production support, detect DEV_MODE
 // by checking if warning API is available.
 const DEV_MODE = !!LitElement.enableWarning;
 
 if (DEV_MODE) {
-  suite('Developer mode warnings', () => {
+  suite("Developer mode warnings", () => {
     let container: HTMLElement;
     let warnings: string[] = [];
 
@@ -29,7 +29,7 @@ if (DEV_MODE) {
 
     setup(() => {
       warnings = [];
-      container = document.createElement('div');
+      container = document.createElement("div");
       document.body.appendChild(container);
     });
 
@@ -39,17 +39,17 @@ if (DEV_MODE) {
       }
     });
 
-    test('warns when `static render` is implemented', () => {
+    test("warns when `static render` is implemented", () => {
       class A extends LitElement {
         static render() {}
       }
       customElements.define(generateElementName(), A);
       new A();
       assert.equal(warnings.length, 1);
-      assert.include(warnings[0], 'render');
+      assert.include(warnings[0], "render");
     });
 
-    test('warns on first instance only', () => {
+    test("warns on first instance only", () => {
       class A extends LitElement {
         static render() {}
       }
@@ -58,27 +58,27 @@ if (DEV_MODE) {
       new A();
       new A();
       assert.equal(warnings.length, 1);
-      assert.include(warnings[0], 'render');
+      assert.include(warnings[0], "render");
     });
 
-    test('warns when `static getStyles` is implemented', () => {
+    test("warns when `static getStyles` is implemented", () => {
       class A extends LitElement {
         static getStyles() {}
       }
       customElements.define(generateElementName(), A);
       new A();
       assert.equal(warnings.length, 1);
-      assert.include(warnings[0], 'getStyles');
+      assert.include(warnings[0], "getStyles");
     });
 
-    test('warns when `adoptStyles` is implemented', () => {
+    test("warns when `adoptStyles` is implemented", () => {
       class A extends LitElement {
         adoptStyles() {}
       }
       customElements.define(generateElementName(), A);
       new A();
       assert.equal(warnings.length, 1);
-      assert.include(warnings[0], 'adoptStyles');
+      assert.include(warnings[0], "adoptStyles");
     });
   });
 }

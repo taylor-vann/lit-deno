@@ -4,20 +4,20 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {TemplateResult, ChildPart, render, nothing} from '../lit-html.ts';
+import { ChildPart, nothing, render, TemplateResult } from "../lit-html.ts";
 import {
-  directive,
   Directive,
+  directive,
   DirectiveParameters,
   PartInfo,
-} from '../directive.ts';
+} from "../directive.ts";
 import {
   clearPart,
   getCommittedValue,
   insertPart,
   isTemplateResult,
   setCommittedValue,
-} from '../directive-helpers.ts';
+} from "../directive-helpers.ts";
 
 class CacheDirective extends Directive {
   private _templateCache = new WeakMap<TemplateStringsArray, ChildPart>();
@@ -64,7 +64,7 @@ class CacheDirective extends Directive {
         if (cachedContainerPart !== undefined) {
           // Move the cached part back into the container part value
           const partValue = getCommittedValue(
-            cachedContainerPart
+            cachedContainerPart,
           ) as Array<ChildPart>;
           const cachedPart = partValue.pop()!;
           // Move cached part back into DOM
@@ -102,4 +102,4 @@ export const cache = directive(CacheDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {CacheDirective};
+export type { CacheDirective };

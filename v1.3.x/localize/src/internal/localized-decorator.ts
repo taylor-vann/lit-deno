@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {updateWhenLocaleChanges} from './localized-controller.ts';
+import { updateWhenLocaleChanges } from "./localized-controller.ts";
 
-import type {ReactiveElement} from '@lit/reactive-element';
+import type { ReactiveElement } from "@lit/reactive-element";
 import type {
-  Constructor,
   ClassDescriptor,
-} from '@lit/reactive-element/decorators/base.ts';
+  Constructor,
+} from "@lit/reactive-element/decorators/base.ts";
 
 /**
  * Class decorator to enable re-rendering the given LitElement whenever a new
@@ -36,9 +36,9 @@ import type {
  *     }
  *   }
  */
-const _localized =
-  () => (classOrDescriptor: Constructor<ReactiveElement> | ClassDescriptor) =>
-    typeof classOrDescriptor === 'function'
+const _localized = () =>
+  (classOrDescriptor: Constructor<ReactiveElement> | ClassDescriptor) =>
+    typeof classOrDescriptor === "function"
       ? legacyLocalized(classOrDescriptor as unknown as typeof ReactiveElement)
       : standardLocalized(classOrDescriptor);
 
@@ -46,7 +46,7 @@ export const localized: typeof _localized & {
   _LIT_LOCALIZE_DECORATOR_?: never;
 } = _localized;
 
-const standardLocalized = ({kind, elements}: ClassDescriptor) => {
+const standardLocalized = ({ kind, elements }: ClassDescriptor) => {
   return {
     kind,
     elements,
@@ -58,6 +58,6 @@ const standardLocalized = ({kind, elements}: ClassDescriptor) => {
 
 const legacyLocalized = (clazz: typeof ReactiveElement) => {
   clazz.addInitializer(updateWhenLocaleChanges);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   return clazz as any;
 };

@@ -9,11 +9,10 @@ const extraGlobals = window as LitExtraGlobals;
 /**
  * Whether the current browser supports `adoptedStyleSheets`.
  */
-export const supportsAdoptingStyleSheets =
-  window.ShadowRoot &&
+export const supportsAdoptingStyleSheets = window.ShadowRoot &&
   (extraGlobals.ShadyCSS === undefined || extraGlobals.ShadyCSS.nativeShadow) &&
-  'adoptedStyleSheets' in Document.prototype &&
-  'replace' in CSSStyleSheet.prototype;
+  "adoptedStyleSheets" in Document.prototype &&
+  "replace" in CSSStyleSheet.prototype;
 
 /**
  * A CSSResult or native CSSStyleSheet.
@@ -49,7 +48,7 @@ export class CSSResult {
   private constructor(cssText: string, safeToken: symbol) {
     if (safeToken !== constructionToken) {
       throw new Error(
-        'CSSResult is not constructable. Use `unsafeCSS` or `css` instead.'
+        "CSSResult is not constructable. Use `unsafeCSS` or `css` instead.",
       );
     }
     this.cssText = cssText;
@@ -80,13 +79,13 @@ type ConstructableCSSResult = CSSResult & {
 const textFromCSSResult = (value: CSSResultGroup | number) => {
   if ((value as CSSResult)._$cssResult$ === true) {
     return (value as CSSResult).cssText;
-  } else if (typeof value === 'number') {
+  } else if (typeof value === "number") {
     return value;
   } else {
     throw new Error(
       `Value passed to 'css' function must be a 'css' function result: ` +
         `${value}. Use 'unsafeCSS' to pass non-literal values, but take care ` +
-        `to ensure page security.`
+        `to ensure page security.`,
     );
   }
 };
@@ -100,8 +99,8 @@ const textFromCSSResult = (value: CSSResultGroup | number) => {
  */
 export const unsafeCSS = (value: unknown) =>
   new (CSSResult as ConstructableCSSResult)(
-    typeof value === 'string' ? value : String(value),
-    constructionToken
+    typeof value === "string" ? value : String(value),
+    constructionToken,
   );
 
 /**
@@ -116,13 +115,10 @@ export const css = (
   strings: TemplateStringsArray,
   ...values: (CSSResultGroup | number)[]
 ): CSSResult => {
-  const cssText =
-    strings.length === 1
-      ? strings[0]
-      : values.reduce(
-          (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
-          strings[0]
-        );
+  const cssText = strings.length === 1 ? strings[0] : values.reduce(
+    (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+    strings[0],
+  );
   return new (CSSResult as ConstructableCSSResult)(cssText, constructionToken);
 };
 
@@ -137,7 +133,7 @@ export const css = (
  */
 export const adoptStyles = (
   renderRoot: ShadowRoot,
-  styles: Array<CSSResultOrNative>
+  styles: Array<CSSResultOrNative>,
 ) => {
   if (supportsAdoptingStyleSheets) {
     (renderRoot as ShadowRoot).adoptedStyleSheets = styles.map((s) =>
@@ -145,7 +141,7 @@ export const adoptStyles = (
     );
   } else {
     styles.forEach((s) => {
-      const style = document.createElement('style');
+      const style = document.createElement("style");
       style.textContent = (s as CSSResult).cssText;
       renderRoot.appendChild(style);
     });
@@ -153,7 +149,7 @@ export const adoptStyles = (
 };
 
 const cssResultFromStyleSheet = (sheet: CSSStyleSheet) => {
-  let cssText = '';
+  let cssText = "";
   for (const rule of sheet.cssRules) {
     cssText += rule.cssText;
   }
@@ -163,4 +159,4 @@ const cssResultFromStyleSheet = (sheet: CSSStyleSheet) => {
 export const getCompatibleStyle = supportsAdoptingStyleSheets
   ? (s: CSSResultOrNative) => s
   : (s: CSSResultOrNative) =>
-      s instanceof CSSStyleSheet ? cssResultFromStyleSheet(s) : s;
+    s instanceof CSSStyleSheet ? cssResultFromStyleSheet(s) : s;

@@ -11,8 +11,8 @@
  * not an arrow function.
  */
 
-import {ReactiveElement} from '../reactive-element.ts';
-import {decorateProperty} from './base.ts';
+import { ReactiveElement } from "../reactive-element.ts";
+import { decorateProperty } from "./base.ts";
 
 /**
  * A property decorator that converts a class property into a getter that
@@ -52,18 +52,18 @@ export function query(selector: string, cache?: boolean) {
         configurable: true,
       };
       if (cache) {
-        const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+        const key = typeof name === "symbol" ? Symbol() : `__${name}`;
         descriptor.get = function (this: ReactiveElement) {
           if (
-            (this as unknown as {[key: string]: Element | null})[
+            (this as unknown as { [key: string]: Element | null })[
               key as string
             ] === undefined
           ) {
-            (this as unknown as {[key: string]: Element | null})[
+            (this as unknown as { [key: string]: Element | null })[
               key as string
             ] = this.renderRoot?.querySelector(selector);
           }
-          return (this as unknown as {[key: string]: Element | null})[
+          return (this as unknown as { [key: string]: Element | null })[
             key as string
           ];
         };

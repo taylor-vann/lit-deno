@@ -3,7 +3,11 @@
  * Copyright 2020 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {html as coreHtml, svg as coreSvg, TemplateResult} from './lit-html.ts';
+import {
+  html as coreHtml,
+  svg as coreSvg,
+  TemplateResult,
+} from "./lit-html.ts";
 
 /**
  * Wraps a string so that it behaves like part of the static template
@@ -29,7 +33,7 @@ const textFromStatic = (value: StaticValue) => {
   } else {
     throw new Error(
       `Value passed to 'literal' function must be a 'literal' result: ${value}. Use 'unsafeStatic' to pass non-literal values, but
-            take care to ensure page security.`
+            take care to ensure page security.`,
     );
   }
 };
@@ -54,7 +58,7 @@ export const literal = (
 ) => ({
   _$litStatic$: values.reduce(
     (acc, v, idx) => acc + textFromStatic(v as StaticValue) + strings[idx + 1],
-    strings[0]
+    strings[0],
   ),
 });
 
@@ -65,8 +69,7 @@ const stringsCache = new Map<string, TemplateStringsArray>();
 /**
  * Wraps a lit-html template tag (`html` or `svg`) to add static value support.
  */
-export const withStatic =
-  (coreTag: typeof coreHtml | typeof coreSvg) =>
+export const withStatic = (coreTag: typeof coreHtml | typeof coreSvg) =>
   (strings: TemplateStringsArray, ...values: unknown[]): TemplateResult => {
     const l = values.length;
     let staticValue: string | undefined;
@@ -85,7 +88,7 @@ export const withStatic =
       while (
         i < l &&
         ((dynamicValue = values[i]),
-        (staticValue = (dynamicValue as StaticValue)?._$litStatic$)) !==
+            (staticValue = (dynamicValue as StaticValue)?._$litStatic$)) !==
           undefined
       ) {
         s += staticValue + strings[++i];
@@ -102,12 +105,12 @@ export const withStatic =
     }
 
     if (hasStatics) {
-      const key = staticStrings.join('$$lit$$');
+      const key = staticStrings.join("$$lit$$");
       strings = stringsCache.get(key)!;
       if (strings === undefined) {
         stringsCache.set(
           key,
-          (strings = staticStrings as unknown as TemplateStringsArray)
+          (strings = staticStrings as unknown as TemplateStringsArray),
         );
       }
       values = dynamicValues;

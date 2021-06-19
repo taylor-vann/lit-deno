@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {defaultMsg} from './internal/default-msg.ts';
+import { defaultMsg } from "./internal/default-msg.ts";
 
-import type {MsgFn} from './internal/types.ts';
+import type { MsgFn } from "./internal/types.ts";
 
-export * from './internal/locale-status-event.ts';
-export * from './internal/str-tag.ts';
-export * from './internal/types.ts';
+export * from "./internal/locale-status-event.ts";
+export * from "./internal/str-tag.ts";
+export * from "./internal/types.ts";
 
 // TODO(aomarks) In a future breaking version, remove these imports so that the
 // bulk of the code isn't included in bundles by default. In particular imagine
 // the component library use-case where msg() calls are made, but there is no
 // need to actually initialize any of the localization runtime.
-export * from './internal/localized-controller.ts';
-export * from './internal/localized-decorator.ts';
-export * from './init/runtime.ts';
-export * from './init/transform.ts';
+export * from "./internal/localized-controller.ts";
+export * from "./internal/localized-decorator.ts";
+export * from "./init/runtime.ts";
+export * from "./init/transform.ts";
 
 /**
  * Make a string or lit-html template localizable.
@@ -45,7 +45,7 @@ let installed = false;
  */
 export function _installMsgImplementation(impl: MsgFn) {
   if (installed) {
-    throw new Error('lit-localize can only be configured once');
+    throw new Error("lit-localize can only be configured once");
   }
   msg = impl;
   installed = true;

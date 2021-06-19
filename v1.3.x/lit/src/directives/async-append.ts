@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-export * from 'lit-html/directives/async-append.ts';
+export * from "lit-html/directives/async-append.ts";

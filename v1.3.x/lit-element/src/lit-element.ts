@@ -46,10 +46,10 @@
  *
  * @packageDocumentation
  */
-import {PropertyValues, ReactiveElement} from '@lit/reactive-element';
-import {render, RenderOptions, noChange, ChildPart} from 'lit-html';
-export * from '@lit/reactive-element';
-export * from 'lit-html';
+import { PropertyValues, ReactiveElement } from "@lit/reactive-element";
+import { ChildPart, noChange, render, RenderOptions } from "lit-html";
+export * from "@lit/reactive-element";
+export * from "lit-html";
 
 // For backwards compatibility export ReactiveElement as UpdatingElement. Note,
 // IE transpilation requires exporting like this.
@@ -66,8 +66,8 @@ declare global {
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for LitElement usage.
 // TODO(justinfagnani): inject version number at build time
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-((globalThis as any)['litElementVersions'] ??= []).push('3.0.0-rc.2');
+
+((globalThis as any)["litElementVersions"] ??= []).push("3.0.0-rc.2");
 
 /**
  * Base element class that manages element properties and attributes, and
@@ -85,14 +85,14 @@ export class LitElement extends ReactiveElement {
    * Note this property name is a string to prevent breaking Closure JS Compiler
    * optimizations. See @lit/reactive-element for more information.
    */
-  protected static ['finalized'] = true;
+  protected static ["finalized"] = true;
 
   static _$litElement$ = true;
 
   /**
    * @category rendering
    */
-  readonly renderOptions: RenderOptions = {host: this};
+  readonly renderOptions: RenderOptions = { host: this };
 
   private __childPart: ChildPart | undefined = undefined;
 
@@ -158,41 +158,38 @@ export class LitElement extends ReactiveElement {
 }
 
 // Install hydration if available
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['litElementHydrateSupport']?.({LitElement});
+
+(globalThis as any)["litElementHydrateSupport"]?.({ LitElement });
 
 // Apply polyfills if available
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['litElementPlatformSupport']?.({LitElement});
+
+(globalThis as any)["litElementPlatformSupport"]?.({ LitElement });
 
 // DEV mode warnings
 if (DEV_MODE) {
   // Note, for compatibility with closure compilation, this access
   // needs to be as a string property index.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (LitElement as any)['finalize'] = function (this: typeof LitElement) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+  (LitElement as any)["finalize"] = function (this: typeof LitElement) {
     const finalized = (ReactiveElement as any).finalize.call(this);
     if (!finalized) {
       return false;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     const warnRemoved = (obj: any, name: string) => {
       if (obj[name] !== undefined) {
         console.warn(
           `\`${name}\` is implemented. It ` +
-            `has been removed from this version of LitElement. `
+            `has been removed from this version of LitElement. `,
           // TODO(sorvell): add link to changelog when location has stabilized.
           // + See the changelog at https://github.com/lit/lit/blob/main/packages/lit-element/CHANGELOG.md`
         );
       }
     };
     [`render`, `getStyles`].forEach((name: string) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       warnRemoved(this as any, name)
     );
     [`adoptStyles`].forEach((name: string) =>
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       warnRemoved(this.prototype as any, name)
     );
     return true;
@@ -221,11 +218,10 @@ export const _Φ = {
   _$attributeToProperty: (
     el: LitElement,
     name: string,
-    value: string | null
+    value: string | null,
   ) => {
-    // eslint-disable-next-line
     (el as any)._$attributeToProperty(name, value);
   },
-  // eslint-disable-next-line
+
   _$changedProperties: (el: LitElement) => (el as any)._$changedProperties,
 };

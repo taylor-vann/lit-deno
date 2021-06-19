@@ -3,24 +3,24 @@
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-import {css, html as htmlWithStyles, LitElement} from '../lit-element.ts';
+import { css, html as htmlWithStyles, LitElement } from "../lit-element.ts";
 
 import {
   canTestLitElement,
   generateElementName,
   getComputedStyleValue,
   nextFrame,
-} from './test-helpers.ts';
-import {assert} from '@esm-bundle/chai';
+} from "./test-helpers.ts";
+import { assert } from "@esm-bundle/chai";
 
 const extraGlobals = window as LitExtraGlobals;
 
-(canTestLitElement ? suite : suite.skip)('Styling', () => {
-  suite('Basic styling', () => {
+(canTestLitElement ? suite : suite.skip)("Styling", () => {
+  suite("Basic styling", () => {
     let container: HTMLElement;
 
     setup(() => {
-      container = document.createElement('div');
+      container = document.createElement("div");
       document.body.appendChild(container);
     });
 
@@ -30,7 +30,7 @@ const extraGlobals = window as LitExtraGlobals;
       }
     });
 
-    test('content shadowRoot is styled', async () => {
+    test("content shadowRoot is styled", async () => {
       const name = generateElementName();
       customElements.define(
         name,
@@ -44,19 +44,19 @@ const extraGlobals = window as LitExtraGlobals;
           </style>
           <div>Testing...</div>`;
           }
-        }
+        },
       );
       const el = document.createElement(name);
       container.appendChild(el);
       await (el as LitElement).updateComplete;
-      const div = el.shadowRoot!.querySelector('div');
+      const div = el.shadowRoot!.querySelector("div");
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '2px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "2px",
       );
     });
 
-    test('shared styling rendered into shadowRoot is styled', async () => {
+    test("shared styling rendered into shadowRoot is styled", async () => {
       const style = htmlWithStyles`<style>
         div {
           border: 4px solid blue;
@@ -76,19 +76,19 @@ const extraGlobals = window as LitExtraGlobals;
           ${style}
           <div>Testing...</div>`;
           }
-        }
+        },
       );
       const el = document.createElement(name);
       container.appendChild(el);
       await (el as LitElement).updateComplete;
-      const div = el.shadowRoot!.querySelector('div');
+      const div = el.shadowRoot!.querySelector("div");
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '4px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "4px",
       );
     });
 
-    test('custom properties render', async () => {
+    test("custom properties render", async () => {
       const name = generateElementName();
       customElements.define(
         name,
@@ -105,21 +105,21 @@ const extraGlobals = window as LitExtraGlobals;
           </style>
           <div>Testing...</div>`;
           }
-        }
+        },
       );
       const el = document.createElement(name);
       container.appendChild(el);
       await (el as LitElement).updateComplete;
-      const div = el.shadowRoot!.querySelector('div');
+      const div = el.shadowRoot!.querySelector("div");
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '8px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "8px",
       );
     });
 
-    test('custom properties flow to nested elements', async () => {
+    test("custom properties flow to nested elements", async () => {
       customElements.define(
-        'x-inner',
+        "x-inner",
         class extends LitElement {
           render() {
             return htmlWithStyles`
@@ -130,7 +130,7 @@ const extraGlobals = window as LitExtraGlobals;
           </style>
           <div>Testing...</div>`;
           }
-        }
+        },
       );
       const name = generateElementName();
       class E extends LitElement {
@@ -147,7 +147,7 @@ const extraGlobals = window as LitExtraGlobals;
         }
 
         firstUpdated() {
-          this.inner = this.shadowRoot!.querySelector('x-inner')! as LitElement;
+          this.inner = this.shadowRoot!.querySelector("x-inner")! as LitElement;
         }
       }
       customElements.define(name, E);
@@ -158,16 +158,16 @@ const extraGlobals = window as LitExtraGlobals;
       (await el.updateComplete) && (await el.inner!.updateComplete);
 
       await nextFrame();
-      const div = el.inner!.shadowRoot!.querySelector('div');
+      const div = el.inner!.shadowRoot!.querySelector("div");
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '8px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "8px",
       );
     });
 
-    test('elements with custom properties can move between elements', async () => {
+    test("elements with custom properties can move between elements", async () => {
       customElements.define(
-        'x-inner1',
+        "x-inner1",
         class extends LitElement {
           render() {
             return htmlWithStyles`
@@ -178,7 +178,7 @@ const extraGlobals = window as LitExtraGlobals;
           </style>
           <div>Testing...</div>`;
           }
-        }
+        },
       );
       const name1 = generateElementName();
       customElements.define(
@@ -197,9 +197,9 @@ const extraGlobals = window as LitExtraGlobals;
           }
 
           firstUpdated() {
-            this.inner = this.shadowRoot!.querySelector('x-inner1');
+            this.inner = this.shadowRoot!.querySelector("x-inner1");
           }
-        }
+        },
       );
       const name2 = generateElementName();
       customElements.define(
@@ -213,7 +213,7 @@ const extraGlobals = window as LitExtraGlobals;
             }
           </style>`;
           }
-        }
+        },
       );
       const el = document.createElement(name1) as LitElement;
       const el2 = document.createElement(name2);
@@ -224,11 +224,11 @@ const extraGlobals = window as LitExtraGlobals;
       await el.updateComplete;
 
       await nextFrame();
-      const inner = el.shadowRoot!.querySelector('x-inner1');
-      const div = inner!.shadowRoot!.querySelector('div');
+      const inner = el.shadowRoot!.querySelector("x-inner1");
+      const div = inner!.shadowRoot!.querySelector("div");
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '2px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "2px",
       );
       el2.shadowRoot!.appendChild(inner!);
 
@@ -237,17 +237,17 @@ const extraGlobals = window as LitExtraGlobals;
 
       await nextFrame();
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '8px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "8px",
       );
     });
   });
 
-  suite('Static get styles', () => {
+  suite("Static get styles", () => {
     let container: HTMLElement;
 
     setup(() => {
-      container = document.createElement('div');
+      container = document.createElement("div");
       document.body.appendChild(container);
     });
 
@@ -257,7 +257,7 @@ const extraGlobals = window as LitExtraGlobals;
       }
     });
 
-    test('styles in render compose with `static get styles`', async () => {
+    test("styles in render compose with `static get styles`", async () => {
       const name = generateElementName();
       customElements.define(
         name,
@@ -292,40 +292,40 @@ const extraGlobals = window as LitExtraGlobals;
           <div>Testing1</div>
           <span>Testing2</span>`;
           }
-        }
+        },
       );
       const el = document.createElement(name);
       container.appendChild(el);
       await (el as LitElement).updateComplete;
-      const div = el.shadowRoot!.querySelector('div');
+      const div = el.shadowRoot!.querySelector("div");
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '2px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "2px",
       );
-      assert.equal(getComputedStyleValue(div!, 'padding-top').trim(), '4px');
-      const span = el.shadowRoot!.querySelector('span');
+      assert.equal(getComputedStyleValue(div!, "padding-top").trim(), "4px");
+      const span = el.shadowRoot!.querySelector("span");
       assert.equal(
-        getComputedStyleValue(span!, 'border-top-width').trim(),
-        '3px'
+        getComputedStyleValue(span!, "border-top-width").trim(),
+        "3px",
       );
       // Verify there is one scoping style under ShadyDOM
       if (extraGlobals.ShadyDOM?.inUse) {
         assert.equal(
           document.querySelectorAll(`style[scope=${name}`).length,
-          1
+          1,
         );
       }
     });
   });
 
-  suite('ShadyDOM', () => {
+  suite("ShadyDOM", () => {
     let container: HTMLElement;
 
     setup(function () {
       if (!extraGlobals.ShadyDOM) {
         this.skip();
       } else {
-        container = document.createElement('div');
+        container = document.createElement("div");
         document.body.appendChild(container);
       }
     });
@@ -338,7 +338,7 @@ const extraGlobals = window as LitExtraGlobals;
 
     // TODO(sorvell): Bindings in styles are no longer supported.
     // This will be supported via static bindings only.
-    test.skip('properties in styles render with initial value and cannot be changed', async () => {
+    test.skip("properties in styles render with initial value and cannot be changed", async () => {
       let border = `6px solid blue`;
       const name = generateElementName();
       customElements.define(
@@ -353,22 +353,22 @@ const extraGlobals = window as LitExtraGlobals;
           </style>
           <div>Testing...</div>`;
           }
-        }
+        },
       );
       const el = document.createElement(name) as LitElement;
       container.appendChild(el);
       await el.updateComplete;
-      const div = el.shadowRoot!.querySelector('div');
+      const div = el.shadowRoot!.querySelector("div");
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '6px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "6px",
       );
       border = `4px solid orange`;
       el.requestUpdate();
       await el.updateComplete;
       assert.equal(
-        getComputedStyleValue(div!, 'border-top-width').trim(),
-        '6px'
+        getComputedStyleValue(div!, "border-top-width").trim(),
+        "6px",
       );
     });
   });

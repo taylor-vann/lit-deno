@@ -5,7 +5,7 @@
  */
 
 // IMPORTANT: these imports must be type-only
-import type {Directive, DirectiveResult, PartInfo} from './directive.ts';
+import type { Directive, DirectiveResult, PartInfo } from "./directive.ts";
 
 const DEV_MODE = true;
 const ENABLE_EXTRA_SECURITY_HOOKS = true;
@@ -19,17 +19,16 @@ const ENABLE_SHADYDOM_NOPATCH = true;
 export const INTERNAL = true;
 
 if (DEV_MODE) {
-  console.warn('lit-html is in dev mode. Not recommended for production!');
+  console.warn("lit-html is in dev mode. Not recommended for production!");
 }
 
 const extraGlobals = window as LitExtraGlobals;
 
-const wrap =
-  ENABLE_SHADYDOM_NOPATCH &&
-  extraGlobals.ShadyDOM?.inUse &&
-  extraGlobals.ShadyDOM?.noPatch === true
-    ? extraGlobals.ShadyDOM!.wrap
-    : (node: Node) => node;
+const wrap = ENABLE_SHADYDOM_NOPATCH &&
+    extraGlobals.ShadyDOM?.inUse &&
+    extraGlobals.ShadyDOM?.noPatch === true
+  ? extraGlobals.ShadyDOM!.wrap
+  : (node: Node) => node;
 
 const trustedTypes = (globalThis as unknown as Partial<Window>).trustedTypes;
 
@@ -42,9 +41,9 @@ const trustedTypes = (globalThis as unknown as Partial<Window>).trustedTypes;
  * considered safe by construction.
  */
 const policy = trustedTypes
-  ? trustedTypes.createPolicy('lit-html', {
-      createHTML: (s) => s,
-    })
+  ? trustedTypes.createPolicy("lit-html", {
+    createHTML: (s) => s,
+  })
   : undefined;
 
 /**
@@ -71,7 +70,7 @@ const policy = trustedTypes
 export type SanitizerFactory = (
   node: Node,
   name: string,
-  type: 'property' | 'attribute'
+  type: "property" | "attribute",
 ) => ValueSanitizer;
 
 /**
@@ -91,7 +90,7 @@ const identityFunction: ValueSanitizer = (value: unknown) => value;
 const noopSanitizer: SanitizerFactory = (
   _node: Node,
   _name: string,
-  _type: 'property' | 'attribute'
+  _type: "property" | "attribute",
 ) => identityFunction;
 
 /** Sets the global sanitizer factory. */
@@ -102,7 +101,7 @@ const setSanitizer = (newSanitizer: SanitizerFactory) => {
   if (sanitizerFactoryInternal !== noopSanitizer) {
     throw new Error(
       `Attempted to overwrite existing lit-html security policy.` +
-        ` setSanitizeDOMValueFactory should be called at most once.`
+        ` setSanitizeDOMValueFactory should be called at most once.`,
     );
   }
   sanitizerFactoryInternal = newSanitizer;
@@ -121,7 +120,7 @@ const createSanitizer: SanitizerFactory = (node, name, type) => {
 
 // Added to an attribute name to mark the attribute as bound so we can find
 // it easily.
-const boundAttributeSuffix = '$lit$';
+const boundAttributeSuffix = "$lit$";
 
 // This marker is used in many syntactic positions in HTML, so it must be
 // a valid element name and attribute name. We don't support dynamic names (yet)
@@ -130,7 +129,7 @@ const boundAttributeSuffix = '$lit$';
 const marker = `lit$${String(Math.random()).slice(9)}$`;
 
 // String used to tell if a comment is a marker comment
-const markerMatch = '?' + marker;
+const markerMatch = "?" + marker;
 
 // Text used to insert a comment marker node. We use processing instruction
 // syntax because it's slightly smaller, but parses as a comment node.
@@ -139,17 +138,16 @@ const nodeMarker = `<${markerMatch}>`;
 const d = document;
 
 // Creates a dynamic marker. We never have to search for these in the DOM.
-const createMarker = (v = '') => d.createComment(v);
+const createMarker = (v = "") => d.createComment(v);
 
 // https://tc39.github.io/ecma262/#sec-typeof-operator
 type Primitive = null | undefined | boolean | number | string | symbol | bigint;
 const isPrimitive = (value: unknown): value is Primitive =>
-  value === null || (typeof value != 'object' && typeof value != 'function');
+  value === null || (typeof value != "object" && typeof value != "function");
 const isArray = Array.isArray;
 const isIterable = (value: unknown): value is Iterable<unknown> =>
   isArray(value) ||
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  typeof (value as any)?.[Symbol.iterator] === 'function';
+  typeof (value as any)?.[Symbol.iterator] === "function";
 
 const SPACE_CHAR = `[ \t\n\f\r]`;
 const ATTR_VALUE_CHAR = `[^ \t\n\f\r"'\`<>=]`;
@@ -204,7 +202,7 @@ const comment2EndRegex = />/g;
  */
 const tagEndRegex = new RegExp(
   `>|${SPACE_CHAR}(?:(${NAME_CHAR}+)(${SPACE_CHAR}*=${SPACE_CHAR}*(?:${ATTR_VALUE_CHAR}|("|')|))|$)`,
-  'g'
+  "g",
 );
 const ENTIRE_MATCH = 0;
 const ATTRIBUTE_NAME = 1;
@@ -261,7 +259,7 @@ export interface CompiledTemplateResult {
   values: unknown[];
 }
 
-export interface CompiledTemplate extends Omit<Template, 'el'> {
+export interface CompiledTemplate extends Omit<Template, "el"> {
   // el is overridden to be optional. We initialize it on first render
   el?: HTMLTemplateElement;
 
@@ -273,8 +271,7 @@ export interface CompiledTemplate extends Omit<Template, 'el'> {
  * Generates a template literal tag function that returns a TemplateResult with
  * the given result type.
  */
-const tag =
-  <T extends ResultType>(_$litType$: T) =>
+const tag = <T extends ResultType>(_$litType$: T) =>
   (strings: TemplateStringsArray, ...values: unknown[]): TemplateResult<T> => ({
     _$litType$,
     strings,
@@ -297,12 +294,12 @@ export const svg = tag(SVG_RESULT);
  * A sentinel value that signals that a value was handled by a directive and
  * should not be written to the DOM.
  */
-export const noChange = Symbol.for('lit-noChange');
+export const noChange = Symbol.for("lit-noChange");
 
 /**
  * A sentinel value that signals a ChildPart to fully clear its content.
  */
-export const nothing = Symbol.for('lit-nothing');
+export const nothing = Symbol.for("lit-nothing");
 
 /**
  * The cache of prepared templates, keyed by the tagged TemplateStringsArray
@@ -328,7 +325,7 @@ export interface RenderOptions {
    * node). This controls the `ownerDocument` of the rendered DOM, along with
    * any inherited context. Defaults to the global `document`.
    */
-  creationScope?: {importNode(node: Node, deep?: boolean): Node};
+  creationScope?: { importNode(node: Node, deep?: boolean): Node };
 }
 
 /**
@@ -352,10 +349,10 @@ interface InternalRenderOptions extends RenderOptions {
 export const render = (
   value: unknown,
   container: HTMLElement | DocumentFragment,
-  options?: RenderOptions
+  options?: RenderOptions,
 ): ChildPart => {
   const partOwnerNode = options?.renderBefore ?? container;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   let part: ChildPart = (partOwnerNode as any)._$litPart$;
   if (part === undefined) {
     // Internal modification: don't clear container to match lit-html 2.0
@@ -367,12 +364,12 @@ export const render = (
       container.childNodes.forEach((c) => c.remove());
     }
     const endNode = options?.renderBefore ?? null;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (partOwnerNode as any)._$litPart$ = part = new ChildPart(
       container.insertBefore(createMarker(), endNode),
       endNode,
       undefined,
-      options
+      options,
     );
   }
   part._$setValue(value);
@@ -390,9 +387,9 @@ if (ENABLE_EXTRA_SECURITY_HOOKS) {
 
 const walker = d.createTreeWalker(
   d,
-  129 /* NodeFilter.SHOW_{ELEMENT|COMMENT} */,
+  129, /* NodeFilter.SHOW_{ELEMENT|COMMENT} */
   null,
-  false
+  false,
 );
 
 let sanitizerFactoryInternal: SanitizerFactory = noopSanitizer;
@@ -426,7 +423,7 @@ export interface DirectiveParent {
  */
 const getTemplateHtml = (
   strings: TemplateStringsArray,
-  type: ResultType
+  type: ResultType,
 ): [TrustedHTML, Array<string | undefined>] => {
   // Insert makers into the template HTML to represent the position of
   // bindings. The following code scans the template strings to determine the
@@ -439,7 +436,7 @@ const getTemplateHtml = (
   // parts. ElementParts are also reflected in this array as undefined
   // rather than a string, to disambiguate from attribute bindings.
   const attrNames: Array<string | undefined> = [];
-  let html = type === SVG_RESULT ? '<svg>' : '';
+  let html = type === SVG_RESULT ? "<svg>" : "";
 
   // When we're inside a raw text tag (not it's text content), the regex
   // will still be tagRegex so we can find attributes, but will switch to
@@ -473,7 +470,7 @@ const getTemplateHtml = (
       }
       lastIndex = regex.lastIndex;
       if (regex === textEndRegex) {
-        if (match[COMMENT_START] === '!--') {
+        if (match[COMMENT_START] === "!--") {
           regex = commentEndRegex;
         } else if (match[COMMENT_START] !== undefined) {
           // We started a weird comment, like </{
@@ -482,7 +479,7 @@ const getTemplateHtml = (
           if (rawTextElement.test(match[TAG_NAME])) {
             // Record if we encounter a raw-text element. We'll switch to
             // this regex at the end of the tag.
-            rawTextEndRegex = new RegExp(`</${match[TAG_NAME]}`, 'g');
+            rawTextEndRegex = new RegExp(`</${match[TAG_NAME]}`, "g");
           }
           regex = tagEndRegex;
         } else if (match[DYNAMIC_TAG_NAME] !== undefined) {
@@ -490,7 +487,7 @@ const getTemplateHtml = (
           regex = tagEndRegex;
         }
       } else if (regex === tagEndRegex) {
-        if (match[ENTIRE_MATCH] === '>') {
+        if (match[ENTIRE_MATCH] === ">") {
           // End of a tag. If we had started a raw-text element, use that
           // regex
           regex = rawTextEndRegex ?? textEndRegex;
@@ -503,12 +500,11 @@ const getTemplateHtml = (
         } else {
           attrNameEndIndex = regex.lastIndex - match[SPACES_AND_EQUALS].length;
           attrName = match[ATTRIBUTE_NAME];
-          regex =
-            match[QUOTE_CHAR] === undefined
-              ? tagEndRegex
-              : match[QUOTE_CHAR] === '"'
-              ? doubleQuoteAttrEndRegex
-              : singleQuoteAttrEndRegex;
+          regex = match[QUOTE_CHAR] === undefined
+            ? tagEndRegex
+            : match[QUOTE_CHAR] === '"'
+            ? doubleQuoteAttrEndRegex
+            : singleQuoteAttrEndRegex;
         }
       } else if (
         regex === doubleQuoteAttrEndRegex ||
@@ -534,7 +530,7 @@ const getTemplateHtml = (
           regex === tagEndRegex ||
           regex === singleQuoteAttrEndRegex ||
           regex === doubleQuoteAttrEndRegex,
-        'unexpected parse state B'
+        "unexpected parse state B",
       );
     }
 
@@ -551,25 +547,25 @@ const getTemplateHtml = (
 
     // Detect a binding next to self-closing tag end and insert a space to
     // separate the marker from the tag end:
-    const end =
-      regex === tagEndRegex && strings[i + 1].startsWith('/>') ? ' ' : '';
-    html +=
-      regex === textEndRegex
-        ? s + nodeMarker
-        : attrNameEndIndex >= 0
-        ? (attrNames.push(attrName!),
-          s.slice(0, attrNameEndIndex) +
-            boundAttributeSuffix +
-            s.slice(attrNameEndIndex)) +
-          marker +
-          end
-        : s +
-          marker +
-          (attrNameEndIndex === -2 ? (attrNames.push(undefined), i) : end);
+    const end = regex === tagEndRegex && strings[i + 1].startsWith("/>")
+      ? " "
+      : "";
+    html += regex === textEndRegex
+      ? s + nodeMarker
+      : attrNameEndIndex >= 0
+      ? (attrNames.push(attrName!),
+        s.slice(0, attrNameEndIndex) +
+        boundAttributeSuffix +
+        s.slice(attrNameEndIndex)) +
+        marker +
+        end
+      : s +
+        marker +
+        (attrNameEndIndex === -2 ? (attrNames.push(undefined), i) : end);
   }
 
-  const htmlResult: string | TrustedHTML =
-    html + (strings[l] || '<?>') + (type === SVG_RESULT ? '</svg>' : '');
+  const htmlResult: string | TrustedHTML = html + (strings[l] || "<?>") +
+    (type === SVG_RESULT ? "</svg>" : "");
 
   // Returned as an array for terseness
   return [
@@ -581,7 +577,7 @@ const getTemplateHtml = (
 };
 
 /** @internal */
-export type {Template};
+export type { Template };
 class Template {
   /** @internal */
   el!: HTMLTemplateElement;
@@ -589,8 +585,8 @@ class Template {
   parts: Array<TemplatePart> = [];
 
   constructor(
-    {strings, _$litType$: type}: TemplateResult,
-    options?: RenderOptions
+    { strings, _$litType$: type }: TemplateResult,
+    options?: RenderOptions,
   ) {
     let node: Node | null;
     let nodeIndex = 0;
@@ -639,7 +635,7 @@ class Template {
               if (realName !== undefined) {
                 // Lowercase for case-sensitive SVG attributes like viewBox
                 const value = (node as Element).getAttribute(
-                  realName.toLowerCase() + boundAttributeSuffix
+                  realName.toLowerCase() + boundAttributeSuffix,
                 )!;
                 const statics = value.split(marker);
                 const m = /([.?@])?(.*)/.exec(realName)!;
@@ -648,14 +644,13 @@ class Template {
                   index: nodeIndex,
                   name: m[2],
                   strings: statics,
-                  ctor:
-                    m[1] === '.'
-                      ? PropertyPart
-                      : m[1] === '?'
-                      ? BooleanAttributePart
-                      : m[1] === '@'
-                      ? EventPart
-                      : AttributePart,
+                  ctor: m[1] === "."
+                    ? PropertyPart
+                    : m[1] === "?"
+                    ? BooleanAttributePart
+                    : m[1] === "@"
+                    ? EventPart
+                    : AttributePart,
                 });
               } else {
                 parts.push({
@@ -679,8 +674,8 @@ class Template {
           const lastIndex = strings.length - 1;
           if (lastIndex > 0) {
             (node as Element).textContent = trustedTypes
-              ? (trustedTypes.emptyScript as unknown as '')
-              : '';
+              ? (trustedTypes.emptyScript as unknown as "")
+              : "";
             // Generate a new text node for each literal section
             // These nodes are also used as the markers for node parts
             // We can't use empty text nodes as markers because they're
@@ -689,7 +684,7 @@ class Template {
               (node as Element).append(strings[i], createMarker());
               // Walk past the marker node we just added
               walker.nextNode();
-              parts.push({type: CHILD_PART, index: ++nodeIndex});
+              parts.push({ type: CHILD_PART, index: ++nodeIndex });
             }
             // Note because this marker is added after the walker's current
             // node, it will be walked to in the outer loop (and ignored), so
@@ -700,7 +695,7 @@ class Template {
       } else if (node.nodeType === 8) {
         const data = (node as Comment).data;
         if (data === markerMatch) {
-          parts.push({type: CHILD_PART, index: nodeIndex});
+          parts.push({ type: CHILD_PART, index: nodeIndex });
         } else {
           let i = -1;
           while ((i = (node as Comment).data.indexOf(marker, i + 1)) !== -1) {
@@ -708,7 +703,7 @@ class Template {
             // The binding won't work, but subsequent bindings will
             // TODO (justinfagnani): consider whether it's even worth it to
             // make bindings in comments work
-            parts.push({type: COMMENT_PART, index: nodeIndex});
+            parts.push({ type: COMMENT_PART, index: nodeIndex });
             // Move to the end of the match
             i += marker.length - 1;
           }
@@ -720,7 +715,7 @@ class Template {
 
   // Overridden via `litHtmlPlatformSupport` to provide platform support.
   static createElement(html: TrustedHTML, _options?: RenderOptions) {
-    const el = d.createElement('template');
+    const el = d.createElement("template");
     el.innerHTML = html as unknown as string;
     return el;
   }
@@ -735,17 +730,16 @@ function resolveDirective(
   part: ChildPart | AttributePart | ElementPart,
   value: unknown,
   parent: DirectiveParent = part,
-  attributeIndex?: number
+  attributeIndex?: number,
 ): unknown {
   // Bail early if the value is explicitly noChange. Note, this means any
   // nested directive is still attached and is not run.
   if (value === noChange) {
     return value;
   }
-  let currentDirective =
-    attributeIndex !== undefined
-      ? (parent as AttributePart).__directives?.[attributeIndex]
-      : (parent as ChildPart | ElementPart | Directive).__directive;
+  let currentDirective = attributeIndex !== undefined
+    ? (parent as AttributePart).__directives?.[attributeIndex]
+    : (parent as ChildPart | ElementPart | Directive).__directive;
   const nextDirectiveConstructor = isPrimitive(value)
     ? undefined
     : (value as DirectiveResult)._$litDirective$;
@@ -769,7 +763,7 @@ function resolveDirective(
       part,
       currentDirective._$resolve(part, (value as DirectiveResult).values),
       currentDirective,
-      attributeIndex
+      attributeIndex,
     );
   }
   return value;
@@ -799,7 +793,7 @@ class TemplateInstance {
   // DocumentFragment and we don't want to hold onto it with an instance field.
   _clone(options: RenderOptions | undefined) {
     const {
-      el: {content},
+      el: { content },
       parts: parts,
     } = this._$template;
     const fragment = (options?.creationScope ?? d).importNode(content, true);
@@ -818,7 +812,7 @@ class TemplateInstance {
             node as HTMLElement,
             node.nextSibling,
             this,
-            options
+            options,
           );
         } else if (templatePart.type === ATTRIBUTE_PART) {
           part = new templatePart.ctor(
@@ -826,7 +820,7 @@ class TemplateInstance {
             templatePart.name,
             templatePart.strings,
             this,
-            options
+            options,
           );
         } else if (templatePart.type === ELEMENT_PART) {
           part = new ElementPart(node as HTMLElement, this, options);
@@ -905,7 +899,7 @@ export type Part =
   | ElementPart
   | EventPart;
 
-export type {ChildPart};
+export type { ChildPart };
 class ChildPart {
   readonly type = CHILD_PART;
   readonly options: RenderOptions | undefined;
@@ -928,7 +922,7 @@ class ChildPart {
   _$setChildPartConnected?(
     isConnected: boolean,
     removeFromParent?: boolean,
-    from?: number
+    from?: number,
   ): void;
   /** @internal */
   _$reparentDisconnectables?(parent: Disconnectable): void;
@@ -937,7 +931,7 @@ class ChildPart {
     startNode: ChildNode,
     endNode: ChildNode | null,
     parent: TemplateInstance | ChildPart | undefined,
-    options: RenderOptions | undefined
+    options: RenderOptions | undefined,
   ) {
     this._$startNode = startNode;
     this._$endNode = endNode;
@@ -1002,7 +996,7 @@ class ChildPart {
       // Non-rendering child values. It's important that these do not render
       // empty text nodes to avoid issues with preventing default <slot>
       // fallback content.
-      if (value === nothing || value == null || value === '') {
+      if (value === nothing || value == null || value === "") {
         if (this._$committedValue !== nothing) {
           this._$clear();
         }
@@ -1034,12 +1028,12 @@ class ChildPart {
         sanitizerFactoryInternal !== noopSanitizer
       ) {
         const parentNodeName = this._$startNode.parentNode?.nodeName;
-        if (parentNodeName === 'STYLE' || parentNodeName === 'SCRIPT') {
+        if (parentNodeName === "STYLE" || parentNodeName === "SCRIPT") {
           this._insert(
             new Text(
-              '/* lit-html will not write ' +
-                'TemplateResults to scripts and styles */'
-            )
+              "/* lit-html will not write " +
+                "TemplateResults to scripts and styles */",
+            ),
           );
           return;
         }
@@ -1060,7 +1054,7 @@ class ChildPart {
     ) {
       if (ENABLE_EXTRA_SECURITY_HOOKS) {
         if (this._textSanitizer === undefined) {
-          this._textSanitizer = createSanitizer(node, 'data', 'property');
+          this._textSanitizer = createSanitizer(node, "data", "property");
         }
         value = this._textSanitizer(value);
       }
@@ -1069,14 +1063,14 @@ class ChildPart {
       (node as Text).data = value as string;
     } else {
       if (ENABLE_EXTRA_SECURITY_HOOKS) {
-        const textNode = document.createTextNode('');
+        const textNode = document.createTextNode("");
         this._commitNode(textNode);
         // When setting text content, for security purposes it matters a lot
         // what the parent is. For example, <style> and <script> need to be
         // handled with care, while <span> does not. So first we need to put a
         // text node into the document, then we can sanitize its contentx.
         if (this._textSanitizer === undefined) {
-          this._textSanitizer = createSanitizer(textNode, 'data', 'property');
+          this._textSanitizer = createSanitizer(textNode, "data", "property");
         }
         value = this._textSanitizer(value);
         textNode.data = value as string;
@@ -1088,22 +1082,21 @@ class ChildPart {
   }
 
   private _commitTemplateResult(
-    result: TemplateResult | CompiledTemplateResult
+    result: TemplateResult | CompiledTemplateResult,
   ): void {
-    const {values, _$litType$} = result;
+    const { values, _$litType$ } = result;
     // If $litType$ is a number, result is a plain TemplateResult and we get
     // the template from the template cache. If not, result is a
     // CompiledTemplateResult and _$litType$ is a CompiledTemplate and we need
     // to create the <template> element the first time we see it.
-    const template: Template | CompiledTemplate =
-      typeof _$litType$ === 'number'
-        ? this._$getTemplate(result as TemplateResult)
-        : (_$litType$.el === undefined &&
-            (_$litType$.el = Template.createElement(
-              _$litType$.h,
-              this.options
-            )),
-          _$litType$);
+    const template: Template | CompiledTemplate = typeof _$litType$ === "number"
+      ? this._$getTemplate(result as TemplateResult)
+      : (_$litType$.el === undefined &&
+        (_$litType$.el = Template.createElement(
+          _$litType$.h,
+          this.options,
+        )),
+        _$litType$);
 
     if ((this._$committedValue as TemplateInstance)?._$template === template) {
       (this._$committedValue as TemplateInstance)._update(values);
@@ -1159,8 +1152,8 @@ class ChildPart {
             this._insert(createMarker()),
             this._insert(createMarker()),
             this,
-            this.options
-          ))
+            this.options,
+          )),
         );
       } else {
         // Reuse an existing part
@@ -1174,7 +1167,7 @@ class ChildPart {
       // itemParts always have end nodes
       this._$clear(
         itemPart && wrap(itemPart._$endNode!).nextSibling,
-        partIndex
+        partIndex,
       );
       // Truncate the parts array so _value reflects the current state
       itemParts.length = partIndex;
@@ -1194,7 +1187,7 @@ class ChildPart {
    */
   _$clear(
     start: ChildNode | null = wrap(this._$startNode).nextSibling,
-    from?: number
+    from?: number,
   ) {
     this._$setChildPartConnected?.(false, true, from);
     while (start && start !== this._$endNode) {
@@ -1205,7 +1198,7 @@ class ChildPart {
   }
 }
 
-export type {AttributePart};
+export type { AttributePart };
 class AttributePart {
   readonly type = ATTRIBUTE_PART as
     | typeof ATTRIBUTE_PART
@@ -1236,7 +1229,7 @@ class AttributePart {
   _setDirectiveConnected?: (
     directive: Directive | undefined,
     isConnected: boolean,
-    removeFromParent?: boolean
+    removeFromParent?: boolean,
   ) => void = undefined;
 
   get tagName() {
@@ -1248,13 +1241,13 @@ class AttributePart {
     name: string,
     strings: ReadonlyArray<string>,
     parent: Disconnectable | undefined,
-    options: RenderOptions | undefined
+    options: RenderOptions | undefined,
   ) {
     this.element = element;
     this.name = name;
     this._$parent = parent;
     this.options = options;
-    if (strings.length > 2 || strings[0] !== '' || strings[1] !== '') {
+    if (strings.length > 2 || strings[0] !== "" || strings[1] !== "") {
       this._$committedValue = new Array(strings.length - 1).fill(nothing);
       this.strings = strings;
     } else {
@@ -1291,7 +1284,7 @@ class AttributePart {
     value: unknown | Array<unknown>,
     directiveParent: DirectiveParent = this,
     valueIndex?: number,
-    noCommit?: boolean
+    noCommit?: boolean,
   ) {
     const strings = this.strings;
 
@@ -1301,8 +1294,7 @@ class AttributePart {
     if (strings === undefined) {
       // Single-value binding case
       value = resolveDirective(this, value, directiveParent, 0);
-      change =
-        !isPrimitive(value) ||
+      change = !isPrimitive(value) ||
         (value !== this._$committedValue && value !== noChange);
       if (change) {
         this._$committedValue = value;
@@ -1320,12 +1312,12 @@ class AttributePart {
           // If the user-provided value is `noChange`, use the previous value
           v = (this._$committedValue as Array<unknown>)[i];
         }
-        change ||=
-          !isPrimitive(v) || v !== (this._$committedValue as Array<unknown>)[i];
+        change ||= !isPrimitive(v) ||
+          v !== (this._$committedValue as Array<unknown>)[i];
         if (v === nothing) {
           value = nothing;
         } else if (value !== nothing) {
-          value += (v ?? '') + strings[i + 1];
+          value += (v ?? "") + strings[i + 1];
         }
         // We always record each value, even if one is `nothing`, for future
         // change detection.
@@ -1347,20 +1339,20 @@ class AttributePart {
           this._sanitizer = sanitizerFactoryInternal(
             this.element,
             this.name,
-            'attribute'
+            "attribute",
           );
         }
-        value = this._sanitizer(value ?? '');
+        value = this._sanitizer(value ?? "");
       }
       (wrap(this.element) as Element).setAttribute(
         this.name,
-        (value ?? '') as string
+        (value ?? "") as string,
       );
     }
   }
 }
 
-export type {PropertyPart};
+export type { PropertyPart };
 class PropertyPart extends AttributePart {
   readonly type = PROPERTY_PART;
 
@@ -1371,32 +1363,33 @@ class PropertyPart extends AttributePart {
         this._sanitizer = sanitizerFactoryInternal(
           this.element,
           this.name,
-          'property'
+          "property",
         );
       }
       value = this._sanitizer(value);
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (this.element as any)[this.name] = value === nothing ? undefined : value;
   }
 }
 
-export type {BooleanAttributePart};
+export type { BooleanAttributePart };
 class BooleanAttributePart extends AttributePart {
   readonly type = BOOLEAN_ATTRIBUTE_PART;
 
   /** @internal */
   _commitValue(value: unknown) {
     if (value && value !== nothing) {
-      (wrap(this.element) as Element).setAttribute(this.name, '');
+      (wrap(this.element) as Element).setAttribute(this.name, "");
     } else {
       (wrap(this.element) as Element).removeAttribute(this.name);
     }
   }
 }
 
-type EventListenerWithOptions = EventListenerOrEventListenerObject &
-  Partial<AddEventListenerOptions>;
+type EventListenerWithOptions =
+  & EventListenerOrEventListenerObject
+  & Partial<AddEventListenerOptions>;
 
 /**
  * An AttributePart that manages an event listener via add/removeEventListener.
@@ -1409,7 +1402,7 @@ type EventListenerWithOptions = EventListenerOrEventListenerObject &
  * Because event options are passed when adding listeners, we must take case
  * to add and remove the part as a listener when the event options change.
  */
-export type {EventPart};
+export type { EventPart };
 class EventPart extends AttributePart {
   readonly type = EVENT_PART;
 
@@ -1417,8 +1410,8 @@ class EventPart extends AttributePart {
   // since the dirty checking is more complex
   /** @internal */
   _$setValue(newListener: unknown, directiveParent: DirectiveParent = this) {
-    newListener =
-      resolveDirective(this, newListener, directiveParent, 0) ?? nothing;
+    newListener = resolveDirective(this, newListener, directiveParent, 0) ??
+      nothing;
     if (newListener === noChange) {
       return;
     }
@@ -1437,15 +1430,14 @@ class EventPart extends AttributePart {
 
     // If the new value is not nothing and we removed the listener, we have
     // to add the part as a listener.
-    const shouldAddListener =
-      newListener !== nothing &&
+    const shouldAddListener = newListener !== nothing &&
       (oldListener === nothing || shouldRemoveListener);
 
     if (shouldRemoveListener) {
       this.element.removeEventListener(
         this.name,
         this,
-        oldListener as EventListenerWithOptions
+        oldListener as EventListenerWithOptions,
       );
     }
     if (shouldAddListener) {
@@ -1455,14 +1447,14 @@ class EventPart extends AttributePart {
       this.element.addEventListener(
         this.name,
         this,
-        newListener as EventListenerWithOptions
+        newListener as EventListenerWithOptions,
       );
     }
     this._$committedValue = newListener;
   }
 
   handleEvent(event: Event) {
-    if (typeof this._$committedValue === 'function') {
+    if (typeof this._$committedValue === "function") {
       // TODO (justinfagnani): do we need to default to this.element?
       // It'll always be the same as `e.currentTarget`.
       this._$committedValue.call(this.options?.host ?? this.element, event);
@@ -1472,7 +1464,7 @@ class EventPart extends AttributePart {
   }
 }
 
-export type {ElementPart};
+export type { ElementPart };
 class ElementPart {
   readonly type = ELEMENT_PART;
 
@@ -1492,7 +1484,7 @@ class ElementPart {
   _setDirectiveConnected?: (
     directive: Directive | undefined,
     isConnected: boolean,
-    removeFromParent?: boolean
+    removeFromParent?: boolean,
   ) => void = undefined;
 
   options: RenderOptions | undefined;
@@ -1500,7 +1492,7 @@ class ElementPart {
   constructor(
     public element: Element,
     parent: Disconnectable,
-    options: RenderOptions | undefined
+    options: RenderOptions | undefined,
   ) {
     this._$parent = parent;
     this.options = options;
@@ -1550,11 +1542,11 @@ export const _Σ = {
 };
 
 // Apply polyfills if available
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['litHtmlPlatformSupport']?.(Template, ChildPart);
+
+(globalThis as any)["litHtmlPlatformSupport"]?.(Template, ChildPart);
 
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for lit-html usage.
 // TODO(justinfagnani): inject version number at build time
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-((globalThis as any)['litHtmlVersions'] ??= []).push('2.0.0-rc.3');
+
+((globalThis as any)["litHtmlVersions"] ??= []).push("2.0.0-rc.3");

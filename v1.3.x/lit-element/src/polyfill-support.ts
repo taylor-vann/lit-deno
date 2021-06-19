@@ -22,8 +22,8 @@
  * @packageDocumentation
  */
 
-import '@lit/reactive-element/polyfill-support.ts';
-import 'lit-html/polyfill-support.ts';
+import "@lit/reactive-element/polyfill-support.ts";
+import "lit-html/polyfill-support.ts";
 
 interface RenderOptions {
   readonly renderBefore?: ChildNode | null;
@@ -35,15 +35,13 @@ interface PatchableLitElementConstructor {
 }
 
 interface PatchableLitElement extends HTMLElement {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-misused-new
   new (...args: any[]): PatchableLitElement;
   constructor: PatchableLitElementConstructor;
   createRenderRoot(): Element | ShadowRoot;
   renderOptions: RenderOptions;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['litElementPlatformSupport'] ??= ({
+(globalThis as any)["litElementPlatformSupport"] ??= ({
   LitElement,
 }: {
   LitElement: PatchableLitElement;

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {RenderOptions} from 'lit-html';
+import { RenderOptions } from "lit-html";
 
 let count = 0;
 export const generateElementName = () => `x-${count++}`;
@@ -20,7 +20,7 @@ export const getComputedStyleValue = (element: Element, property: string) =>
     : getComputedStyle(element).getPropertyValue(property);
 
 export const stripExpressionComments = (html: string) =>
-  html.replace(/<!--\?lit\$[0-9]+\$-->|<!--\??-->/g, '');
+  html.replace(/<!--\?lit\$[0-9]+\$-->|<!--\??-->/g, "");
 
 // Only test LitElement if ShadowRoot is available and either ShadyDOM is not
 // in use or it is and LitElement platform support is available.

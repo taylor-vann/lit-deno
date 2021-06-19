@@ -11,8 +11,8 @@
  * not an arrow function.
  */
 
-import {ReactiveElement} from '../reactive-element.ts';
-import {decorateProperty} from './base.ts';
+import { ReactiveElement } from "../reactive-element.ts";
+import { decorateProperty } from "./base.ts";
 
 /**
  * A property decorator that converts a class property into a getter

@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-export * from 'lit-html/directives/template-content.ts';
+export * from "lit-html/directives/template-content.ts";

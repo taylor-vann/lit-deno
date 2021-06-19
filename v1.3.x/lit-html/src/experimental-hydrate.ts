@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import type {TemplateResult} from './lit-html.ts';
+import type { TemplateResult } from "./lit-html.ts";
 
-import {noChange, RenderOptions, _Σ} from './lit-html.ts';
-import {AttributePartInfo, PartType} from './directive.ts';
+import { _Σ, noChange, RenderOptions } from "./lit-html.ts";
+import { AttributePartInfo, PartType } from "./directive.ts";
 import {
   isPrimitive,
   isSingleExpression,
   isTemplateResult,
-} from './directive-helpers.ts';
+} from "./directive-helpers.ts";
 
 const {
   _TemplateInstance: TemplateInstance,
@@ -30,43 +30,43 @@ type TemplateInstance = InstanceType<typeof TemplateInstance>;
  */
 type ChildPartState =
   | {
-      type: 'leaf';
-      /** The ChildPart that the result is rendered to */
-      part: ChildPart;
-    }
+    type: "leaf";
+    /** The ChildPart that the result is rendered to */
+    part: ChildPart;
+  }
   | {
-      type: 'iterable';
-      /** The ChildPart that the result is rendered to */
-      part: ChildPart;
-      value: Iterable<unknown>;
-      iterator: Iterator<unknown>;
-      done: boolean;
-    }
+    type: "iterable";
+    /** The ChildPart that the result is rendered to */
+    part: ChildPart;
+    value: Iterable<unknown>;
+    iterator: Iterator<unknown>;
+    done: boolean;
+  }
   | {
-      type: 'template-instance';
-      /** The ChildPart that the result is rendered to */
-      part: ChildPart;
+    type: "template-instance";
+    /** The ChildPart that the result is rendered to */
+    part: ChildPart;
 
-      result: TemplateResult;
+    result: TemplateResult;
 
-      /** The TemplateInstance created from the TemplateResult */
-      instance: TemplateInstance;
+    /** The TemplateInstance created from the TemplateResult */
+    instance: TemplateInstance;
 
-      /**
+    /**
        * The index of the next Template part to be hydrated. This is mutable and
        * updated as the tree walk discovers new part markers at the right level in
        * the template instance tree.  Note there is only one Template part per
        * attribute with (one or more) bindings.
        */
-      templatePartIndex: number;
+    templatePartIndex: number;
 
-      /**
+    /**
        * The index of the next TemplateInstance part to be hydrated. This is used
        * to retrieve the value from the TemplateResult and initialize the
        * TemplateInstance parts' values for dirty-checking on first render.
        */
-      instancePartIndex: number;
-    };
+    instancePartIndex: number;
+  };
 
 /**
  * hydrate() operates on a container with server-side rendered content and
@@ -112,12 +112,12 @@ type ChildPartState =
 export const hydrate = (
   rootValue: unknown,
   container: Element | DocumentFragment,
-  options: Partial<RenderOptions> = {}
+  options: Partial<RenderOptions> = {},
 ) => {
   // TODO(kschaaf): Do we need a helper for _$litPart$ ("part for node")?
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   if ((container as any)._$litPart$ !== undefined) {
-    throw new Error('container already contains a live render');
+    throw new Error("container already contains a live render");
   }
 
   // Since render() creates a ChildPart to render into, we'll always have
@@ -138,42 +138,42 @@ export const hydrate = (
     container,
     NodeFilter.SHOW_COMMENT,
     null,
-    false
+    false,
   );
   let marker: Comment | null;
 
   // Walk the DOM looking for part marker comments
   while ((marker = walker.nextNode() as Comment | null) !== null) {
     const markerText = marker.data;
-    if (markerText.startsWith('lit-part')) {
+    if (markerText.startsWith("lit-part")) {
       if (stack.length === 0 && rootPart !== undefined) {
-        throw new Error('there must be only one root part per container');
+        throw new Error("there must be only one root part per container");
       }
       // Create a new ChildPart and push it onto the stack
       currentChildPart = openChildPart(rootValue, marker, stack, options);
       rootPart ??= currentChildPart;
-    } else if (markerText.startsWith('lit-node')) {
+    } else if (markerText.startsWith("lit-node")) {
       // Create and hydrate attribute parts into the current ChildPart on the
       // stack
       createAttributeParts(marker, stack, options);
       // Remove `defer-hydration` attribute, if any
       const parent = marker.parentElement!;
-      if (parent.hasAttribute('defer-hydration')) {
-        parent.removeAttribute('defer-hydration');
+      if (parent.hasAttribute("defer-hydration")) {
+        parent.removeAttribute("defer-hydration");
       }
-    } else if (markerText.startsWith('/lit-part')) {
+    } else if (markerText.startsWith("/lit-part")) {
       // Close the current ChildPart, and pop the previous one off the stack
       if (stack.length === 1 && currentChildPart !== rootPart) {
-        throw new Error('internal error');
+        throw new Error("internal error");
       }
       currentChildPart = closeChildPart(marker, currentChildPart, stack);
     }
   }
   console.assert(
     rootPart !== undefined,
-    'there should be exactly one root part in a render container'
+    "there should be exactly one root part in a render container",
   );
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   (container as any)._$litPart$ = rootPart;
 };
 
@@ -181,7 +181,7 @@ const openChildPart = (
   rootValue: unknown,
   marker: Comment,
   stack: Array<ChildPartState>,
-  options: RenderOptions
+  options: RenderOptions,
 ) => {
   let value: unknown;
   // We know the startNode now. We'll know the endNode when we get to
@@ -193,18 +193,18 @@ const openChildPart = (
     value = rootValue;
   } else {
     const state = stack[stack.length - 1];
-    if (state.type === 'template-instance') {
+    if (state.type === "template-instance") {
       part = new ChildPart(marker, null, state.instance, options);
       state.instance._parts.push(part);
       value = state.result.values[state.instancePartIndex++];
       state.templatePartIndex++;
-    } else if (state.type === 'iterable') {
+    } else if (state.type === "iterable") {
       part = new ChildPart(marker, null, state.part, options);
       const result = state.iterator.next();
       if (result.done) {
         value = undefined;
         state.done = true;
-        throw new Error('Unhandled shorter than expected iterable');
+        throw new Error("Unhandled shorter than expected iterable");
       } else {
         value = result.value;
       }
@@ -238,9 +238,9 @@ const openChildPart = (
   // 8. Fallback for everything else
   value = resolveDirective(part, value);
   if (value === noChange) {
-    stack.push({part, type: 'leaf'});
+    stack.push({ part, type: "leaf" });
   } else if (isPrimitive(value)) {
-    stack.push({part, type: 'leaf'});
+    stack.push({ part, type: "leaf" });
     part._$committedValue = value;
     // TODO(kschaaf): We can detect when a primitive is being hydrated on the
     // client where a TemplateResult was rendered on the server, but we need to
@@ -256,7 +256,7 @@ const openChildPart = (
       const template = ChildPart.prototype._$getTemplate(value);
       const instance = new TemplateInstance(template, part);
       stack.push({
-        type: 'template-instance',
+        type: "template-instance",
         instance,
         part,
         templatePartIndex: 0,
@@ -270,14 +270,14 @@ const openChildPart = (
       // TODO: if this isn't the server-rendered template, do we
       // need to stop hydrating this subtree? Clear it? Add tests.
       throw new Error(
-        'Hydration value mismatch: Unexpected TemplateResult rendered to part'
+        "Hydration value mismatch: Unexpected TemplateResult rendered to part",
       );
     }
   } else if (isIterable(value)) {
     // currentChildPart.value will contain an array of ChildParts
     stack.push({
       part: part,
-      type: 'iterable',
+      type: "iterable",
       value,
       iterator: value[Symbol.iterator](),
       done: false,
@@ -288,8 +288,8 @@ const openChildPart = (
     // etc.): we just initialize the part's value
     // Note that `Node` value types are not currently supported during
     // SSR, so that part of the cascade is missing.
-    stack.push({part: part, type: 'leaf'});
-    part._$committedValue = value == null ? '' : value;
+    stack.push({ part: part, type: "leaf" });
+    part._$committedValue = value == null ? "" : value;
   }
   return part;
 };
@@ -297,19 +297,19 @@ const openChildPart = (
 const closeChildPart = (
   marker: Comment,
   part: ChildPart | undefined,
-  stack: Array<ChildPartState>
+  stack: Array<ChildPartState>,
 ): ChildPart | undefined => {
   if (part === undefined) {
-    throw new Error('unbalanced part marker');
+    throw new Error("unbalanced part marker");
   }
 
   part._$endNode = marker;
 
   const currentState = stack.pop()!;
 
-  if (currentState.type === 'iterable') {
+  if (currentState.type === "iterable") {
     if (!currentState.iterator.next().done) {
-      throw new Error('unexpected longer than expected iterable');
+      throw new Error("unexpected longer than expected iterable");
     }
   }
 
@@ -324,7 +324,7 @@ const closeChildPart = (
 const createAttributeParts = (
   comment: Comment,
   stack: Array<ChildPartState>,
-  options: RenderOptions
+  options: RenderOptions,
 ) => {
   // Get the nodeIndex from DOM. We're only using this for an integrity
   // check right now, we might not need it.
@@ -338,9 +338,9 @@ const createAttributeParts = (
   const node = comment.previousSibling ?? comment.parentElement;
 
   const state = stack[stack.length - 1];
-  if (state.type === 'template-instance') {
+  if (state.type === "template-instance") {
     const instance = state.instance;
-    // eslint-disable-next-line no-constant-condition
+
     while (true) {
       // If the next template part is in attribute-position on the current node,
       // create the instance part for it and prime its state
@@ -362,12 +362,12 @@ const createAttributeParts = (
           templatePart.name,
           templatePart.strings,
           state.instance,
-          options
+          options,
         );
 
         const value = isSingleExpression(
-          instancePart as unknown as AttributePartInfo
-        )
+            instancePart as unknown as AttributePartInfo,
+          )
           ? state.result.values[state.instancePartIndex]
           : state.result.values;
 
@@ -383,7 +383,7 @@ const createAttributeParts = (
           value,
           instancePart,
           state.instancePartIndex,
-          noCommit
+          noCommit,
         );
         state.instancePartIndex += templatePart.strings.length - 1;
         instance._parts.push(instancePart);
@@ -392,18 +392,18 @@ const createAttributeParts = (
         const instancePart = new ElementPart(
           node as HTMLElement,
           state.instance,
-          options
+          options,
         );
         resolveDirective(
           instancePart,
-          state.result.values[state.instancePartIndex++]
+          state.result.values[state.instancePartIndex++],
         );
         instance._parts.push(instancePart);
       }
       state.templatePartIndex++;
     }
   } else {
-    throw new Error('internal error');
+    throw new Error("internal error");
   }
 };
 

@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {ChildPart, noChange} from '../lit-html.ts';
-import {directive, Directive, PartInfo, PartType} from '../directive.ts';
+import { ChildPart, noChange } from "../lit-html.ts";
+import { Directive, directive, PartInfo, PartType } from "../directive.ts";
 import {
-  insertPart,
   getCommittedValue,
+  insertPart,
   removePart,
-  setCommittedValue,
   setChildPartValue,
-} from '../directive-helpers.ts';
+  setCommittedValue,
+} from "../directive-helpers.ts";
 
 export type KeyFn<T> = (item: T, index: number) => unknown;
 export type ItemTemplate<T> = (item: T, index: number) => unknown;
@@ -34,14 +34,14 @@ class RepeatDirective extends Directive {
   constructor(partInfo: PartInfo) {
     super(partInfo);
     if (partInfo.type !== PartType.CHILD) {
-      throw new Error('repeat() can only be used in text expressions');
+      throw new Error("repeat() can only be used in text expressions");
     }
   }
 
   private _getValuesAndKeys<T>(
     items: Iterable<T>,
     keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>,
-    template?: ItemTemplate<T>
+    template?: ItemTemplate<T>,
   ) {
     let keyFn: KeyFn<T> | undefined;
     if (template === undefined) {
@@ -67,12 +67,12 @@ class RepeatDirective extends Directive {
   render<T>(
     items: Iterable<T>,
     keyFn: KeyFn<T> | ItemTemplate<T>,
-    template: ItemTemplate<T>
+    template: ItemTemplate<T>,
   ): Array<unknown>;
   render<T>(
     items: Iterable<T>,
     keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>,
-    template?: ItemTemplate<T>
+    template?: ItemTemplate<T>,
   ) {
     return this._getValuesAndKeys(items, keyFnOrTemplate, template).values;
   }
@@ -82,18 +82,18 @@ class RepeatDirective extends Directive {
     [items, keyFnOrTemplate, template]: [
       Iterable<T>,
       KeyFn<T> | ItemTemplate<T>,
-      ItemTemplate<T>
-    ]
+      ItemTemplate<T>,
+    ],
   ) {
     // Old part & key lists are retrieved from the last update
     // TODO: deal with directive being swapped out?
     const oldParts = getCommittedValue(
-      containerPart
+      containerPart,
     ) as Array<ChildPart | null>;
-    const {values: newValues, keys: newKeys} = this._getValuesAndKeys(
+    const { values: newValues, keys: newKeys } = this._getValuesAndKeys(
       items,
       keyFnOrTemplate,
-      template
+      template,
     );
 
     if (!oldParts) {
@@ -330,7 +330,7 @@ class RepeatDirective extends Directive {
         // Old head matches new head; update in place
         newParts[newHead] = setChildPartValue(
           oldParts[oldHead]!,
-          newValues[newHead]
+          newValues[newHead],
         );
         oldHead++;
         newHead++;
@@ -338,7 +338,7 @@ class RepeatDirective extends Directive {
         // Old tail matches new tail; update in place
         newParts[newTail] = setChildPartValue(
           oldParts[oldTail]!,
-          newValues[newTail]
+          newValues[newTail],
         );
         oldTail--;
         newTail--;
@@ -346,7 +346,7 @@ class RepeatDirective extends Directive {
         // Old head matches new tail; update and move to new tail
         newParts[newTail] = setChildPartValue(
           oldParts[oldHead]!,
-          newValues[newTail]
+          newValues[newTail],
         );
         insertPart(containerPart, newParts[newTail + 1], oldParts[oldHead]!);
         oldHead++;
@@ -355,7 +355,7 @@ class RepeatDirective extends Directive {
         // Old tail matches new head; update and move to new head
         newParts[newHead] = setChildPartValue(
           oldParts[oldTail]!,
-          newValues[newHead]
+          newValues[newHead],
         );
         insertPart(containerPart, oldParts[oldHead]!, oldParts[oldTail]!);
         oldTail--;
@@ -427,13 +427,13 @@ export interface RepeatDirectiveFn {
   <T>(
     items: Iterable<T>,
     keyFnOrTemplate: KeyFn<T> | ItemTemplate<T>,
-    template?: ItemTemplate<T>
+    template?: ItemTemplate<T>,
   ): unknown;
   <T>(items: Iterable<T>, template: ItemTemplate<T>): unknown;
   <T>(
     items: Iterable<T>,
     keyFn: KeyFn<T> | ItemTemplate<T>,
-    template: ItemTemplate<T>
+    template: ItemTemplate<T>,
   ): unknown;
 }
 
@@ -469,4 +469,4 @@ export const repeat = directive(RepeatDirective) as RepeatDirectiveFn;
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {RepeatDirective};
+export type { RepeatDirective };

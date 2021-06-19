@@ -4,16 +4,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {_Σ, Part, DirectiveParent, TemplateResult} from './lit-html.ts';
+import { _Σ, DirectiveParent, Part, TemplateResult } from "./lit-html.ts";
 import {
-  DirectiveResult,
-  DirectiveClass,
-  PartInfo,
   AttributePartInfo,
-} from './directive.ts';
+  DirectiveClass,
+  DirectiveResult,
+  PartInfo,
+} from "./directive.ts";
 type Primitive = null | undefined | boolean | number | string | symbol | bigint;
 
-const {_ChildPart: ChildPart} = _Σ;
+const { _ChildPart: ChildPart } = _Σ;
 
 type ChildPart = InstanceType<typeof ChildPart>;
 
@@ -21,12 +21,11 @@ const ENABLE_SHADYDOM_NOPATCH = true;
 
 const extraGlobals = window as LitExtraGlobals;
 
-const wrap =
-  ENABLE_SHADYDOM_NOPATCH &&
-  extraGlobals.ShadyDOM?.inUse &&
-  extraGlobals.ShadyDOM?.noPatch === true
-    ? extraGlobals.ShadyDOM!.wrap
-    : (node: Node) => node;
+const wrap = ENABLE_SHADYDOM_NOPATCH &&
+    extraGlobals.ShadyDOM?.inUse &&
+    extraGlobals.ShadyDOM?.noPatch === true
+  ? extraGlobals.ShadyDOM!.wrap
+  : (node: Node) => node;
 
 /**
  * Tests if a value is a primitive value.
@@ -34,7 +33,7 @@ const wrap =
  * See https://tc39.github.io/ecma262/#sec-typeof-operator
  */
 export const isPrimitive = (value: unknown): value is Primitive =>
-  value === null || (typeof value != 'object' && typeof value != 'function');
+  value === null || (typeof value != "object" && typeof value != "function");
 
 export const TemplateResultType = {
   HTML: 1,
@@ -49,7 +48,7 @@ export type TemplateResultType =
  */
 export const isTemplateResult = (
   value: unknown,
-  type?: TemplateResultType
+  type?: TemplateResultType,
 ): value is TemplateResult =>
   type === undefined
     ? (value as TemplateResult)?._$litType$ !== undefined
@@ -78,7 +77,7 @@ export const getDirectiveClass = (value: unknown): DirectiveClass | undefined =>
 export const isSingleExpression = (part: PartInfo) =>
   (part as AttributePartInfo).strings === undefined;
 
-const createMarker = () => document.createComment('');
+const createMarker = () => document.createComment("");
 
 /**
  * Inserts a ChildPart into the given container ChildPart's DOM, either at the
@@ -95,12 +94,13 @@ const createMarker = () => document.createComment('');
 export const insertPart = (
   containerPart: ChildPart,
   refPart?: ChildPart,
-  part?: ChildPart
+  part?: ChildPart,
 ): ChildPart => {
   const container = wrap(containerPart._$startNode).parentNode!;
 
-  const refNode =
-    refPart === undefined ? containerPart._$endNode : refPart._$startNode;
+  const refNode = refPart === undefined
+    ? containerPart._$endNode
+    : refPart._$startNode;
 
   if (part === undefined) {
     const startNode = wrap(container).insertBefore(createMarker(), refNode);
@@ -109,7 +109,7 @@ export const insertPart = (
       startNode,
       endNode,
       containerPart,
-      containerPart.options
+      containerPart.options,
     );
   } else {
     const endNode = wrap(part._$endNode!).nextSibling;
@@ -154,7 +154,7 @@ export const insertPart = (
 export const setChildPartValue = <T extends ChildPart>(
   part: T,
   value: unknown,
-  directiveParent: DirectiveParent = part
+  directiveParent: DirectiveParent = part,
 ): T => {
   part._$setValue(value, directiveParent);
   return part;
@@ -175,8 +175,10 @@ const RESET_VALUE = {};
  * @param part
  * @param value
  */
-export const setCommittedValue = (part: Part, value: unknown = RESET_VALUE) =>
-  (part._$committedValue = value);
+export const setCommittedValue = (
+  part: Part,
+  value: unknown = RESET_VALUE,
+) => (part._$committedValue = value);
 
 /**
  * Returns the committed value of a ChildPart.

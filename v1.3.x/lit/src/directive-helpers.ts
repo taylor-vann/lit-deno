@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-export * from 'lit-html/directive-helpers.ts';
+export * from "lit-html/directive-helpers.ts";

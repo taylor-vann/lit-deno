@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {nothing, TemplateResult, noChange} from '../lit-html.ts';
-import {directive, Directive, PartInfo, PartType} from '../directive.ts';
+import { noChange, nothing, TemplateResult } from "../lit-html.ts";
+import { Directive, directive, PartInfo, PartType } from "../directive.ts";
 
 const HTML_RESULT = 1;
 
 export class UnsafeHTMLDirective extends Directive {
-  static directiveName = 'unsafeHTML';
+  static directiveName = "unsafeHTML";
   static resultType = HTML_RESULT;
 
   private _value: unknown = nothing;
@@ -22,7 +22,7 @@ export class UnsafeHTMLDirective extends Directive {
       throw new Error(
         `${
           (this.constructor as typeof UnsafeHTMLDirective).directiveName
-        }() can only be used in child bindings`
+        }() can only be used in child bindings`,
       );
     }
   }
@@ -36,11 +36,11 @@ export class UnsafeHTMLDirective extends Directive {
     if (value === noChange) {
       return value;
     }
-    if (typeof value != 'string') {
+    if (typeof value != "string") {
       throw new Error(
         `${
           (this.constructor as typeof UnsafeHTMLDirective).directiveName
-        }() called with a non-string value`
+        }() called with a non-string value`,
       );
     }
     if (value === this._value) {
@@ -48,7 +48,7 @@ export class UnsafeHTMLDirective extends Directive {
     }
     this._value = value;
     const strings = [value] as unknown as TemplateStringsArray;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     (strings as any).raw = strings;
     // WARNING: impersonating a TemplateResult like this is extremely
     // dangerous. Third-party directives should not do this.

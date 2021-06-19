@@ -10,12 +10,11 @@
  * @packageDocumentation
  */
 
-import type {PropertyValues} from '@lit/reactive-element';
-import {render, RenderOptions} from 'lit-html';
-import {hydrate} from 'lit-html/experimental-hydrate.ts';
+import type { PropertyValues } from "@lit/reactive-element";
+import { render, RenderOptions } from "lit-html";
+import { hydrate } from "lit-html/experimental-hydrate.ts";
 
 interface PatchableLitElement extends HTMLElement {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-misused-new
   new (...args: any[]): PatchableLitElement;
   enableUpdating(requestedUpdate?: boolean): void;
   createRenderRoot(): Element | ShadowRoot;
@@ -25,21 +24,20 @@ interface PatchableLitElement extends HTMLElement {
   _$needsHydration: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['litElementHydrateSupport'] = ({
+(globalThis as any)["litElementHydrateSupport"] = ({
   LitElement,
 }: {
   LitElement: PatchableLitElement;
 }) => {
   const observedAttributes = Object.getOwnPropertyDescriptor(
     Object.getPrototypeOf(LitElement),
-    'observedAttributes'
+    "observedAttributes",
   )!.get!;
 
   // Add `defer-hydration` to observedAttributes
-  Object.defineProperty(LitElement, 'observedAttributes', {
+  Object.defineProperty(LitElement, "observedAttributes", {
     get() {
-      return [...observedAttributes.call(this), 'defer-hydration'];
+      return [...observedAttributes.call(this), "defer-hydration"];
     },
   });
 
@@ -50,9 +48,9 @@ interface PatchableLitElement extends HTMLElement {
   LitElement.prototype.attributeChangedCallback = function (
     name: string,
     old: string | null,
-    value: string | null
+    value: string | null,
   ) {
-    if (name === 'defer-hydration' && value === null) {
+    if (name === "defer-hydration" && value === null) {
       connectedCallback.call(this);
     }
     attributeChangedCallback.call(this, name, old, value);
@@ -62,11 +60,11 @@ interface PatchableLitElement extends HTMLElement {
   // defer `super.connectedCallback()` if the 'defer-hydration' attribute is set
   const connectedCallback = LitElement.prototype.connectedCallback;
   LitElement.prototype.connectedCallback = function (
-    this: PatchableLitElement
+    this: PatchableLitElement,
   ) {
     // If the outer scope of this element has not yet been hydrated, wait until
     // 'defer-hydration' attribute has been removed to enable
-    if (!this.hasAttribute('defer-hydration')) {
+    if (!this.hasAttribute("defer-hydration")) {
       connectedCallback.call(this);
     }
   };
@@ -87,7 +85,7 @@ interface PatchableLitElement extends HTMLElement {
   const update = Object.getPrototypeOf(LitElement.prototype).update;
   LitElement.prototype.update = function (
     this: PatchableLitElement,
-    changedProperties: PropertyValues
+    changedProperties: PropertyValues,
   ) {
     const value = this.render();
     // Since this is a patch, we can't call super.update(), so we capture

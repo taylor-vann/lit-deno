@@ -4,16 +4,17 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {isStrTagged, joinStringsAndValues} from './str-tag.ts';
+import { isStrTagged, joinStringsAndValues } from "./str-tag.ts";
 
-import type {MsgFn, TemplateLike} from './types';
+import type { MsgFn, TemplateLike } from "./types";
 
 /**
  * Default identity msg implementation. Simply returns the input template with
  * no awareness of translations. If the template is str-tagged, returns it in
  * string form.
  */
-export const defaultMsg = ((template: TemplateLike) =>
-  isStrTagged(template)
-    ? joinStringsAndValues(template.strings, template.values)
-    : template) as MsgFn;
+export const defaultMsg =
+  ((template: TemplateLike) =>
+    isStrTagged(template)
+      ? joinStringsAndValues(template.strings, template.values)
+      : template) as MsgFn;

@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {Disconnectable, Part} from './lit-html.ts';
+import { Disconnectable, Part } from "./lit-html.ts";
 
-export type  { Part} from './lit-html.ts'
+export type { Part } from "./lit-html.ts";
 
 export {
   AttributePart,
@@ -15,7 +15,7 @@ export {
   ElementPart,
   EventPart,
   PropertyPart,
-} from './lit-html.ts';
+} from "./lit-html.ts";
 
 export interface DirectiveClass {
   new (part: PartInfo): Directive;
@@ -25,7 +25,7 @@ export interface DirectiveClass {
  * This utility type extracts the signature of a directive class's render()
  * method so we can use it for the type of the generated directive function.
  */
-export type DirectiveParameters<C extends Directive> = Parameters<C['render']>;
+export type DirectiveParameters<C extends Directive> = Parameters<C["render"]>;
 
 /**
  * A generated directive function doesn't evaluate the directive, but just
@@ -80,8 +80,7 @@ export type PartInfo = ChildPartInfo | AttributePartInfo | ElementPartInfo;
  * Creates a user-facing directive function from a Directive class. This
  * function has the same parameters as the directive's render() method.
  */
-export const directive =
-  <C extends DirectiveClass>(c: C) =>
+export const directive = <C extends DirectiveClass>(c: C) =>
   (...values: DirectiveParameters<InstanceType<C>>): DirectiveResult<C> => ({
     _$litDirective$: c,
     values,
@@ -115,7 +114,7 @@ export abstract class Directive {
   _$initialize(
     part: Part,
     parent: Disconnectable,
-    attributeIndex: number | undefined
+    attributeIndex: number | undefined,
   ) {
     this.__part = part;
     this._$parent = parent;

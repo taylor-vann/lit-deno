@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import 'lit-element/polyfill-support.ts';
+import "lit-element/polyfill-support.ts";

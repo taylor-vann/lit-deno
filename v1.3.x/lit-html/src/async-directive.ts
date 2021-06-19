@@ -123,10 +123,10 @@ import {
   Disconnectable,
   noChange,
   Part,
-} from './lit-html.ts';
-import {isSingleExpression} from './directive-helpers.ts';
-import {Directive, PartInfo, PartType} from './directive.ts';
-export {directive} from './directive.ts';
+} from "./lit-html.ts";
+import { isSingleExpression } from "./directive-helpers.ts";
+import { Directive, PartInfo, PartType } from "./directive.ts";
+export { directive } from "./directive.ts";
 
 const DEV_MODE = true;
 
@@ -139,7 +139,7 @@ const DEV_MODE = true;
  */
 const setChildrenConnected = (
   parent: Disconnectable,
-  isConnected: boolean
+  isConnected: boolean,
 ): boolean => {
   const children = parent._$disconnectableChildren;
   if (children === undefined) {
@@ -237,7 +237,7 @@ function setChildPartConnected(
   this: ChildPart,
   isConnected: boolean,
   isClearingValue = false,
-  fromPartIndex = 0
+  fromPartIndex = 0,
 ) {
   const value = this._$committedValue;
   const children = this._$disconnectableChildren;
@@ -300,7 +300,7 @@ export abstract class AsyncDirective extends Directive {
   _$initialize(
     part: Part,
     parent: Disconnectable,
-    attributeIndex: number | undefined
+    attributeIndex: number | undefined,
   ) {
     super._$initialize(part, parent, attributeIndex);
     addDisconnectableToParent(this);
@@ -363,7 +363,7 @@ export abstract class AsyncDirective extends Directive {
     if (!this.isConnected) {
       throw new Error(
         `AsyncDirective ${this.constructor.name} was ` +
-          `rendered while its tree was disconnected.`
+          `rendered while its tree was disconnected.`,
       );
     }
     return super._$resolve(part, props);

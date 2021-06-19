@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {nothing} from '../lit-html.ts';
+import { nothing } from "../lit-html.ts";
 
 /**
  * For AttributeParts, sets the attribute if the value is defined and removes

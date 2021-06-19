@@ -26,8 +26,8 @@
   "include": ["src/**/*.ts"],
   "exclude": ["src/polyfill-support.ts"],
   "references": [
-    {"path": "../lit-html"},
-    {"path": "../reactive-element"},
-    {"path": "./tsconfig.polyfill-support.json"}
+    { "path": "../lit-html" },
+    { "path": "../reactive-element" },
+    { "path": "./tsconfig.polyfill-support.json" }
   ]
 }

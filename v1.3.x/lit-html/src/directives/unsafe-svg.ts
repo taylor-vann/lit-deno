@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {directive} from '../directive.ts';
-import {UnsafeHTMLDirective} from './unsafe-html.ts';
+import { directive } from "../directive.ts";
+import { UnsafeHTMLDirective } from "./unsafe-html.ts";
 
 const SVG_RESULT = 2;
 
 class UnsafeSVGDirective extends UnsafeHTMLDirective {
-  static directiveName = 'unsafeSVG';
+  static directiveName = "unsafeSVG";
   static resultType = SVG_RESULT;
 }
 
@@ -27,4 +27,4 @@ export const unsafeSVG = directive(UnsafeSVGDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {UnsafeSVGDirective};
+export type { UnsafeSVGDirective };

@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {AttributePart, noChange} from '../lit-html.ts';
+import { AttributePart, noChange } from "../lit-html.ts";
 import {
-  directive,
   Directive,
+  directive,
   DirectiveParameters,
   PartInfo,
   PartType,
-} from '../directive.ts';
+} from "../directive.ts";
 
 /**
  * A key-value set of CSS properties and values.
@@ -31,12 +31,12 @@ class StyleMapDirective extends Directive {
     super(partInfo);
     if (
       partInfo.type !== PartType.ATTRIBUTE ||
-      partInfo.name !== 'style' ||
+      partInfo.name !== "style" ||
       (partInfo.strings?.length as number) > 2
     ) {
       throw new Error(
-        'The `styleMap` directive must be used in the `style` attribute ' +
-          'and must be the only part in the attribute.'
+        "The `styleMap` directive must be used in the `style` attribute " +
+          "and must be the only part in the attribute.",
       );
     }
   }
@@ -55,14 +55,14 @@ class StyleMapDirective extends Directive {
       // custom properties; we assume these are already dash-cased i.e.:
       //  `--my-button-color` --> `--my-button-color`
       prop = prop
-        .replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, '-$&')
+        .replace(/(?:^(webkit|moz|ms|o)|)(?=[A-Z])/g, "-$&")
         .toLowerCase();
       return style + `${prop}:${value};`;
-    }, '');
+    }, "");
   }
 
   update(part: AttributePart, [styleInfo]: DirectiveParameters<this>) {
-    const {style} = part.element as HTMLElement;
+    const { style } = part.element as HTMLElement;
 
     if (this._previousStyleProperties === undefined) {
       this._previousStyleProperties = new Set();
@@ -79,13 +79,13 @@ class StyleMapDirective extends Directive {
       // If the name isn't in styleInfo or it's null/undefined
       if (styleInfo[name] == null) {
         this._previousStyleProperties!.delete(name);
-        if (name.includes('-')) {
+        if (name.includes("-")) {
           style.removeProperty(name);
         } else {
           // Note reset using empty string (vs null) as IE11 does not always
           // reset via null (https://developer.mozilla.org/en-US/docs/Web/API/ElementCSSInlineStyle/style#setting_styles)
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (style as any)[name] = '';
+
+          (style as any)[name] = "";
         }
       }
     });
@@ -95,10 +95,9 @@ class StyleMapDirective extends Directive {
       const value = styleInfo[name];
       if (value != null) {
         this._previousStyleProperties.add(name);
-        if (name.includes('-')) {
+        if (name.includes("-")) {
           style.setProperty(name, value);
         } else {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (style as any)[name] = value;
         }
       }
@@ -130,4 +129,4 @@ export const styleMap = directive(StyleMapDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {StyleMapDirective};
+export type { StyleMapDirective };

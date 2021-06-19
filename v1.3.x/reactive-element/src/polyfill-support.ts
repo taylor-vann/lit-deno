@@ -21,9 +21,9 @@ interface RenderOptions {
   scope?: string;
 }
 
-const SCOPED = '__scoped';
+const SCOPED = "__scoped";
 
-type CSSResults = Array<{cssText: string} | CSSStyleSheet>;
+type CSSResults = Array<{ cssText: string } | CSSStyleSheet>;
 
 interface PatchableReactiveElementConstructor {
   [SCOPED]: boolean;
@@ -33,7 +33,6 @@ interface PatchableReactiveElementConstructor {
 }
 
 interface PatchableReactiveElement extends HTMLElement {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-misused-new
   new (...args: any[]): PatchableReactiveElement;
   constructor: PatchableReactiveElementConstructor;
   connectedCallback(): void;
@@ -43,8 +42,7 @@ interface PatchableReactiveElement extends HTMLElement {
   renderOptions: RenderOptions;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['reactiveElementPlatformSupport'] ??= ({
+(globalThis as any)["reactiveElementPlatformSupport"] ??= ({
   ReactiveElement,
 }: {
   ReactiveElement: PatchableReactiveElement;
@@ -100,25 +98,25 @@ interface PatchableReactiveElement extends HTMLElement {
         ).elementStyles.map((v) =>
           v instanceof CSSStyleSheet
             ? Array.from(v.cssRules).reduce(
-                (a: string, r: CSSRule) => (a += r.cssText),
-                ''
-              )
+              (a: string, r: CSSRule) => (a += r.cssText),
+              "",
+            )
             : v.cssText
         );
         extraGlobals.ShadyCSS?.ScopingShim?.prepareAdoptedCssText(css, name);
         if (this.constructor._$handlesPrepareStyles === undefined) {
           extraGlobals.ShadyCSS!.prepareTemplateStyles(
-            document.createElement('template'),
-            name
+            document.createElement("template"),
+            name,
           );
         }
       }
       return (
         this.shadowRoot ??
-        this.attachShadow(
-          (this.constructor as PatchableReactiveElementConstructor)
-            .shadowRootOptions
-        )
+          this.attachShadow(
+            (this.constructor as PatchableReactiveElementConstructor)
+              .shadowRootOptions,
+          )
       );
     }
   };
@@ -143,7 +141,7 @@ interface PatchableReactiveElement extends HTMLElement {
   const didUpdate = elementProto._$didUpdate;
   elementProto._$didUpdate = function (
     this: PatchableReactiveElement,
-    changedProperties: unknown
+    changedProperties: unknown,
   ) {
     const isFirstUpdate = !this.hasUpdated;
     didUpdate.call(this, changedProperties);

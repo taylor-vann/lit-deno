@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import type {TemplateLike} from './types';
+import type { TemplateLike } from "./types";
 
 export interface StrResult {
   strTag: true;
@@ -33,10 +33,10 @@ const _str = (
   values,
 });
 
-export const str: typeof _str & {_LIT_LOCALIZE_STR_?: never} = _str;
+export const str: typeof _str & { _LIT_LOCALIZE_STR_?: never } = _str;
 
 export const isStrTagged = (val: TemplateLike): val is StrResult =>
-  typeof val !== 'string' && 'strTag' in val;
+  typeof val !== "string" && "strTag" in val;
 
 /**
  * Render the result of a `str` tagged template to a string. Note we don't need
@@ -45,7 +45,7 @@ export const isStrTagged = (val: TemplateLike): val is StrResult =>
 export const joinStringsAndValues = (
   strings: TemplateStringsArray,
   values: Readonly<unknown[]>,
-  valueOrder?: number[]
+  valueOrder?: number[],
 ) => {
   let concat = strings[0];
   for (let i = 1; i < strings.length; i++) {

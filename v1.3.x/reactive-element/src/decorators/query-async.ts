@@ -11,8 +11,8 @@
  * not an arrow function.
  */
 
-import {ReactiveElement} from '../reactive-element.ts';
-import {decorateProperty} from './base.ts';
+import { ReactiveElement } from "../reactive-element.ts";
+import { decorateProperty } from "./base.ts";
 
 // Note, in the future, we may extend this decorator to support the use case
 // where the queried element may need to do work to become ready to interact

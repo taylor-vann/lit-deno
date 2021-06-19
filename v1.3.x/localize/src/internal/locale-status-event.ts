@@ -16,10 +16,8 @@
  * re-rendered following a locale change. See also the Localized mixin, which
  * automatically re-renders LitElement classes using this event.
  */
-export const LOCALE_STATUS_EVENT = 'lit-localize-status';
+export const LOCALE_STATUS_EVENT = "lit-localize-status";
 
-// Misfiring eslint rule
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
   interface WindowEventMap {
     [LOCALE_STATUS_EVENT]: CustomEvent<LocaleStatusEventDetail>;
@@ -40,7 +38,7 @@ export type LocaleStatusEventDetail = LocaleLoading | LocaleReady | LocaleError;
  * "ready" status, or [3] an "error" status.
  */
 export interface LocaleLoading {
-  status: 'loading';
+  status: "loading";
   /** Code of the locale that has started loading. */
   loadingLocale: string;
 }
@@ -52,7 +50,7 @@ export interface LocaleLoading {
  * A "ready" status can be followed only by a "loading" status.
  */
 export interface LocaleReady {
-  status: 'ready';
+  status: "ready";
   /** Code of the locale that has successfully loaded. */
   readyLocale: string;
 }
@@ -63,7 +61,7 @@ export interface LocaleReady {
  * An "error" status can be followed only by a "loading" status.
  */
 export interface LocaleError {
-  status: 'error';
+  status: "error";
   /** Code of the locale that failed to load. */
   errorLocale: string;
   /** Error message from locale load failure. */

@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {LOCALE_STATUS_EVENT} from './locale-status-event.ts';
+import { LOCALE_STATUS_EVENT } from "./locale-status-event.ts";
 
-import type {ReactiveController, ReactiveControllerHost} from 'lit';
+import type { ReactiveController, ReactiveControllerHost } from "lit";
 
 class LocalizeController implements ReactiveController {
   host: ReactiveControllerHost;
@@ -16,9 +16,9 @@ class LocalizeController implements ReactiveController {
   }
 
   private readonly __litLocalizeEventHandler = (
-    event: WindowEventMap[typeof LOCALE_STATUS_EVENT]
+    event: WindowEventMap[typeof LOCALE_STATUS_EVENT],
   ) => {
-    if (event.detail.status === 'ready') {
+    if (event.detail.status === "ready") {
       this.host.requestUpdate();
     }
   };
@@ -26,14 +26,14 @@ class LocalizeController implements ReactiveController {
   hostConnected() {
     window.addEventListener(
       LOCALE_STATUS_EVENT,
-      this.__litLocalizeEventHandler
+      this.__litLocalizeEventHandler,
     );
   }
 
   hostDisconnected() {
     window.removeEventListener(
       LOCALE_STATUS_EVENT,
-      this.__litLocalizeEventHandler
+      this.__litLocalizeEventHandler,
     );
   }
 }

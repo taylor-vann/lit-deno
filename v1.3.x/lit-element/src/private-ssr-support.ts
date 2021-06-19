@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {_Φ as p} from './lit-element.ts';
+import { _Φ as p } from "./lit-element.ts";
 
 /**
  * END USERS SHOULD NOT RELY ON THIS OBJECT.

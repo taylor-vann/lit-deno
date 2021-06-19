@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {_installMsgImplementation} from '../lit-localize.ts';
-import {defaultMsg} from '../internal/default-msg.ts';
+import { _installMsgImplementation } from "../lit-localize.ts";
+import { defaultMsg } from "../internal/default-msg.ts";
 
 /**
  * Configuration parameters for lit-localize when in transform mode.
@@ -26,14 +26,16 @@ export interface TransformConfiguration {
  *
  * Throws if called more than once.
  */
-export const configureTransformLocalization: ((
-  config: TransformConfiguration
-) => {getLocale: () => string}) & {
-  _LIT_LOCALIZE_CONFIGURE_TRANSFORM_LOCALIZATION_?: never;
-} = (config: TransformConfiguration) => {
-  _installMsgImplementation(defaultMsg);
-  const sourceLocale = config.sourceLocale;
-  return {
-    getLocale: () => sourceLocale,
+export const configureTransformLocalization:
+  & ((
+    config: TransformConfiguration,
+  ) => { getLocale: () => string })
+  & {
+    _LIT_LOCALIZE_CONFIGURE_TRANSFORM_LOCALIZATION_?: never;
+  } = (config: TransformConfiguration) => {
+    _installMsgImplementation(defaultMsg);
+    const sourceLocale = config.sourceLocale;
+    return {
+      getLocale: () => sourceLocale,
+    };
   };
-};

@@ -11,28 +11,28 @@
  */
 
 import {
-  getCompatibleStyle,
   adoptStyles,
   CSSResultGroup,
   CSSResultOrNative,
-} from './css-tag.ts';
+  getCompatibleStyle,
+} from "./css-tag.ts";
 import type {
   ReactiveController,
   ReactiveControllerHost,
-} from './reactive-controller.ts';
+} from "./reactive-controller.ts";
 
-export * from './css-tag.ts';
+export * from "./css-tag.ts";
 export type {
   ReactiveController,
   ReactiveControllerHost,
-} from './reactive-controller.ts';
+} from "./reactive-controller.ts";
 
 const DEV_MODE = true;
 
 let requestUpdateThenable: {
   then: (
     onfulfilled?: (value: boolean) => void,
-    _onrejected?: () => void
+    _onrejected?: () => void,
   ) => void;
 };
 
@@ -43,23 +43,22 @@ if (DEV_MODE) {
   // Issue platform support warning.
   if (
     (window as LitExtraGlobals).ShadyDOM?.inUse &&
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (globalThis as any)['reactiveElementPlatformSupport'] === undefined
+    (globalThis as any)["reactiveElementPlatformSupport"] === undefined
   ) {
     console.warn(
       `Shadow DOM is being polyfilled via ShadyDOM but ` +
-        `the \`polyfill-support\` module has not been loaded.`
+        `the \`polyfill-support\` module has not been loaded.`,
     );
   }
 
   requestUpdateThenable = {
     then: (
       onfulfilled?: (value: boolean) => void,
-      _onrejected?: () => void
+      _onrejected?: () => void,
     ) => {
       console.warn(
         `\`requestUpdate\` no longer returns a Promise.` +
-          `Use \`updateComplete\` instead.`
+          `Use \`updateComplete\` instead.`,
       );
       if (onfulfilled !== undefined) {
         onfulfilled(false);
@@ -77,7 +76,7 @@ if (DEV_MODE) {
 /*@__INLINE__*/
 const JSCompiler_renameProperty = <P extends PropertyKey>(
   prop: P,
-  _obj: unknown
+  _obj: unknown,
 ): P => prop;
 
 /**
@@ -191,7 +190,7 @@ type AttributeMap = Map<string, PropertyKey>;
  * Map of changed properties with old values. Takes an optional generic
  * interface corresponding to the declared element properties.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export type PropertyValues<T = any> = keyof T extends PropertyKey
   ? Map<keyof T, unknown>
   : never;
@@ -200,7 +199,7 @@ export const defaultConverter: ComplexAttributeConverter = {
   toAttribute(value: unknown, type?: unknown): unknown {
     switch (type) {
       case Boolean:
-        value = value ? '' : null;
+        value = value ? "" : null;
         break;
       case Object:
       case Array:
@@ -265,12 +264,12 @@ const defaultPropertyDeclaration: PropertyDeclaration = {
  * https://github.com/google/closure-compiler/issues/3177 and others) so we use
  * this hack to bypass any rewriting by the compiler.
  */
-const finalized = 'finalized';
+const finalized = "finalized";
 
 /**
  * A string representing one of the supported dev mode warnings classes.
  */
-export type WarningKind = 'change-in-update' | 'migration';
+export type WarningKind = "change-in-update" | "migration";
 
 export type Initializer = (element: ReactiveElement) => void;
 
@@ -280,10 +279,8 @@ export type Initializer = (element: ReactiveElement) => void;
  * should be supplied by subclassers to render updates as desired.
  * @noInheritDoc
  */
-export abstract class ReactiveElement
-  extends HTMLElement
-  implements ReactiveControllerHost
-{
+export abstract class ReactiveElement extends HTMLElement
+  implements ReactiveControllerHost {
   // Note: these are patched in only in DEV_MODE.
   /**
    * Read or set all the enabled warning kinds for this class.
@@ -459,12 +456,12 @@ export abstract class ReactiveElement
    */
   static createProperty(
     name: PropertyKey,
-    options: PropertyDeclaration = defaultPropertyDeclaration
+    options: PropertyDeclaration = defaultPropertyDeclaration,
   ) {
     // if this is a state property, force the attribute to false.
     if (options.state) {
       // Cast as any since this is readonly.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       (options as any).attribute = false;
     }
     // Note, since this can be called by the `@property` decorator which
@@ -477,7 +474,7 @@ export abstract class ReactiveElement
     // user-defined accessors. Note that if the super has an accessor we will
     // still overwrite it
     if (!options.noAccessor && !this.prototype.hasOwnProperty(name)) {
-      const key = typeof name === 'symbol' ? Symbol() : `__${name}`;
+      const key = typeof name === "symbol" ? Symbol() : `__${name}`;
       const descriptor = this.getPropertyDescriptor(name, key, options);
       if (descriptor !== undefined) {
         Object.defineProperty(this.prototype, name, descriptor);
@@ -513,22 +510,21 @@ export abstract class ReactiveElement
   protected static getPropertyDescriptor(
     name: PropertyKey,
     key: string | symbol,
-    options: PropertyDeclaration
+    options: PropertyDeclaration,
   ) {
     return {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       get(): any {
-        return (this as {[key: string]: unknown})[key as string];
+        return (this as { [key: string]: unknown })[key as string];
       },
       set(this: ReactiveElement, value: unknown) {
-        const oldValue = (this as {} as {[key: string]: unknown})[
+        const oldValue = (this as {} as { [key: string]: unknown })[
           name as string
         ];
-        (this as {} as {[key: string]: unknown})[key as string] = value;
+        (this as {} as { [key: string]: unknown })[key as string] = value;
         (this as unknown as ReactiveElement).requestUpdate(
           name,
           oldValue,
-          options
+          options,
         );
       },
       configurable: true,
@@ -574,7 +570,7 @@ export abstract class ReactiveElement
     // Note, only process "own" properties since this element will inherit
     // any properties defined on the superClass, and finalization ensures
     // the entire prototype chain is finalized.
-    if (this.hasOwnProperty(JSCompiler_renameProperty('properties', this))) {
+    if (this.hasOwnProperty(JSCompiler_renameProperty("properties", this))) {
       const props = this.properties;
       // support symbols in properties (IE11 does not support this)
       const propKeys = [
@@ -585,27 +581,24 @@ export abstract class ReactiveElement
       for (const p of propKeys) {
         // note, use of `any` is due to TypeScript lack of support for symbol in
         // index types
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         this.createProperty(p, (props as any)[p]);
       }
     }
     this.elementStyles = this.finalizeStyles(this.styles);
     // DEV mode warnings
     if (DEV_MODE) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const warnRemoved = (obj: any, name: string) => {
         if (obj[name] !== undefined) {
           console.warn(
             `\`${name}\` is implemented. It ` +
               `has been removed from this version of ReactiveElement.` +
-              ` See the changelog at https://github.com/lit/lit/blob/main/packages/reactive-element/CHANGELOG.md`
+              ` See the changelog at https://github.com/lit/lit/blob/main/packages/reactive-element/CHANGELOG.md`,
           );
         }
       };
       [`initialize`, `requestUpdateInternal`, `_getUpdateComplete`].forEach(
-        (name: string) =>
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          warnRemoved(this.prototype as any, name)
+        (name: string) => warnRemoved(this.prototype as any, name),
       );
     }
     return true;
@@ -621,7 +614,7 @@ export abstract class ReactiveElement
    * @nocollapse
    * @category rendering
    */
-  static shadowRootOptions: ShadowRootInit = {mode: 'open'};
+  static shadowRootOptions: ShadowRootInit = { mode: "open" };
 
   /**
    * Takes the styles the user supplied via the `static styles` property and
@@ -638,7 +631,7 @@ export abstract class ReactiveElement
    * @category styles
    */
   protected static finalizeStyles(
-    styles?: CSSResultGroup
+    styles?: CSSResultGroup,
   ): Array<CSSResultOrNative> {
     const elementStyles = [];
     if (Array.isArray(styles)) {
@@ -669,14 +662,14 @@ export abstract class ReactiveElement
    */
   private static __attributeNameForProperty(
     name: PropertyKey,
-    options: PropertyDeclaration
+    options: PropertyDeclaration,
   ) {
     const attribute = options.attribute;
     return attribute === false
       ? undefined
-      : typeof attribute === 'string'
+      : typeof attribute === "string"
       ? attribute
-      : typeof name === 'string'
+      : typeof name === "string"
       ? name.toLowerCase()
       : undefined;
   }
@@ -735,7 +728,7 @@ export abstract class ReactiveElement
    */
   _initialize() {
     this.__updatePromise = new Promise<boolean>(
-      (res) => (this.enableUpdating = res)
+      (res) => (this.enableUpdating = res),
     );
     this._$changedProperties = new Map();
     this.__saveInstanceProperties();
@@ -791,7 +784,7 @@ export abstract class ReactiveElement
           this.__instanceProperties!.set(p, this[p as keyof this]);
           delete this[p as keyof this];
         }
-      }
+      },
     );
   }
 
@@ -805,14 +798,13 @@ export abstract class ReactiveElement
    * @category rendering
    */
   protected createRenderRoot(): Element | ShadowRoot {
-    const renderRoot =
-      this.shadowRoot ??
+    const renderRoot = this.shadowRoot ??
       this.attachShadow(
-        (this.constructor as typeof ReactiveElement).shadowRootOptions
+        (this.constructor as typeof ReactiveElement).shadowRootOptions,
       );
     adoptStyles(
       renderRoot,
-      (this.constructor as typeof ReactiveElement).elementStyles
+      (this.constructor as typeof ReactiveElement).elementStyles,
     );
     return renderRoot;
   }
@@ -858,7 +850,7 @@ export abstract class ReactiveElement
   disconnectedCallback() {
     this.__controllers?.forEach((c) => c.hostDisconnected?.());
     this.__pendingConnectionPromise = new Promise(
-      (r) => (this.__enableConnection = r)
+      (r) => (this.__enableConnection = r),
     );
   }
 
@@ -869,7 +861,7 @@ export abstract class ReactiveElement
   attributeChangedCallback(
     name: string,
     _old: string | null,
-    value: string | null
+    value: string | null,
   ) {
     this._$attributeToProperty(name, value);
   }
@@ -877,7 +869,7 @@ export abstract class ReactiveElement
   private __propertyToAttribute(
     name: PropertyKey,
     value: unknown,
-    options: PropertyDeclaration = defaultPropertyDeclaration
+    options: PropertyDeclaration = defaultPropertyDeclaration,
   ) {
     const attr = (
       this.constructor as typeof ReactiveElement
@@ -885,20 +877,20 @@ export abstract class ReactiveElement
     if (attr !== undefined && options.reflect === true) {
       const toAttribute =
         (options.converter as ComplexAttributeConverter)?.toAttribute ??
-        defaultConverter.toAttribute;
+          defaultConverter.toAttribute;
       const attrValue = toAttribute!(value, options.type);
       if (
         DEV_MODE &&
         (this.constructor as typeof ReactiveElement).enabledWarnings!.indexOf(
-          'migration'
-        ) >= 0 &&
+            "migration",
+          ) >= 0 &&
         attrValue === undefined
       ) {
         console.warn(
           `The attribute value for the ` +
             `${name as string} property is undefined. The attribute will be ` +
             `removed, but in the previous version of ReactiveElement, the ` +
-            `attribute would not have changed.`
+            `attribute would not have changed.`,
         );
       }
       // Track if the property is being reflected to avoid
@@ -933,13 +925,13 @@ export abstract class ReactiveElement
       const converter = options.converter;
       const fromAttribute =
         (converter as ComplexAttributeConverter)?.fromAttribute ??
-        (typeof converter === 'function'
-          ? (converter as (value: string | null, type?: unknown) => unknown)
-          : null) ??
-        defaultConverter.fromAttribute;
+          (typeof converter === "function"
+            ? (converter as (value: string | null, type?: unknown) => unknown)
+            : null) ??
+          defaultConverter.fromAttribute;
       // mark state reflecting
       this.__reflectingProperty = propName;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       this[propName as keyof this] = fromAttribute!(value, options.type) as any;
       // mark state not reflecting
       this.__reflectingProperty = null;
@@ -963,13 +955,12 @@ export abstract class ReactiveElement
   requestUpdate(
     name?: PropertyKey,
     oldValue?: unknown,
-    options?: PropertyDeclaration
+    options?: PropertyDeclaration,
   ): void {
     let shouldRequestUpdate = true;
     // If we have a property key, perform property update steps.
     if (name !== undefined) {
-      options =
-        options ||
+      options = options ||
         (this.constructor as typeof ReactiveElement).getPropertyOptions(name);
       const hasChanged = options.hasChanged || notEqual;
       if (hasChanged(this[name as keyof this], oldValue)) {
@@ -1063,19 +1054,19 @@ export abstract class ReactiveElement
             if (this.hasOwnProperty(p) && !this.__instanceProperties?.has(p)) {
               shadowedProperties.push(p as string);
             }
-          }
+          },
         );
         if (shadowedProperties.length) {
           // TODO(sorvell): Link to docs explanation of this issue.
           console.warn(
             `The following properties will not trigger updates as expected ` +
               `because they are set using class fields: ` +
-              `${shadowedProperties.join(', ')}. ` +
+              `${shadowedProperties.join(", ")}. ` +
               `Native class fields and some compiled output will overwrite ` +
               `accessors used for detecting changes. To fix this issue, ` +
               `either initialize properties in the constructor or adjust ` +
               `your compiler settings; for example, for TypeScript set ` +
-              `\`useDefineForClassFields: false\` in your \`tsconfig.tson\`.`
+              `\`useDefineForClassFields: false\` in your \`tsconfig.tson\`.`,
           );
         }
       }
@@ -1084,7 +1075,7 @@ export abstract class ReactiveElement
     if (this.__instanceProperties) {
       // Use forEach so this works even if for/of loops are compiled to for loops
       // expecting arrays
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       this.__instanceProperties!.forEach((v, p) => ((this as any)[p] = v));
       this.__instanceProperties = undefined;
     }
@@ -1131,14 +1122,14 @@ export abstract class ReactiveElement
       DEV_MODE &&
       this.isUpdatePending &&
       (this.constructor as typeof ReactiveElement).enabledWarnings!.indexOf(
-        'change-in-update'
-      ) >= 0
+          "change-in-update",
+        ) >= 0
     ) {
       console.warn(
         `An update was requested (generally because a property was set) ` +
           `after an update completed, causing a new update to be scheduled. ` +
           `This is inefficient and should be avoided unless the next update ` +
-          `can only be scheduled as a side effect of the previous update.`
+          `can only be scheduled as a side effect of the previous update.`,
       );
     }
   }
@@ -1248,23 +1239,23 @@ export abstract class ReactiveElement
 }
 
 // Apply polyfills if available
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-(globalThis as any)['reactiveElementPlatformSupport']?.({ReactiveElement});
+
+(globalThis as any)["reactiveElementPlatformSupport"]?.({ ReactiveElement });
 
 // Dev mode warnings...
 if (DEV_MODE) {
   // Default warning set.
-  ReactiveElement.enabledWarnings = ['change-in-update'];
+  ReactiveElement.enabledWarnings = ["change-in-update"];
   const ensureOwnWarnings = function (ctor: typeof ReactiveElement) {
     if (
-      !ctor.hasOwnProperty(JSCompiler_renameProperty('enabledWarnings', ctor))
+      !ctor.hasOwnProperty(JSCompiler_renameProperty("enabledWarnings", ctor))
     ) {
       ctor.enabledWarnings = ctor.enabledWarnings!.slice();
     }
   };
   ReactiveElement.enableWarning = function (
     this: typeof ReactiveElement,
-    warning: WarningKind
+    warning: WarningKind,
   ) {
     ensureOwnWarnings(this);
     if (this.enabledWarnings!.indexOf(warning) < 0) {
@@ -1273,7 +1264,7 @@ if (DEV_MODE) {
   };
   ReactiveElement.disableWarning = function (
     this: typeof ReactiveElement,
-    warning: WarningKind
+    warning: WarningKind,
   ) {
     ensureOwnWarnings(this);
     const i = this.enabledWarnings!.indexOf(warning);
@@ -1292,5 +1283,5 @@ declare global {
 // IMPORTANT: do not change the property name or the assignment expression.
 // This line will be used in regexes to search for ReactiveElement usage.
 // TODO(justinfagnani): inject version number at build time
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-((globalThis as any)['reactiveElementVersions'] ??= []).push('1.0.0-rc.2');
+
+((globalThis as any)["reactiveElementVersions"] ??= []).push("1.0.0-rc.2");

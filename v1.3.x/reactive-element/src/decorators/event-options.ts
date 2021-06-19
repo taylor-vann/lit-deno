@@ -11,8 +11,8 @@
  * not an arrow function.
  */
 
-import {ReactiveElement} from '../reactive-element.ts';
-import {decorateProperty} from './base.ts';
+import { ReactiveElement } from "../reactive-element.ts";
+import { decorateProperty } from "./base.ts";
 
 /**
  * Adds event listener options to a method used as an event listener in a

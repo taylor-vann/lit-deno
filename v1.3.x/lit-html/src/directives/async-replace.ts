@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {ChildPart, noChange} from '../lit-html.ts';
-import {directive, DirectiveParameters} from '../directive.ts';
-import {AsyncDirective} from '../async-directive.ts';
+import { ChildPart, noChange } from "../lit-html.ts";
+import { directive, DirectiveParameters } from "../directive.ts";
+import { AsyncDirective } from "../async-directive.ts";
 
 type Mapper<T> = (v: T, index?: number) => unknown;
 
@@ -15,7 +15,6 @@ class AsyncReplaceDirective extends AsyncDirective {
   private _reconnectResolver?: () => void;
   private _reconnectPromise?: Promise<void>;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   render<T>(value: AsyncIterable<T>, _mapper?: Mapper<T>) {
     return noChange;
   }
@@ -35,7 +34,7 @@ class AsyncReplaceDirective extends AsyncDirective {
   // because its return value must be `noChange`
   private async __iterate(mapper?: Mapper<unknown>) {
     let i = 0;
-    const {_value: value} = this;
+    const { _value: value } = this;
     for await (let v of value!) {
       // Check to make sure that value is the still the current value of
       // the part, and if not bail because a new value owns this part
@@ -64,7 +63,7 @@ class AsyncReplaceDirective extends AsyncDirective {
   disconnected() {
     // Pause iteration while disconnected
     this._reconnectPromise = new Promise(
-      (resolve) => (this._reconnectResolver = resolve)
+      (resolve) => (this._reconnectResolver = resolve),
     );
   }
 
@@ -99,4 +98,4 @@ export const asyncReplace = directive(AsyncReplaceDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {AsyncReplaceDirective};
+export type { AsyncReplaceDirective };

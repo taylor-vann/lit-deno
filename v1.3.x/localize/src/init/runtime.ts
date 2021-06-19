@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {_installMsgImplementation} from '../lit-localize.ts';
-import {generateMsgId} from '../internal/id-generation.ts';
-import {Deferred} from '../internal/deferred.ts';
-import {LOCALE_STATUS_EVENT} from '../internal/locale-status-event.ts';
-import {joinStringsAndValues} from '../internal/str-tag.ts';
-import {defaultMsg} from '../internal/default-msg.ts';
+import { _installMsgImplementation } from "../lit-localize.ts";
+import { generateMsgId } from "../internal/id-generation.ts";
+import { Deferred } from "../internal/deferred.ts";
+import { LOCALE_STATUS_EVENT } from "../internal/locale-status-event.ts";
+import { joinStringsAndValues } from "../internal/str-tag.ts";
+import { defaultMsg } from "../internal/default-msg.ts";
 
-import type {TemplateResult} from 'lit';
-import type {LocaleStatusEventDetail} from '../internal/locale-status-event.ts';
+import type { TemplateResult } from "lit";
+import type { LocaleStatusEventDetail } from "../internal/locale-status-event.ts";
 import type {
   LocaleModule,
-  TemplateLike,
-  TemplateMap,
   MsgFn,
   MsgOptions,
-} from '../internal/types.ts';
+  TemplateLike,
+  TemplateMap,
+} from "../internal/types.ts";
 
 /**
  * Configuration parameters for lit-localize when in runtime mode.
@@ -49,10 +49,10 @@ export interface RuntimeConfiguration {
  * Dispatch a "lit-localize-status" event to `window` with the given detail.
  */
 function dispatchStatusEvent(detail: LocaleStatusEventDetail) {
-  window.dispatchEvent(new CustomEvent(LOCALE_STATUS_EVENT, {detail}));
+  window.dispatchEvent(new CustomEvent(LOCALE_STATUS_EVENT, { detail }));
 }
 
-let activeLocale = '';
+let activeLocale = "";
 let loadingLocale: string | undefined;
 let sourceLocale: string | undefined;
 let validLocales: Set<string> | undefined;
@@ -73,19 +73,21 @@ let requestId = 0;
  *
  * Throws if called more than once.
  */
-export const configureLocalization: ((config: RuntimeConfiguration) => {
-  getLocale: typeof getLocale;
-  setLocale: typeof setLocale;
-}) & {
-  _LIT_LOCALIZE_CONFIGURE_LOCALIZATION_?: never;
-} = (config: RuntimeConfiguration) => {
-  _installMsgImplementation(runtimeMsg as MsgFn);
-  activeLocale = sourceLocale = config.sourceLocale;
-  validLocales = new Set(config.targetLocales);
-  validLocales.add(config.sourceLocale);
-  loadLocale = config.loadLocale;
-  return {getLocale, setLocale};
-};
+export const configureLocalization:
+  & ((config: RuntimeConfiguration) => {
+    getLocale: typeof getLocale;
+    setLocale: typeof setLocale;
+  })
+  & {
+    _LIT_LOCALIZE_CONFIGURE_LOCALIZATION_?: never;
+  } = (config: RuntimeConfiguration) => {
+    _installMsgImplementation(runtimeMsg as MsgFn);
+    activeLocale = sourceLocale = config.sourceLocale;
+    validLocales = new Set(config.targetLocales);
+    validLocales.add(config.sourceLocale);
+    loadLocale = config.loadLocale;
+    return { getLocale, setLocale };
+  };
 
 /**
  * Return the active locale code.
@@ -117,10 +119,10 @@ const setLocale: ((newLocale: string) => Promise<void>) & {
     return loading.promise;
   }
   if (!validLocales || !loadLocale) {
-    throw new Error('Internal error');
+    throw new Error("Internal error");
   }
   if (!validLocales.has(newLocale)) {
-    throw new Error('Invalid locale code');
+    throw new Error("Invalid locale code");
   }
   requestId++;
   const thisRequestId = requestId;
@@ -128,13 +130,13 @@ const setLocale: ((newLocale: string) => Promise<void>) & {
   if (loading.settled) {
     loading = new Deferred();
   }
-  dispatchStatusEvent({status: 'loading', loadingLocale: newLocale});
+  dispatchStatusEvent({ status: "loading", loadingLocale: newLocale });
   const localePromise: Promise<Partial<LocaleModule>> =
     newLocale === sourceLocale
       ? // We could switch to the source locale synchronously, but we prefer to
-        // queue it on a microtask so that switching locales is consistently
-        // asynchronous.
-        Promise.resolve({templates: undefined})
+      // queue it on a microtask so that switching locales is consistently
+      // asynchronous.
+        Promise.resolve({ templates: undefined })
       : loadLocale(newLocale);
   localePromise.then(
     (mod) => {
@@ -142,7 +144,7 @@ const setLocale: ((newLocale: string) => Promise<void>) & {
         activeLocale = newLocale;
         loadingLocale = undefined;
         templates = mod.templates;
-        dispatchStatusEvent({status: 'ready', readyLocale: newLocale});
+        dispatchStatusEvent({ status: "ready", readyLocale: newLocale });
         loading.resolve();
       }
       // Else another locale was requested in the meantime. Don't resolve or
@@ -153,29 +155,29 @@ const setLocale: ((newLocale: string) => Promise<void>) & {
     (err) => {
       if (requestId === thisRequestId) {
         dispatchStatusEvent({
-          status: 'error',
+          status: "error",
           errorLocale: newLocale,
           errorMessage: err.toString(),
         });
         loading.reject(err);
       }
-    }
+    },
   );
   return loading.promise;
 };
 
 function runtimeMsg(
   template: TemplateLike,
-  options?: MsgOptions
+  options?: MsgOptions,
 ): string | TemplateResult {
   if (templates) {
     const id = options?.id ?? generateId(template);
     const localized = templates[id];
     if (localized) {
-      if (typeof localized === 'string') {
+      if (typeof localized === "string") {
         // E.g. "Hello World!"
         return localized;
-      } else if ('strTag' in localized) {
+      } else if ("strTag" in localized) {
         // E.g. str`Hello ${name}!`
         //
         // Localized templates have ${number} in place of real template
@@ -188,7 +190,7 @@ function runtimeMsg(
           // Cast `template` because its type wasn't automatically narrowed (but
           // we know it must be the same type as `localized`).
           (template as TemplateResult).values,
-          localized.values as number[]
+          localized.values as number[],
         );
       } else {
         // E.g. html`Hello <b>${name}</b>!`
@@ -204,7 +206,7 @@ function runtimeMsg(
         // Cast `localized.values` because it's readonly.
         (
           localized as {
-            values: TemplateResult['values'];
+            values: TemplateResult["values"];
           }
         ).values = order.map((i) => (template as TemplateResult).values[i]);
         return localized;
@@ -219,12 +221,12 @@ const expressionOrders = new WeakMap<TemplateResult, number[]>();
 const hashCache = new Map<TemplateStringsArray | string, string>();
 
 function generateId(template: TemplateLike): string {
-  const strings = typeof template === 'string' ? template : template.strings;
+  const strings = typeof template === "string" ? template : template.strings;
   let id = hashCache.get(strings);
   if (id === undefined) {
     id = generateMsgId(
       strings,
-      typeof template !== 'string' && !('strTag' in template)
+      typeof template !== "string" && !("strTag" in template),
     );
     hashCache.set(strings, id);
   }

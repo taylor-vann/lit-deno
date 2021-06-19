@@ -7,8 +7,8 @@
 interface ShadyCSS {
   nativeCss: boolean;
   nativeShadow: boolean;
-  styleElement(host: Element, overrideProps?: {[key: string]: string}): void;
-  styleSubtree(host: Element, overrideProps?: {[key: string]: string}): void;
+  styleElement(host: Element, overrideProps?: { [key: string]: string }): void;
+  styleSubtree(host: Element, overrideProps?: { [key: string]: string }): void;
   getComputedStyleValue(element: Element, property: string): string;
   ApplyShim: object;
   prepareTemplateDom(template: Element, elementName: string): void;
@@ -16,11 +16,11 @@ interface ShadyCSS {
   ScopingShim:
     | undefined
     | {
-        prepareAdoptedCssText(
-          cssTextArray: string[],
-          elementName: string
-        ): void;
-      };
+      prepareAdoptedCssText(
+        cssTextArray: string[],
+        elementName: string,
+      ): void;
+    };
 }
 
 interface ShadyDOM {
@@ -34,11 +34,11 @@ interface ShadyDOM {
 interface LitExtendedWindow extends Window {
   ShadyCSS?: ShadyCSS;
   ShadyDOM?: ShadyDOM;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  reactiveElementPlatformSupport: (options: {[index: string]: any}) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  litElementPlatformSupport: (options: {[index: string]: any}) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+  reactiveElementPlatformSupport: (options: { [index: string]: any }) => void;
+
+  litElementPlatformSupport: (options: { [index: string]: any }) => void;
+
   litHtmlPlatformSupport: (template: unknown, childPart: unknown) => void;
 }
 
@@ -49,8 +49,7 @@ interface ShadowRoot {
   adoptedStyleSheets: CSSStyleSheet[];
 }
 
-// eslint-disable-next-line no-var
-declare var ShadowRoot: {prototype: ShadowRoot; new (): ShadowRoot};
+declare var ShadowRoot: { prototype: ShadowRoot; new (): ShadowRoot };
 
 interface CSSStyleSheet {
   replaceSync(cssText: string): void;

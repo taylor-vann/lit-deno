@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {noChange} from '../lit-html.ts';
-import {directive, Directive, PartInfo, PartType} from '../directive.ts';
+import { noChange } from "../lit-html.ts";
+import { Directive, directive, PartInfo, PartType } from "../directive.ts";
 
 class TemplateContentDirective extends Directive {
   private _previousTemplate?: HTMLTemplateElement;
@@ -13,7 +13,7 @@ class TemplateContentDirective extends Directive {
   constructor(partInfo: PartInfo) {
     super(partInfo);
     if (partInfo.type !== PartType.CHILD) {
-      throw new Error('templateContent can only be used in child bindings');
+      throw new Error("templateContent can only be used in child bindings");
     }
   }
 
@@ -39,4 +39,4 @@ export const templateContent = directive(TemplateContentDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {TemplateContentDirective};
+export type { TemplateContentDirective };

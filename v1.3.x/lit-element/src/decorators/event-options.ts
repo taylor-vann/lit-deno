@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-export * from '@lit/reactive-element/decorators/event-options.ts';
+export * from "@lit/reactive-element/decorators/event-options.ts";

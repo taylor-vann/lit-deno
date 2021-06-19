@@ -4,4 +4,4 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-export * from 'lit-html/directives/repeat.ts';
+export * from "lit-html/directives/repeat.ts";

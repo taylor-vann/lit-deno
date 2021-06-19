@@ -4,14 +4,14 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import {AttributePart, noChange} from '../lit-html.ts';
+import { AttributePart, noChange } from "../lit-html.ts";
 import {
-  directive,
   Directive,
+  directive,
   DirectiveParameters,
   PartInfo,
   PartType,
-} from '../directive.ts';
+} from "../directive.ts";
 
 /**
  * A key-value set of class names to truthy values.
@@ -31,12 +31,12 @@ class ClassMapDirective extends Directive {
     super(partInfo);
     if (
       partInfo.type !== PartType.ATTRIBUTE ||
-      partInfo.name !== 'class' ||
+      partInfo.name !== "class" ||
       (partInfo.strings?.length as number) > 2
     ) {
       throw new Error(
-        '`classMap()` can only be used in the `class` attribute ' +
-          'and must be the only part in the attribute.'
+        "`classMap()` can only be used in the `class` attribute " +
+          "and must be the only part in the attribute.",
       );
     }
   }
@@ -44,7 +44,7 @@ class ClassMapDirective extends Directive {
   render(classInfo: ClassInfo) {
     return Object.keys(classInfo)
       .filter((key) => classInfo[key])
-      .join(' ');
+      .join(" ");
   }
 
   update(part: AttributePart, [classInfo]: DirectiveParameters<this>) {
@@ -110,4 +110,4 @@ export const classMap = directive(ClassMapDirective);
  * The type of the class that powers this directive. Necessary for naming the
  * directive's return type.
  */
-export type {ClassMapDirective};
+export type { ClassMapDirective };

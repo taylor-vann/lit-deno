@@ -23,5 +23,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/polyfill-support.ts"],
-  "references": [{"path": "./tsconfig.polyfill-support.json"}]
+  "references": [{ "path": "./tsconfig.polyfill-support.json" }]
 }
