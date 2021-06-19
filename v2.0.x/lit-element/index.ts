@@ -5,9 +5,9 @@
  */
 
 export * from "../reactive-element/reactive-element.ts";
+export * from "../reactive-element/decorators.ts";
 export * from "../lit-html/lit-html.ts";
 export * from "./lit-element.ts";
-export * from "./decorators.ts";
 
 // TODO: link to docs on the new site
 console.warn(
