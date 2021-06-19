@@ -1,0 +1,15 @@
+/decorators/
+/demo/**/*.d.ts
+/demo/**/*.d.ts.map
+/demo/**/*.ts
+/demo/**/*.ts.map
+/development/
+/node_modules/
+/test/
+/decorators.*
+/experimental-hydrate-support.*
+/index.*
+/lit-element.*
+/lit.min.*
+/polyfill-support.*
+/private-ssr-support.*
