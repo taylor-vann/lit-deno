@@ -2,57 +2,86 @@
 
 Lit-Deno is a fork of [Lit](https://lit.dev/) for [Deno](https://deno.land/).
 
-It is not officially supported by the Lit project. (yet? give it a star!)
-
-## Get Started
-
-```Typescript
-import { LitElement } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit.ts";
-```
-
-Visit the [lit dev docs](https://lit.dev/docs/) to learn how to build applications with Lit.
+This is _NOT_ an officially supported Lit project ... yet? Let's get some stars
+shining!
 
 ## Why Deno?
 
-[Lit](https://lit.dev/) is developed in Typescript. It's a small and fast framework to generate and maintain DOM content.
+[Lit](https://lit.dev/) is a fast and secure codebase with a light footprint,
+providing feature-rich templating in the browser.
 
-In 2021, the variety of frontend frameworks in the Deno ecosystem is less than spectacular. Mainly being aleph.js. 
+[Lit](https://lit.dev/) is developed in Typescript and leverages modern browser
+featrues to create webcomponents and reusable parts of an application.
 
-[Lit](https://lit.dev/) is well suited to the Deno philosophy, providing a fast and secure codebase with a small footprint.
+Lit + Deno can help engineers create amazing sites without NodeJS-esque bundlers
+like webpack or rollup.
 
-It's collection of utilities giving developers the ability to create webcomponents and reusable parts of an application.
+## Get Started
+
+Add Lit to a `dependencies.ts` file.
+
+NOTE: the import address is likely to change.
+
+```Typescript
+export {
+  html,
+  LitElement,
+} from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit.ts";
+export { customElement } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit-element/decorators.ts";
+```
+
+Afterwards, create and declare your custom elements.
+
+```Typescript
+import { customElement, html, LitElement } from "../dependencies.ts";
+
+@customElement("my-deno-element")
+class MyDenoElement extends LitElement {
+  render() {
+    return html`
+      <p>Hello world!</p>
+      <p>Lit + Deno rocks! <3</p>
+    `;
+  }
+}
+
+export { MyDenoElement };
+```
+
+Visit the [lit dev docs](https://lit.dev/docs/) to learn more about the amazing
+features Lit provides out of the box.
+
+## What about CSS?
+
+Lit has its own [extensive tooling](https://lit.dev/docs/components/styles/) for
+CSS.
+
+Try [SheetCake]() with Lit if a more modular approach is required.
 
 ## Goals
 
-Lit-Deno treats [Lit](https://lit.dev/) as a source of truth. Code is altered as minimally as possible.
+Lit-Deno considers [Lit](https://lit.dev/) a source of truth. Code is altered as
+minimally as possible.
 
-Accordingly, there are no mutations to core code outside of a select few typings.
+There are no mutations to Lit's core code outside of a select few typings and
+organizational structures.
 
 ## Current Stopgaps
 
-There are vast and wild differences between NodeJS and Deno for tests and cli tools.
-
-In an effort to deviate as little as possible from [the original repository](https://github.com/lit/lit/), Lit-Deno does not currently fork tests or command line tools.
+In an effort to deviate as little as possible from
+[the original repository](https://github.com/lit/lit/), Lit-Deno does not
+currently fork tests or command line tools.
 
 Command line tools are on the horizon though :)
 
-## Contributions
+## Disclosure
 
-Lit-Deno will not accept contributions.
+Lit-Deno supports the licencing and engineering decisions made by the
+[Lit](https://lit.dev/) team and follows the same code of conduct.
 
-Please direct contributions towards the Lit library.
+## License
 
-Do not post Lit-Deno issues in the original Lit repository. Post them here.
-
-## IMPORTANT DISCLOSURE
-
-Lit-Deno supports every licence and engineering decision made by [Lit](https://lit.dev/) and follows the same code of conduct.
-
-## LICENCE
-
-Lit-Deno is released under the same licence as the [Lit licence](https://github.com/lit/lit/blob/main/LICENSE):
+Lit-Deno is released under the same licence as the
+[Lit licence](https://github.com/lit/lit/blob/main/LICENSE):
 
 BSD 3-Clause License
-
-
-
