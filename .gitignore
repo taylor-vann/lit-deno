@@ -1,5 +1,3 @@
-node_modules/
-lerna-debug.log
-*.tgz
-*.tsbuildinfo
 .DS_Store
+
+**/dist/
