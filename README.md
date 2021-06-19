@@ -7,12 +7,10 @@ It is not officially supported by the Lit project. (yet? give it a star!)
 ## Get Started
 
 ```Typescript
-import { LitElement } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit.ts";"
+import { LitElement } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit.ts";
 ```
 
-## IMPORTANT DISCLOSURE
-
-Lit-Deno supports every licence and engineering decision made by [Lit](https://lit.dev/) and follows the same code of conduct.
+Visit the [lit dev docs](https://lit.dev/docs/) to learn how to build applications with Lit.
 
 ## Why Deno?
 
@@ -45,6 +43,10 @@ Lit-Deno will not accept contributions.
 Please direct contributions towards the Lit library.
 
 Do not post Lit-Deno issues in the original Lit repository. Post them here.
+
+## IMPORTANT DISCLOSURE
+
+Lit-Deno supports every licence and engineering decision made by [Lit](https://lit.dev/) and follows the same code of conduct.
 
 ## LICENCE
 
