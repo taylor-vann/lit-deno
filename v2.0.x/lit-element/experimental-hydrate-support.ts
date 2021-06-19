@@ -10,9 +10,9 @@
  * @packageDocumentation
  */
 
-import type { PropertyValues } from "../../reactive-element/src/reactive-element.ts";
-import { render, RenderOptions } from "../../lit-html/src/lit-html.ts";
-import { hydrate } from "../../lit-html/src/experimental-hydrate.ts";
+import type { PropertyValues } from "../../reactive-element/reactive-element.ts";
+import { render, RenderOptions } from "../../lit-html/lit-html.ts";
+import { hydrate } from "../../lit-html/experimental-hydrate.ts";
 
 interface PatchableLitElement extends HTMLElement {
   new (...args: any[]): PatchableLitElement;

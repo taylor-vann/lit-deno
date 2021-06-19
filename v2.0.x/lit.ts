@@ -1,1 +1,1 @@
-export * from "./lit/src/index.ts"
+export * from "./lit/index.ts";

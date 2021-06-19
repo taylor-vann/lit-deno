@@ -22,8 +22,10 @@
  * @packageDocumentation
  */
 
-import "../../reactive-element/src/polyfill-support.ts";
-import "../../lit-html/src/polyfill-support.ts";
+import type { LitExtraGlobals } from "../deps.ts";
+
+import "../reactive-element/polyfill-support.ts";
+import "../lit-html/polyfill-support.ts";
 
 interface RenderOptions {
   readonly renderBefore?: ChildNode | null;

@@ -5,7 +5,7 @@
  */
 
 // IMPORTANT: these imports must be type-only
-import type { LitExtraGlobals, TrustedHTML } from "../../deps.ts"
+import type { LitExtraGlobals, TrustedHTML } from "../deps.ts";
 import type { Directive, DirectiveResult, PartInfo } from "./directive.ts";
 
 const DEV_MODE = true;

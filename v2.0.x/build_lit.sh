@@ -1,6 +1,5 @@
-deno bundle --config ./tsconfig.json ./lit-html/src/lit-html.ts ./lit-html/lit-html_bundled.js
-deno bundle --config ./tsconfig.json ./reactive-element/src/reactive-element.ts ./reactive-element/reactive-element_bundled.js
-deno bundle --config ./tsconfig.json ./lit-element/src/index.ts ./lit-element/index_bundled.js
-deno bundle --config ./tsconfig.json ./lit/src/index.ts ./lit/index_bundled.js
-deno bundle --config ./tsconfig.json ./localize/src/lit-localize.ts ./localize/lit-localize_bundled.js
-deno bundle --config ./tsconfig.json ./lit.ts ./lit_bundled.js
+deno bundle --config ./tsconfig.json ./lit-html/lit-html.ts ./esmodules/lit-html.js
+deno bundle --config ./tsconfig.json ./reactive-element/reactive-element.ts ./esmodules/reactive-element.js
+deno bundle --config ./tsconfig.json ./lit-element/index.ts ./esmodules/lit-element.js
+deno bundle --config ./tsconfig.json ./localize/lit-localize.ts ./esmodules/lit-localize.js
+deno bundle --config ./tsconfig.json ./lit.ts ./esmodules/lit.js

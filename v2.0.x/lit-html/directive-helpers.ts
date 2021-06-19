@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+import type { LitExtraGlobals } from "../deps.ts";
+
 import { _Σ, DirectiveParent, Part, TemplateResult } from "./lit-html.ts";
 import {
   AttributePartInfo,

@@ -11,5 +11,4 @@
  * not an arrow function.
  */
 
-
-export * from "../../reactive-element/src/decorators.ts";
+export * from "../reactive-element/decorators.ts";

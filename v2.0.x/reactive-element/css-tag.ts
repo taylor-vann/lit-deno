@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import type {LitExtraGlobals, LitCSSStyleSheet, LitShadowRoot} from "../../deps.ts";
+import type {
+  LitCSSStyleSheet,
+  LitExtraGlobals,
+  LitShadowRoot,
+} from "../deps.ts";
 
 const extraGlobals = window as LitExtraGlobals;
 
