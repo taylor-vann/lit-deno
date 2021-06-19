@@ -44,7 +44,7 @@ type LitExtendedWindow = Window & {
 export type TrustedHTML = string
 
 interface TrustedHTMLPolicy {
-  createHTML: (s: string) => string;
+  createHTML: (s: string) => TrustedHTML;
 }
 
 interface TrustedTypesPolicy {
