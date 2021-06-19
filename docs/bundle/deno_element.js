@@ -47,12 +47,10 @@ const unsafeCSS = (value) =>
     constructionToken,
   );
 const css = (strings, ...values) => {
-  const cssText1 = strings.length === 1
-    ? strings[0]
-    : values.reduce(
-      (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
-      strings[0],
-    );
+  const cssText1 = strings.length === 1 ? strings[0] : values.reduce(
+    (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+    strings[0],
+  );
   return new CSSResult(cssText1, constructionToken);
 };
 const adoptStyles = (renderRoot, styles) => {
@@ -548,11 +546,10 @@ if (true) {
   console.warn("lit-html is in dev mode. Not recommended for production!");
 }
 const extraGlobals1 = window;
-const wrap =
-  true && extraGlobals1.ShadyDOM?.inUse &&
+const wrap = true && extraGlobals1.ShadyDOM?.inUse &&
     extraGlobals1.ShadyDOM?.noPatch === true
-    ? extraGlobals1.ShadyDOM.wrap
-    : (node) => node;
+  ? extraGlobals1.ShadyDOM.wrap
+  : (node) => node;
 const trustedTypes = globalThis.trustedTypes;
 const policy = trustedTypes
   ? trustedTypes.createPolicy("lit-html", {
@@ -769,7 +766,9 @@ class Template {
                   index: nodeIndex,
                   name: m[2],
                   strings: statics,
-                  ctor: m[1] === "." ? PropertyPart : m[1] === "?"
+                  ctor: m[1] === "."
+                    ? PropertyPart
+                    : m[1] === "?"
                     ? BooleanAttributePart
                     : m[1] === "@"
                     ? EventPart
@@ -998,7 +997,8 @@ class ChildPart {
   _commitText(value) {
     const node2 = wrap(this._$startNode).nextSibling;
     if (
-      node2 !== null && node2.nodeType === 3 && (this._$endNode === null
+      node2 !== null && node2.nodeType === 3 &&
+      (this._$endNode === null
         ? wrap(node2).nextSibling === null
         : node2 === wrap(this._$endNode).previousSibling)
     ) {
@@ -1389,17 +1389,16 @@ const legacyProperty = (options5, proto, name1) => {
 };
 var _class;
 var _dec = customElement("deno-element");
-let DenoElement2 = _class =
-  _dec(
-    (_class = class DenoElement1 extends LitElement {
-      static styles = [
-        css
-          `\n    .green_text {\n      color: green;\n    }\n\n    .blue_text {\n      color: blue;\n    }\n\n    .red_text {\n      color: red;\n    }\n  `,
-      ];
-      render() {
-        return html2
-          `\n      <p>Hello world!</p>\n      <p>\n        I hope y'all make some amazing projects with\n        <span class="green_text">Deno</span> and\n        <span class="blue_text">Lit</span>!\n      </p>\n      <p class="red_text"><3</p>\n    `;
-      }
-    }) || _class,
-  ) || _class;
+let DenoElement2 = _class = _dec(
+  (_class = class DenoElement1 extends LitElement {
+    static styles = [
+      css
+        `\n    .green_text {\n      color: green;\n    }\n\n    .blue_text {\n      color: blue;\n    }\n\n    .red_text {\n      color: red;\n    }\n  `,
+    ];
+    render() {
+      return html2
+        `\n      <p>Hello world!</p>\n      <p>\n        I hope y'all make some amazing projects with\n        <span class="green_text">Deno</span> and\n        <span class="blue_text">Lit</span>!\n      </p>\n      <p class="red_text"><3</p>\n    `;
+    }
+  }) || _class,
+) || _class;
 export { DenoElement2 as DenoElement };

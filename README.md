@@ -48,8 +48,9 @@ class MyDenoElement extends LitElement {
 export { MyDenoElement };
 ```
 
-Checkout the [docs](https://github.com/taylor-vann/lit-deno/docs/) for a similar
-[example](https://taylor-vann.github.io/lit-deno) of using Lit with Deno.
+Checkout the [docs](https://github.com/taylor-vann/lit-deno/tree/main/docs) for
+a similar [example](https://taylor-vann.github.io/lit-deno/) of using Lit with
+Deno.
 
 And don't forget to visit the [lit docs](https://lit.dev/docs/) to learn more
 about the features Lit provides out of the box.
@@ -58,7 +59,8 @@ about the features Lit provides out of the box.
 
 Lit has [extensive tooling](https://lit.dev/docs/components/styles/) for styles.
 
-Try [SheetCake]() with Lit if a more modular approach is required.
+Try [SheetCake](https://github.com/taylor-vann/sheetcake) with Lit if a more
+modular approach is required.
 
 ## Goals
 
