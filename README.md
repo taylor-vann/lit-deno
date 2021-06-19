@@ -48,13 +48,15 @@ class MyDenoElement extends LitElement {
 export { MyDenoElement };
 ```
 
-Visit the [lit dev docs](https://lit.dev/docs/) to learn more about the amazing
-features Lit provides out of the box.
+Checkout the [docs](https://github.com/taylor-vann/lit-deno/docs/) for a similar
+[example](https://taylor-vann.github.io/lit-deno) of using Lit with Deno.
+
+And don't forget to visit the [lit docs](https://lit.dev/docs/) to learn more
+about the features Lit provides out of the box.
 
 ## What about CSS?
 
-Lit has its own [extensive tooling](https://lit.dev/docs/components/styles/) for
-CSS.
+Lit has [extensive tooling](https://lit.dev/docs/components/styles/) for styles.
 
 Try [SheetCake]() with Lit if a more modular approach is required.
 
@@ -66,7 +68,7 @@ minimally as possible.
 There are no mutations to Lit's core code outside of a select few typings and
 organizational structures.
 
-## Current Stopgaps
+## Stopgaps
 
 In an effort to deviate as little as possible from
 [the original repository](https://github.com/lit/lit/), Lit-Deno does not
