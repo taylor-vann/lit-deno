@@ -84,30 +84,6 @@ export { unsafeCSS1 as unsafeCSS };
 export { css1 as css };
 export { adoptStyles1 as adoptStyles };
 export { getCompatibleStyle1 as getCompatibleStyle };
-let requestUpdateThenable;
-if (true) {
-  console.warn(`Running in dev mode. Do not use in production!`);
-  if (
-    window.ShadyDOM?.inUse &&
-    globalThis["reactiveElementPlatformSupport"] === undefined
-  ) {
-    console.warn(
-      `Shadow DOM is being polyfilled via ShadyDOM but ` +
-        `the \`polyfill-support\` module has not been loaded.`,
-    );
-  }
-  requestUpdateThenable = {
-    then: (onfulfilled, _onrejected) => {
-      console.warn(
-        `\`requestUpdate\` no longer returns a Promise.` +
-          `Use \`updateComplete\` instead.`,
-      );
-      if (onfulfilled !== undefined) {
-        onfulfilled(false);
-      }
-    },
-  };
-}
 const JSCompiler_renameProperty = (prop, _obj) => prop;
 const defaultConverter1 = {
   toAttribute(value, type) {
@@ -232,22 +208,6 @@ class ReactiveElement1 extends HTMLElement {
       }
     }
     this.elementStyles = this.finalizeStyles(this.styles);
-    if (true) {
-      const warnRemoved = (obj, name) => {
-        if (obj[name] !== undefined) {
-          console.warn(
-            `\`${name}\` is implemented. It ` +
-              `has been removed from this version of ReactiveElement.` +
-              ` See the changelog at https://github.com/lit/lit/blob/main/packages/reactive-element/CHANGELOG.md`,
-          );
-        }
-      };
-      [
-        `initialize`,
-        `requestUpdateInternal`,
-        `_getUpdateComplete`,
-      ].forEach((name) => warnRemoved(this.prototype, name));
-    }
     return true;
   }
   static shadowRootOptions = {
@@ -348,17 +308,6 @@ class ReactiveElement1 extends HTMLElement {
       const toAttribute = options.converter?.toAttribute ??
         defaultConverter1.toAttribute;
       const attrValue = toAttribute(value, options.type);
-      if (
-        true && this.constructor.enabledWarnings.indexOf("migration") >= 0 &&
-        attrValue === undefined
-      ) {
-        console.warn(
-          `The attribute value for the ` +
-            `${name} property is undefined. The attribute will be ` +
-            `removed, but in the previous version of ReactiveElement, the ` +
-            `attribute would not have changed.`,
-        );
-      }
       this.__reflectingProperty = name;
       if (attrValue == null) {
         this.removeAttribute(attr);
@@ -405,7 +354,7 @@ class ReactiveElement1 extends HTMLElement {
     if (!this.isUpdatePending && shouldRequestUpdate) {
       this.__updatePromise = this.__enqueueUpdate();
     }
-    return true ? requestUpdateThenable : undefined;
+    return;
   }
   async __enqueueUpdate() {
     this.isUpdatePending = true;
@@ -428,26 +377,6 @@ class ReactiveElement1 extends HTMLElement {
       return;
     }
     if (!this.hasUpdated) {
-      if (true) {
-        const shadowedProperties = [];
-        this.constructor.elementProperties.forEach((_v, p) => {
-          if (this.hasOwnProperty(p) && !this.__instanceProperties?.has(p)) {
-            shadowedProperties.push(p);
-          }
-        });
-        if (shadowedProperties.length) {
-          console.warn(
-            `The following properties will not trigger updates as expected ` +
-              `because they are set using class fields: ` +
-              `${shadowedProperties.join(", ")}. ` +
-              `Native class fields and some compiled output will overwrite ` +
-              `accessors used for detecting changes. To fix this issue, ` +
-              `either initialize properties in the constructor or adjust ` +
-              `your compiler settings; for example, for TypeScript set ` +
-              `\`useDefineForClassFields: false\` in your \`tsconfig.tson\`.`,
-          );
-        }
-      }
     }
     if (this.__instanceProperties) {
       this.__instanceProperties.forEach((v, p) => this[p] = v);
@@ -482,17 +411,6 @@ class ReactiveElement1 extends HTMLElement {
       this.firstUpdated(changedProperties);
     }
     this.updated(changedProperties);
-    if (
-      true && this.isUpdatePending &&
-      this.constructor.enabledWarnings.indexOf("change-in-update") >= 0
-    ) {
-      console.warn(
-        `An update was requested (generally because a property was set) ` +
-          `after an update completed, causing a new update to be scheduled. ` +
-          `This is inefficient and should be avoided unless the next update ` +
-          `can only be scheduled as a side effect of the previous update.`,
-      );
-    }
   }
   __markUpdated() {
     this._$changedProperties = new Map();
@@ -524,39 +442,206 @@ class ReactiveElement1 extends HTMLElement {
 globalThis["reactiveElementPlatformSupport"]?.({
   ReactiveElement: ReactiveElement1,
 });
-if (true) {
-  ReactiveElement1.enabledWarnings = [
-    "change-in-update",
-  ];
-  const ensureOwnWarnings = function (ctor) {
-    if (
-      !ctor.hasOwnProperty(JSCompiler_renameProperty("enabledWarnings", ctor))
-    ) {
-      ctor.enabledWarnings = ctor.enabledWarnings.slice();
-    }
-  };
-  ReactiveElement1.enableWarning = function (warning) {
-    ensureOwnWarnings(this);
-    if (this.enabledWarnings.indexOf(warning) < 0) {
-      this.enabledWarnings.push(warning);
-    }
-  };
-  ReactiveElement1.disableWarning = function (warning) {
-    ensureOwnWarnings(this);
-    const i = this.enabledWarnings.indexOf(warning);
-    if (i >= 0) {
-      this.enabledWarnings.splice(i, 1);
-    }
-  };
-}
 (globalThis["reactiveElementVersions"] ??= []).push("1.0.0-rc.2");
 export { defaultConverter1 as defaultConverter };
 export { notEqual1 as notEqual };
 export { ReactiveElement1 as ReactiveElement };
-const INTERNAL1 = true;
-if (true) {
-  console.warn("lit-html is in dev mode. Not recommended for production!");
+const legacyPrototypeMethod1 = (descriptor, proto, name) => {
+  Object.defineProperty(proto, name, descriptor);
+};
+const standardPrototypeMethod1 = (descriptor, element) => ({
+  kind: "method",
+  placement: "prototype",
+  key: element.key,
+  descriptor,
+});
+const decorateProperty1 = ({ finisher, descriptor }) =>
+  (protoOrDescriptor, name) => {
+    if (name !== undefined) {
+      const ctor = protoOrDescriptor.constructor;
+      if (descriptor !== undefined) {
+        Object.defineProperty(protoOrDescriptor, name, descriptor(name));
+      }
+      finisher?.(ctor, name);
+    } else {
+      const key = protoOrDescriptor.originalKey ?? protoOrDescriptor.key;
+      const info = descriptor != undefined
+        ? {
+          kind: "method",
+          placement: "prototype",
+          key,
+          descriptor: descriptor(protoOrDescriptor.key),
+        }
+        : {
+          ...protoOrDescriptor,
+          key,
+        };
+      if (finisher != undefined) {
+        info.finisher = function (ctor) {
+          finisher(ctor, key);
+        };
+      }
+      return info;
+    }
+  };
+export { legacyPrototypeMethod1 as legacyPrototypeMethod };
+export { standardPrototypeMethod1 as standardPrototypeMethod };
+export { decorateProperty1 as decorateProperty };
+const legacyCustomElement = (tagName, clazz) => {
+  window.customElements.define(tagName, clazz);
+  return clazz;
+};
+const standardCustomElement = (tagName, descriptor) => {
+  const { kind, elements } = descriptor;
+  return {
+    kind,
+    elements,
+    finisher(clazz) {
+      window.customElements.define(tagName, clazz);
+    },
+  };
+};
+const customElement1 = (tagName) =>
+  (classOrDescriptor) =>
+    typeof classOrDescriptor === "function"
+      ? legacyCustomElement(tagName, classOrDescriptor)
+      : standardCustomElement(tagName, classOrDescriptor);
+export { customElement1 as customElement };
+const standardProperty = (options, element) => {
+  if (
+    element.kind === "method" && element.descriptor &&
+    !("value" in element.descriptor)
+  ) {
+    return {
+      ...element,
+      finisher(clazz) {
+        clazz.createProperty(element.key, options);
+      },
+    };
+  } else {
+    return {
+      kind: "field",
+      key: Symbol(),
+      placement: "own",
+      descriptor: {},
+      originalKey: element.key,
+      initializer() {
+        if (typeof element.initializer === "function") {
+          this[element.key] = element.initializer.call(this);
+        }
+      },
+      finisher(clazz) {
+        clazz.createProperty(element.key, options);
+      },
+    };
+  }
+};
+const legacyProperty = (options, proto, name) => {
+  proto.constructor.createProperty(name, options);
+};
+function property1(options) {
+  return (protoOrDescriptor, name) =>
+    name !== undefined
+      ? legacyProperty(options, protoOrDescriptor, name)
+      : standardProperty(options, protoOrDescriptor);
 }
+export { property1 as property };
+function state1(options) {
+  return property1({
+    ...options,
+    state: true,
+    attribute: false,
+  });
+}
+export { state1 as state };
+function eventOptions1(options) {
+  return decorateProperty1({
+    finisher: (ctor, name) => {
+      Object.assign(ctor.prototype[name], options);
+    },
+  });
+}
+export { eventOptions1 as eventOptions };
+function query1(selector, cache) {
+  return decorateProperty1({
+    descriptor: (name) => {
+      const descriptor = {
+        get() {
+          return this.renderRoot?.querySelector(selector);
+        },
+        enumerable: true,
+        configurable: true,
+      };
+      if (cache) {
+        const key = typeof name === "symbol" ? Symbol() : `__${name}`;
+        descriptor.get = function () {
+          if (this[key] === undefined) {
+            this[key] = this.renderRoot?.querySelector(selector);
+          }
+          return this[key];
+        };
+      }
+      return descriptor;
+    },
+  });
+}
+export { query1 as query };
+function queryAll1(selector) {
+  return decorateProperty1({
+    descriptor: (_name) => ({
+      get() {
+        return this.renderRoot?.querySelectorAll(selector);
+      },
+      enumerable: true,
+      configurable: true,
+    }),
+  });
+}
+export { queryAll1 as queryAll };
+function queryAsync1(selector) {
+  return decorateProperty1({
+    descriptor: (_name) => ({
+      async get() {
+        await this.updateComplete;
+        return this.renderRoot?.querySelector(selector);
+      },
+      enumerable: true,
+      configurable: true,
+    }),
+  });
+}
+export { queryAsync1 as queryAsync };
+const ElementProto = Element.prototype;
+const legacyMatches = ElementProto.msMatchesSelector ||
+  ElementProto.webkitMatchesSelector;
+function queryAssignedNodes1(slotName = "", flatten = false, selector = "") {
+  return decorateProperty1({
+    descriptor: (_name) => ({
+      get() {
+        const slotSelector = `slot${
+          slotName ? `[name=${slotName}]` : ":not([name])"
+        }`;
+        const slot = this.renderRoot?.querySelector(slotSelector);
+        let nodes = slot?.assignedNodes({
+          flatten,
+        });
+        if (nodes && selector) {
+          nodes = nodes.filter((node) =>
+            node.nodeType === Node.ELEMENT_NODE &&
+            (node.matches
+              ? node.matches(selector)
+              : legacyMatches.call(node, selector))
+          );
+        }
+        return nodes;
+      },
+      enumerable: true,
+      configurable: true,
+    }),
+  });
+}
+export { queryAssignedNodes1 as queryAssignedNodes };
+const INTERNAL1 = true;
 const extraGlobals1 = window;
 const wrap =
   true && extraGlobals1.ShadyDOM?.inUse &&
@@ -649,10 +734,6 @@ const render1 = (value, container, options) => {
 if (true) {
   render1.setSanitizer = setSanitizer;
   render1.createSanitizer = createSanitizer;
-  if (true) {
-    render1._testOnlyClearSanitizerFactoryDoNotCallOrElse =
-      _testOnlyClearSanitizerFactoryDoNotCallOrElse;
-  }
 }
 const walker = d.createTreeWalker(d, 129, null, false);
 let sanitizerFactoryInternal = noopSanitizer;
@@ -713,14 +794,6 @@ const getTemplateHtml = (strings, type) => {
         regex = tagEndRegex;
         rawTextEndRegex = undefined;
       }
-    }
-    if (true) {
-      console.assert(
-        attrNameEndIndex === -1 || regex === tagEndRegex ||
-          regex === singleQuoteAttrEndRegex ||
-          regex === doubleQuoteAttrEndRegex,
-        "unexpected parse state B",
-      );
     }
     const end = regex === tagEndRegex && strings[i + 1].startsWith("/>")
       ? " "
@@ -1347,203 +1420,3 @@ const _Φ1 = {
 export { ReactiveElement1 as UpdatingElement };
 export { LitElement1 as LitElement };
 export { _Φ1 as _Φ };
-const legacyPrototypeMethod1 = (descriptor, proto, name1) => {
-  Object.defineProperty(proto, name1, descriptor);
-};
-const standardPrototypeMethod1 = (descriptor, element3) => ({
-  kind: "method",
-  placement: "prototype",
-  key: element3.key,
-  descriptor,
-});
-const decorateProperty1 = ({ finisher, descriptor }) =>
-  (protoOrDescriptor, name1) => {
-    if (name1 !== undefined) {
-      const ctor = protoOrDescriptor.constructor;
-      if (descriptor !== undefined) {
-        Object.defineProperty(protoOrDescriptor, name1, descriptor(name1));
-      }
-      finisher?.(ctor, name1);
-    } else {
-      const key = protoOrDescriptor.originalKey ?? protoOrDescriptor.key;
-      const info = descriptor != undefined
-        ? {
-          kind: "method",
-          placement: "prototype",
-          key,
-          descriptor: descriptor(protoOrDescriptor.key),
-        }
-        : {
-          ...protoOrDescriptor,
-          key,
-        };
-      if (finisher != undefined) {
-        info.finisher = function (ctor) {
-          finisher(ctor, key);
-        };
-      }
-      return info;
-    }
-  };
-export { legacyPrototypeMethod1 as legacyPrototypeMethod };
-export { standardPrototypeMethod1 as standardPrototypeMethod };
-export { decorateProperty1 as decorateProperty };
-const legacyCustomElement = (tagName, clazz) => {
-  window.customElements.define(tagName, clazz);
-  return clazz;
-};
-const standardCustomElement = (tagName, descriptor) => {
-  const { kind, elements } = descriptor;
-  return {
-    kind,
-    elements,
-    finisher(clazz) {
-      window.customElements.define(tagName, clazz);
-    },
-  };
-};
-const customElement1 = (tagName) =>
-  (classOrDescriptor) =>
-    typeof classOrDescriptor === "function"
-      ? legacyCustomElement(tagName, classOrDescriptor)
-      : standardCustomElement(tagName, classOrDescriptor);
-export { customElement1 as customElement };
-const standardProperty = (options5, element3) => {
-  if (
-    element3.kind === "method" && element3.descriptor &&
-    !("value" in element3.descriptor)
-  ) {
-    return {
-      ...element3,
-      finisher(clazz) {
-        clazz.createProperty(element3.key, options5);
-      },
-    };
-  } else {
-    return {
-      kind: "field",
-      key: Symbol(),
-      placement: "own",
-      descriptor: {},
-      originalKey: element3.key,
-      initializer() {
-        if (typeof element3.initializer === "function") {
-          this[element3.key] = element3.initializer.call(this);
-        }
-      },
-      finisher(clazz) {
-        clazz.createProperty(element3.key, options5);
-      },
-    };
-  }
-};
-const legacyProperty = (options5, proto, name1) => {
-  proto.constructor.createProperty(name1, options5);
-};
-function property1(options5) {
-  return (protoOrDescriptor, name1) =>
-    name1 !== undefined
-      ? legacyProperty(options5, protoOrDescriptor, name1)
-      : standardProperty(options5, protoOrDescriptor);
-}
-export { property1 as property };
-function state1(options5) {
-  return property1({
-    ...options5,
-    state: true,
-    attribute: false,
-  });
-}
-export { state1 as state };
-function eventOptions1(options5) {
-  return decorateProperty1({
-    finisher: (ctor, name1) => {
-      Object.assign(ctor.prototype[name1], options5);
-    },
-  });
-}
-export { eventOptions1 as eventOptions };
-function query1(selector, cache) {
-  return decorateProperty1({
-    descriptor: (name1) => {
-      const descriptor = {
-        get() {
-          return this.renderRoot?.querySelector(selector);
-        },
-        enumerable: true,
-        configurable: true,
-      };
-      if (cache) {
-        const key = typeof name1 === "symbol" ? Symbol() : `__${name1}`;
-        descriptor.get = function () {
-          if (this[key] === undefined) {
-            this[key] = this.renderRoot?.querySelector(selector);
-          }
-          return this[key];
-        };
-      }
-      return descriptor;
-    },
-  });
-}
-export { query1 as query };
-function queryAll1(selector) {
-  return decorateProperty1({
-    descriptor: (_name) => ({
-      get() {
-        return this.renderRoot?.querySelectorAll(selector);
-      },
-      enumerable: true,
-      configurable: true,
-    }),
-  });
-}
-export { queryAll1 as queryAll };
-function queryAsync1(selector) {
-  return decorateProperty1({
-    descriptor: (_name) => ({
-      async get() {
-        await this.updateComplete;
-        return this.renderRoot?.querySelector(selector);
-      },
-      enumerable: true,
-      configurable: true,
-    }),
-  });
-}
-export { queryAsync1 as queryAsync };
-const ElementProto = Element.prototype;
-const legacyMatches = ElementProto.msMatchesSelector ||
-  ElementProto.webkitMatchesSelector;
-function queryAssignedNodes1(slotName = "", flatten = false, selector = "") {
-  return decorateProperty1({
-    descriptor: (_name) => ({
-      get() {
-        const slotSelector = `slot${
-          slotName ? `[name=${slotName}]` : ":not([name])"
-        }`;
-        const slot = this.renderRoot?.querySelector(slotSelector);
-        let nodes = slot?.assignedNodes({
-          flatten,
-        });
-        if (nodes && selector) {
-          nodes = nodes.filter((node2) =>
-            node2.nodeType === Node.ELEMENT_NODE &&
-            (node2.matches
-              ? node2.matches(selector)
-              : legacyMatches.call(node2, selector))
-          );
-        }
-        return nodes;
-      },
-      enumerable: true,
-      configurable: true,
-    }),
-  });
-}
-export { queryAssignedNodes1 as queryAssignedNodes };
-console.warn(
-  "The main 'lit-element' module entrypoint is deprecated. Please update " +
-    "your imports to use the 'lit' package: 'lit' and 'lit/decorators.ts' " +
-    "or import from 'lit-element/lit-element.ts'.",
-);

@@ -1,7 +1,4 @@
 const INTERNAL1 = true;
-if (true) {
-  console.warn("lit-html is in dev mode. Not recommended for production!");
-}
 const extraGlobals = window;
 const wrap =
   true && extraGlobals.ShadyDOM?.inUse &&
@@ -94,10 +91,6 @@ const render1 = (value, container, options) => {
 if (true) {
   render1.setSanitizer = setSanitizer;
   render1.createSanitizer = createSanitizer;
-  if (true) {
-    render1._testOnlyClearSanitizerFactoryDoNotCallOrElse =
-      _testOnlyClearSanitizerFactoryDoNotCallOrElse;
-  }
 }
 const walker = d.createTreeWalker(d, 129, null, false);
 let sanitizerFactoryInternal = noopSanitizer;
@@ -158,14 +151,6 @@ const getTemplateHtml = (strings, type) => {
         regex = tagEndRegex;
         rawTextEndRegex = undefined;
       }
-    }
-    if (true) {
-      console.assert(
-        attrNameEndIndex === -1 || regex === tagEndRegex ||
-          regex === singleQuoteAttrEndRegex ||
-          regex === doubleQuoteAttrEndRegex,
-        "unexpected parse state B",
-      );
     }
     const end = regex === tagEndRegex && strings[i + 1].startsWith("/>")
       ? " "

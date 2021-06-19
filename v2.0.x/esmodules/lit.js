@@ -1,11 +1,11 @@
 const extraGlobals = window;
-const supportsAdoptingStyleSheets = window.ShadowRoot &&
+const supportsAdoptingStyleSheets1 = window.ShadowRoot &&
   (extraGlobals.ShadyCSS === undefined || extraGlobals.ShadyCSS.nativeShadow) &&
   "adoptedStyleSheets" in Document.prototype &&
   "replace" in CSSStyleSheet.prototype;
 const constructionToken = Symbol();
 const styleSheetCache = new Map();
-class CSSResult {
+class CSSResult1 {
   _$cssResult$ = true;
   cssText;
   constructor(cssText, safeToken) {
@@ -18,7 +18,7 @@ class CSSResult {
   }
   get styleSheet() {
     let styleSheet = styleSheetCache.get(this.cssText);
-    if (supportsAdoptingStyleSheets && styleSheet === undefined) {
+    if (supportsAdoptingStyleSheets1 && styleSheet === undefined) {
       styleSheetCache.set(this.cssText, styleSheet = new CSSStyleSheet());
       styleSheet.replaceSync(this.cssText);
     }
@@ -41,22 +41,22 @@ const textFromCSSResult = (value) => {
     );
   }
 };
-const unsafeCSS = (value) =>
-  new CSSResult(
+const unsafeCSS1 = (value) =>
+  new CSSResult1(
     typeof value === "string" ? value : String(value),
     constructionToken,
   );
-const css = (strings, ...values) => {
+const css1 = (strings, ...values) => {
   const cssText1 = strings.length === 1
     ? strings[0]
     : values.reduce(
       (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
       strings[0],
     );
-  return new CSSResult(cssText1, constructionToken);
+  return new CSSResult1(cssText1, constructionToken);
 };
-const adoptStyles = (renderRoot, styles) => {
-  if (supportsAdoptingStyleSheets) {
+const adoptStyles1 = (renderRoot, styles) => {
+  if (supportsAdoptingStyleSheets1) {
     renderRoot.adoptedStyleSheets = styles.map((s) =>
       s instanceof CSSStyleSheet ? s : s.styleSheet
     );
@@ -73,37 +73,19 @@ const cssResultFromStyleSheet = (sheet) => {
   for (const rule of sheet.cssRules) {
     cssText1 += rule.cssText;
   }
-  return unsafeCSS(cssText1);
+  return unsafeCSS1(cssText1);
 };
-const getCompatibleStyle = supportsAdoptingStyleSheets
+const getCompatibleStyle1 = supportsAdoptingStyleSheets1
   ? (s) => s
   : (s) => s instanceof CSSStyleSheet ? cssResultFromStyleSheet(s) : s;
-let requestUpdateThenable;
-if (true) {
-  console.warn(`Running in dev mode. Do not use in production!`);
-  if (
-    window.ShadyDOM?.inUse &&
-    globalThis["reactiveElementPlatformSupport"] === undefined
-  ) {
-    console.warn(
-      `Shadow DOM is being polyfilled via ShadyDOM but ` +
-        `the \`polyfill-support\` module has not been loaded.`,
-    );
-  }
-  requestUpdateThenable = {
-    then: (onfulfilled, _onrejected) => {
-      console.warn(
-        `\`requestUpdate\` no longer returns a Promise.` +
-          `Use \`updateComplete\` instead.`,
-      );
-      if (onfulfilled !== undefined) {
-        onfulfilled(false);
-      }
-    },
-  };
-}
+export { supportsAdoptingStyleSheets1 as supportsAdoptingStyleSheets };
+export { CSSResult1 as CSSResult };
+export { unsafeCSS1 as unsafeCSS };
+export { css1 as css };
+export { adoptStyles1 as adoptStyles };
+export { getCompatibleStyle1 as getCompatibleStyle };
 const JSCompiler_renameProperty = (prop, _obj) => prop;
-const defaultConverter = {
+const defaultConverter1 = {
   toAttribute(value, type) {
     switch (type) {
       case Boolean:
@@ -137,18 +119,18 @@ const defaultConverter = {
     return fromValue;
   },
 };
-const notEqual = (value, old) => {
+const notEqual1 = (value, old) => {
   return old !== value && (old === old || value === value);
 };
 const defaultPropertyDeclaration = {
   attribute: true,
   type: String,
-  converter: defaultConverter,
+  converter: defaultConverter1,
   reflect: false,
-  hasChanged: notEqual,
+  hasChanged: notEqual1,
 };
 const finalized = "finalized";
-class ReactiveElement extends HTMLElement {
+class ReactiveElement1 extends HTMLElement {
   static enabledWarnings;
   static enableWarning;
   static disableWarning;
@@ -226,22 +208,6 @@ class ReactiveElement extends HTMLElement {
       }
     }
     this.elementStyles = this.finalizeStyles(this.styles);
-    if (true) {
-      const warnRemoved = (obj, name) => {
-        if (obj[name] !== undefined) {
-          console.warn(
-            `\`${name}\` is implemented. It ` +
-              `has been removed from this version of ReactiveElement.` +
-              ` See the changelog at https://github.com/lit/lit/blob/main/packages/reactive-element/CHANGELOG.md`,
-          );
-        }
-      };
-      [
-        `initialize`,
-        `requestUpdateInternal`,
-        `_getUpdateComplete`,
-      ].forEach((name) => warnRemoved(this.prototype, name));
-    }
     return true;
   }
   static shadowRootOptions = {
@@ -252,10 +218,10 @@ class ReactiveElement extends HTMLElement {
     if (Array.isArray(styles)) {
       const set = new Set(styles.flat(Infinity).reverse());
       for (const s of set) {
-        elementStyles.unshift(getCompatibleStyle(s));
+        elementStyles.unshift(getCompatibleStyle1(s));
       }
     } else if (styles !== undefined) {
-      elementStyles.push(getCompatibleStyle(styles));
+      elementStyles.push(getCompatibleStyle1(styles));
     }
     return elementStyles;
   }
@@ -311,7 +277,7 @@ class ReactiveElement extends HTMLElement {
   createRenderRoot() {
     const renderRoot = this.shadowRoot ??
       this.attachShadow(this.constructor.shadowRootOptions);
-    adoptStyles(renderRoot, this.constructor.elementStyles);
+    adoptStyles1(renderRoot, this.constructor.elementStyles);
     return renderRoot;
   }
   connectedCallback() {
@@ -340,19 +306,8 @@ class ReactiveElement extends HTMLElement {
     const attr = this.constructor.__attributeNameForProperty(name, options);
     if (attr !== undefined && options.reflect === true) {
       const toAttribute = options.converter?.toAttribute ??
-        defaultConverter.toAttribute;
+        defaultConverter1.toAttribute;
       const attrValue = toAttribute(value, options.type);
-      if (
-        true && this.constructor.enabledWarnings.indexOf("migration") >= 0 &&
-        attrValue === undefined
-      ) {
-        console.warn(
-          `The attribute value for the ` +
-            `${name} property is undefined. The attribute will be ` +
-            `removed, but in the previous version of ReactiveElement, the ` +
-            `attribute would not have changed.`,
-        );
-      }
       this.__reflectingProperty = name;
       if (attrValue == null) {
         this.removeAttribute(attr);
@@ -371,7 +326,7 @@ class ReactiveElement extends HTMLElement {
       const fromAttribute =
         (converter?.fromAttribute ?? (typeof converter === "function"
           ? converter
-          : null)) ?? defaultConverter.fromAttribute;
+          : null)) ?? defaultConverter1.fromAttribute;
       this.__reflectingProperty = propName;
       this[propName] = fromAttribute(value, options.type);
       this.__reflectingProperty = null;
@@ -381,7 +336,7 @@ class ReactiveElement extends HTMLElement {
     let shouldRequestUpdate = true;
     if (name !== undefined) {
       options = options || this.constructor.getPropertyOptions(name);
-      const hasChanged = options.hasChanged || notEqual;
+      const hasChanged = options.hasChanged || notEqual1;
       if (hasChanged(this[name], oldValue)) {
         if (!this._$changedProperties.has(name)) {
           this._$changedProperties.set(name, oldValue);
@@ -399,7 +354,7 @@ class ReactiveElement extends HTMLElement {
     if (!this.isUpdatePending && shouldRequestUpdate) {
       this.__updatePromise = this.__enqueueUpdate();
     }
-    return true ? requestUpdateThenable : undefined;
+    return;
   }
   async __enqueueUpdate() {
     this.isUpdatePending = true;
@@ -422,26 +377,6 @@ class ReactiveElement extends HTMLElement {
       return;
     }
     if (!this.hasUpdated) {
-      if (true) {
-        const shadowedProperties = [];
-        this.constructor.elementProperties.forEach((_v, p) => {
-          if (this.hasOwnProperty(p) && !this.__instanceProperties?.has(p)) {
-            shadowedProperties.push(p);
-          }
-        });
-        if (shadowedProperties.length) {
-          console.warn(
-            `The following properties will not trigger updates as expected ` +
-              `because they are set using class fields: ` +
-              `${shadowedProperties.join(", ")}. ` +
-              `Native class fields and some compiled output will overwrite ` +
-              `accessors used for detecting changes. To fix this issue, ` +
-              `either initialize properties in the constructor or adjust ` +
-              `your compiler settings; for example, for TypeScript set ` +
-              `\`useDefineForClassFields: false\` in your \`tsconfig.tson\`.`,
-          );
-        }
-      }
     }
     if (this.__instanceProperties) {
       this.__instanceProperties.forEach((v, p) => this[p] = v);
@@ -476,17 +411,6 @@ class ReactiveElement extends HTMLElement {
       this.firstUpdated(changedProperties);
     }
     this.updated(changedProperties);
-    if (
-      true && this.isUpdatePending &&
-      this.constructor.enabledWarnings.indexOf("change-in-update") >= 0
-    ) {
-      console.warn(
-        `An update was requested (generally because a property was set) ` +
-          `after an update completed, causing a new update to be scheduled. ` +
-          `This is inefficient and should be avoided unless the next update ` +
-          `can only be scheduled as a side effect of the previous update.`,
-      );
-    }
   }
   __markUpdated() {
     this._$changedProperties = new Map();
@@ -516,37 +440,208 @@ class ReactiveElement extends HTMLElement {
   }
 }
 globalThis["reactiveElementPlatformSupport"]?.({
-  ReactiveElement,
+  ReactiveElement: ReactiveElement1,
 });
-if (true) {
-  ReactiveElement.enabledWarnings = [
-    "change-in-update",
-  ];
-  const ensureOwnWarnings = function (ctor) {
-    if (
-      !ctor.hasOwnProperty(JSCompiler_renameProperty("enabledWarnings", ctor))
-    ) {
-      ctor.enabledWarnings = ctor.enabledWarnings.slice();
-    }
-  };
-  ReactiveElement.enableWarning = function (warning) {
-    ensureOwnWarnings(this);
-    if (this.enabledWarnings.indexOf(warning) < 0) {
-      this.enabledWarnings.push(warning);
-    }
-  };
-  ReactiveElement.disableWarning = function (warning) {
-    ensureOwnWarnings(this);
-    const i = this.enabledWarnings.indexOf(warning);
-    if (i >= 0) {
-      this.enabledWarnings.splice(i, 1);
-    }
-  };
-}
 (globalThis["reactiveElementVersions"] ??= []).push("1.0.0-rc.2");
-if (true) {
-  console.warn("lit-html is in dev mode. Not recommended for production!");
+export { defaultConverter1 as defaultConverter };
+export { notEqual1 as notEqual };
+export { ReactiveElement1 as ReactiveElement };
+const legacyPrototypeMethod1 = (descriptor, proto, name) => {
+  Object.defineProperty(proto, name, descriptor);
+};
+const standardPrototypeMethod1 = (descriptor, element) => ({
+  kind: "method",
+  placement: "prototype",
+  key: element.key,
+  descriptor,
+});
+const decorateProperty1 = ({ finisher, descriptor }) =>
+  (protoOrDescriptor, name) => {
+    if (name !== undefined) {
+      const ctor = protoOrDescriptor.constructor;
+      if (descriptor !== undefined) {
+        Object.defineProperty(protoOrDescriptor, name, descriptor(name));
+      }
+      finisher?.(ctor, name);
+    } else {
+      const key = protoOrDescriptor.originalKey ?? protoOrDescriptor.key;
+      const info = descriptor != undefined
+        ? {
+          kind: "method",
+          placement: "prototype",
+          key,
+          descriptor: descriptor(protoOrDescriptor.key),
+        }
+        : {
+          ...protoOrDescriptor,
+          key,
+        };
+      if (finisher != undefined) {
+        info.finisher = function (ctor) {
+          finisher(ctor, key);
+        };
+      }
+      return info;
+    }
+  };
+export { legacyPrototypeMethod1 as legacyPrototypeMethod };
+export { standardPrototypeMethod1 as standardPrototypeMethod };
+export { decorateProperty1 as decorateProperty };
+const legacyCustomElement = (tagName, clazz) => {
+  window.customElements.define(tagName, clazz);
+  return clazz;
+};
+const standardCustomElement = (tagName, descriptor) => {
+  const { kind, elements } = descriptor;
+  return {
+    kind,
+    elements,
+    finisher(clazz) {
+      window.customElements.define(tagName, clazz);
+    },
+  };
+};
+const customElement1 = (tagName) =>
+  (classOrDescriptor) =>
+    typeof classOrDescriptor === "function"
+      ? legacyCustomElement(tagName, classOrDescriptor)
+      : standardCustomElement(tagName, classOrDescriptor);
+export { customElement1 as customElement };
+const standardProperty = (options, element) => {
+  if (
+    element.kind === "method" && element.descriptor &&
+    !("value" in element.descriptor)
+  ) {
+    return {
+      ...element,
+      finisher(clazz) {
+        clazz.createProperty(element.key, options);
+      },
+    };
+  } else {
+    return {
+      kind: "field",
+      key: Symbol(),
+      placement: "own",
+      descriptor: {},
+      originalKey: element.key,
+      initializer() {
+        if (typeof element.initializer === "function") {
+          this[element.key] = element.initializer.call(this);
+        }
+      },
+      finisher(clazz) {
+        clazz.createProperty(element.key, options);
+      },
+    };
+  }
+};
+const legacyProperty = (options, proto, name) => {
+  proto.constructor.createProperty(name, options);
+};
+function property1(options) {
+  return (protoOrDescriptor, name) =>
+    name !== undefined
+      ? legacyProperty(options, protoOrDescriptor, name)
+      : standardProperty(options, protoOrDescriptor);
 }
+export { property1 as property };
+function state1(options) {
+  return property1({
+    ...options,
+    state: true,
+    attribute: false,
+  });
+}
+export { state1 as state };
+function eventOptions1(options) {
+  return decorateProperty1({
+    finisher: (ctor, name) => {
+      Object.assign(ctor.prototype[name], options);
+    },
+  });
+}
+export { eventOptions1 as eventOptions };
+function query1(selector, cache) {
+  return decorateProperty1({
+    descriptor: (name) => {
+      const descriptor = {
+        get() {
+          return this.renderRoot?.querySelector(selector);
+        },
+        enumerable: true,
+        configurable: true,
+      };
+      if (cache) {
+        const key = typeof name === "symbol" ? Symbol() : `__${name}`;
+        descriptor.get = function () {
+          if (this[key] === undefined) {
+            this[key] = this.renderRoot?.querySelector(selector);
+          }
+          return this[key];
+        };
+      }
+      return descriptor;
+    },
+  });
+}
+export { query1 as query };
+function queryAll1(selector) {
+  return decorateProperty1({
+    descriptor: (_name) => ({
+      get() {
+        return this.renderRoot?.querySelectorAll(selector);
+      },
+      enumerable: true,
+      configurable: true,
+    }),
+  });
+}
+export { queryAll1 as queryAll };
+function queryAsync1(selector) {
+  return decorateProperty1({
+    descriptor: (_name) => ({
+      async get() {
+        await this.updateComplete;
+        return this.renderRoot?.querySelector(selector);
+      },
+      enumerable: true,
+      configurable: true,
+    }),
+  });
+}
+export { queryAsync1 as queryAsync };
+const ElementProto = Element.prototype;
+const legacyMatches = ElementProto.msMatchesSelector ||
+  ElementProto.webkitMatchesSelector;
+function queryAssignedNodes1(slotName = "", flatten = false, selector = "") {
+  return decorateProperty1({
+    descriptor: (_name) => ({
+      get() {
+        const slotSelector = `slot${
+          slotName ? `[name=${slotName}]` : ":not([name])"
+        }`;
+        const slot = this.renderRoot?.querySelector(slotSelector);
+        let nodes = slot?.assignedNodes({
+          flatten,
+        });
+        if (nodes && selector) {
+          nodes = nodes.filter((node) =>
+            node.nodeType === Node.ELEMENT_NODE &&
+            (node.matches
+              ? node.matches(selector)
+              : legacyMatches.call(node, selector))
+          );
+        }
+        return nodes;
+      },
+      enumerable: true,
+      configurable: true,
+    }),
+  });
+}
+export { queryAssignedNodes1 as queryAssignedNodes };
+const INTERNAL1 = true;
 const extraGlobals1 = window;
 const wrap =
   true && extraGlobals1.ShadyDOM?.inUse &&
@@ -607,10 +702,18 @@ const QUOTE_CHAR = 3;
 const singleQuoteAttrEndRegex = /'/g;
 const doubleQuoteAttrEndRegex = /"/g;
 const rawTextElement = /^(?:script|style|textarea)$/i;
-const noChange = Symbol.for("lit-noChange");
-const nothing = Symbol.for("lit-nothing");
+const tag = (_$litType$) =>
+  (strings, ...values) => ({
+    _$litType$,
+    strings,
+    values,
+  });
+const html2 = tag(1);
+const svg1 = tag(2);
+const noChange1 = Symbol.for("lit-noChange");
+const nothing1 = Symbol.for("lit-nothing");
 const templateCache = new WeakMap();
-const render = (value, container, options) => {
+const render1 = (value, container, options) => {
   const partOwnerNode = options?.renderBefore ?? container;
   let part = partOwnerNode._$litPart$;
   if (part === undefined) {
@@ -629,19 +732,15 @@ const render = (value, container, options) => {
   return part;
 };
 if (true) {
-  render.setSanitizer = setSanitizer;
-  render.createSanitizer = createSanitizer;
-  if (true) {
-    render._testOnlyClearSanitizerFactoryDoNotCallOrElse =
-      _testOnlyClearSanitizerFactoryDoNotCallOrElse;
-  }
+  render1.setSanitizer = setSanitizer;
+  render1.createSanitizer = createSanitizer;
 }
 const walker = d.createTreeWalker(d, 129, null, false);
 let sanitizerFactoryInternal = noopSanitizer;
 const getTemplateHtml = (strings, type) => {
   const l = strings.length - 1;
   const attrNames = [];
-  let html = type === 2 ? "<svg>" : "";
+  let html1 = type === 2 ? "<svg>" : "";
   let rawTextEndRegex;
   let regex = textEndRegex;
   for (let i = 0; i < l; i++) {
@@ -696,18 +795,10 @@ const getTemplateHtml = (strings, type) => {
         rawTextEndRegex = undefined;
       }
     }
-    if (true) {
-      console.assert(
-        attrNameEndIndex === -1 || regex === tagEndRegex ||
-          regex === singleQuoteAttrEndRegex ||
-          regex === doubleQuoteAttrEndRegex,
-        "unexpected parse state B",
-      );
-    }
     const end = regex === tagEndRegex && strings[i + 1].startsWith("/>")
       ? " "
       : "";
-    html += regex === textEndRegex
+    html1 += regex === textEndRegex
       ? s + nodeMarker
       : attrNameEndIndex >= 0
       ? (attrNames.push(attrName),
@@ -716,7 +807,7 @@ const getTemplateHtml = (strings, type) => {
       : s + marker +
         (attrNameEndIndex === -2 ? (attrNames.push(undefined), i) : end);
   }
-  const htmlResult = html + (strings[l] || "<?>") +
+  const htmlResult = html1 + (strings[l] || "<?>") +
     (type === 2 ? "</svg>" : "");
   return [
     policy !== undefined ? policy.createHTML(htmlResult) : htmlResult,
@@ -824,7 +915,7 @@ class Template {
   }
 }
 function resolveDirective(part, value, parent = part, attributeIndex) {
-  if (value === noChange) {
+  if (value === noChange1) {
     return value;
   }
   let currentDirective = attributeIndex !== undefined
@@ -949,12 +1040,12 @@ class ChildPart {
   _$setValue(value, directiveParent = this) {
     value = resolveDirective(this, value, directiveParent);
     if (isPrimitive(value)) {
-      if (value === nothing || value == null || value === "") {
-        if (this._$committedValue !== nothing) {
+      if (value === nothing1 || value == null || value === "") {
+        if (this._$committedValue !== nothing1) {
           this._$clear();
         }
-        this._$committedValue = nothing;
-      } else if (value !== this._$committedValue && value !== noChange) {
+        this._$committedValue = nothing1;
+      } else if (value !== this._$committedValue && value !== noChange1) {
         this._commitText(value);
       }
     } else if (value._$litType$ !== undefined) {
@@ -1085,7 +1176,7 @@ class AttributePart {
   name;
   options;
   strings;
-  _$committedValue = nothing;
+  _$committedValue = nothing1;
   __directives;
   _$parent;
   _$disconnectableChildren = undefined;
@@ -1100,10 +1191,10 @@ class AttributePart {
     this._$parent = parent2;
     this.options = options3;
     if (strings2.length > 2 || strings2[0] !== "" || strings2[1] !== "") {
-      this._$committedValue = new Array(strings2.length - 1).fill(nothing);
+      this._$committedValue = new Array(strings2.length - 1).fill(nothing1);
       this.strings = strings2;
     } else {
-      this._$committedValue = nothing;
+      this._$committedValue = nothing1;
     }
     if (true) {
       this._sanitizer = undefined;
@@ -1115,7 +1206,7 @@ class AttributePart {
     if (strings3 === undefined) {
       value = resolveDirective(this, value, directiveParent, 0);
       change = !isPrimitive(value) ||
-        value !== this._$committedValue && value !== noChange;
+        value !== this._$committedValue && value !== noChange1;
       if (change) {
         this._$committedValue = value;
       }
@@ -1125,13 +1216,13 @@ class AttributePart {
       let i, v;
       for (i = 0; i < strings3.length - 1; i++) {
         v = resolveDirective(this, values[valueIndex + i], directiveParent, i);
-        if (v === noChange) {
+        if (v === noChange1) {
           v = this._$committedValue[i];
         }
         change ||= !isPrimitive(v) || v !== this._$committedValue[i];
-        if (v === nothing) {
-          value = nothing;
-        } else if (value !== nothing) {
+        if (v === nothing1) {
+          value = nothing1;
+        } else if (value !== nothing1) {
           value += (v ?? "") + strings3[i + 1];
         }
         this._$committedValue[i] = v;
@@ -1142,7 +1233,7 @@ class AttributePart {
     }
   }
   _commitValue(value) {
-    if (value === nothing) {
+    if (value === nothing1) {
       wrap(this.element).removeAttribute(this.name);
     } else {
       if (true) {
@@ -1172,13 +1263,13 @@ class PropertyPart extends AttributePart {
       }
       value = this._sanitizer(value);
     }
-    this.element[this.name] = value === nothing ? undefined : value;
+    this.element[this.name] = value === nothing1 ? undefined : value;
   }
 }
 class BooleanAttributePart extends AttributePart {
   type = 4;
   _commitValue(value) {
-    if (value && value !== nothing) {
+    if (value && value !== nothing1) {
       wrap(this.element).setAttribute(this.name, "");
     } else {
       wrap(this.element).removeAttribute(this.name);
@@ -1189,18 +1280,18 @@ class EventPart extends AttributePart {
   type = 5;
   _$setValue(newListener, directiveParent = this) {
     newListener = resolveDirective(this, newListener, directiveParent, 0) ??
-      nothing;
-    if (newListener === noChange) {
+      nothing1;
+    if (newListener === noChange1) {
       return;
     }
     const oldListener = this._$committedValue;
     const shouldRemoveListener =
-      newListener === nothing && oldListener !== nothing ||
+      newListener === nothing1 && oldListener !== nothing1 ||
       newListener.capture !== oldListener.capture ||
       newListener.once !== oldListener.once ||
       newListener.passive !== oldListener.passive;
-    const shouldAddListener = newListener !== nothing &&
-      (oldListener === nothing || shouldRemoveListener);
+    const shouldAddListener = newListener !== nothing1 &&
+      (oldListener === nothing1 || shouldRemoveListener);
     if (shouldRemoveListener) {
       this.element.removeEventListener(this.name, this, oldListener);
     }
@@ -1235,10 +1326,33 @@ class ElementPart {
     resolveDirective(this, value);
   }
 }
+const _Σ1 = {
+  _boundAttributeSuffix: boundAttributeSuffix,
+  _marker: marker,
+  _markerMatch: markerMatch,
+  _HTML_RESULT: 1,
+  _getTemplateHtml: getTemplateHtml,
+  _TemplateInstance: TemplateInstance,
+  _isIterable: isIterable,
+  _resolveDirective: resolveDirective,
+  _ChildPart: ChildPart,
+  _AttributePart: AttributePart,
+  _BooleanAttributePart: BooleanAttributePart,
+  _EventPart: EventPart,
+  _PropertyPart: PropertyPart,
+  _ElementPart: ElementPart,
+};
 globalThis["litHtmlPlatformSupport"]?.(Template, ChildPart);
 (globalThis["litHtmlVersions"] ??= []).push("2.0.0-rc.3");
+export { INTERNAL1 as INTERNAL };
+export { html2 as html };
+export { svg1 as svg };
+export { noChange1 as noChange };
+export { nothing1 as nothing };
+export { render1 as render };
+export { _Σ1 as _Σ };
 (globalThis["litElementVersions"] ??= []).push("3.0.0-rc.2");
-class LitElement1 extends ReactiveElement {
+class LitElement1 extends ReactiveElement1 {
   static ["finalized"] = true;
   static _$litElement$ = true;
   renderOptions = {
@@ -1253,7 +1367,7 @@ class LitElement1 extends ReactiveElement {
   update(changedProperties) {
     const value = this.render();
     super.update(changedProperties);
-    this.__childPart = render(value, this.renderRoot, this.renderOptions);
+    this.__childPart = render1(value, this.renderRoot, this.renderOptions);
   }
   connectedCallback() {
     super.connectedCallback();
@@ -1264,7 +1378,7 @@ class LitElement1 extends ReactiveElement {
     this.__childPart?.setConnected(false);
   }
   render() {
-    return noChange;
+    return noChange1;
   }
 }
 globalThis["litElementHydrateSupport"]?.({
@@ -1275,7 +1389,7 @@ globalThis["litElementPlatformSupport"]?.({
 });
 if (true) {
   LitElement1["finalize"] = function () {
-    const finalized1 = ReactiveElement.finalize.call(this);
+    const finalized1 = ReactiveElement1.finalize.call(this);
     if (!finalized1) {
       return false;
     }
@@ -1303,6 +1417,6 @@ const _Φ1 = {
   },
   _$changedProperties: (el) => el._$changedProperties,
 };
-export { ReactiveElement as UpdatingElement };
+export { ReactiveElement1 as UpdatingElement };
 export { LitElement1 as LitElement };
 export { _Φ1 as _Φ };

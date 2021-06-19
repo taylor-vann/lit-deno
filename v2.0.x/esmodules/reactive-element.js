@@ -84,30 +84,6 @@ export { unsafeCSS1 as unsafeCSS };
 export { css1 as css };
 export { adoptStyles1 as adoptStyles };
 export { getCompatibleStyle1 as getCompatibleStyle };
-let requestUpdateThenable;
-if (true) {
-  console.warn(`Running in dev mode. Do not use in production!`);
-  if (
-    window.ShadyDOM?.inUse &&
-    globalThis["reactiveElementPlatformSupport"] === undefined
-  ) {
-    console.warn(
-      `Shadow DOM is being polyfilled via ShadyDOM but ` +
-        `the \`polyfill-support\` module has not been loaded.`,
-    );
-  }
-  requestUpdateThenable = {
-    then: (onfulfilled, _onrejected) => {
-      console.warn(
-        `\`requestUpdate\` no longer returns a Promise.` +
-          `Use \`updateComplete\` instead.`,
-      );
-      if (onfulfilled !== undefined) {
-        onfulfilled(false);
-      }
-    },
-  };
-}
 const JSCompiler_renameProperty = (prop, _obj) => prop;
 const defaultConverter1 = {
   toAttribute(value, type) {
@@ -232,22 +208,6 @@ class ReactiveElement1 extends HTMLElement {
       }
     }
     this.elementStyles = this.finalizeStyles(this.styles);
-    if (true) {
-      const warnRemoved = (obj, name) => {
-        if (obj[name] !== undefined) {
-          console.warn(
-            `\`${name}\` is implemented. It ` +
-              `has been removed from this version of ReactiveElement.` +
-              ` See the changelog at https://github.com/lit/lit/blob/main/packages/reactive-element/CHANGELOG.md`,
-          );
-        }
-      };
-      [
-        `initialize`,
-        `requestUpdateInternal`,
-        `_getUpdateComplete`,
-      ].forEach((name) => warnRemoved(this.prototype, name));
-    }
     return true;
   }
   static shadowRootOptions = {
@@ -348,17 +308,6 @@ class ReactiveElement1 extends HTMLElement {
       const toAttribute = options.converter?.toAttribute ??
         defaultConverter1.toAttribute;
       const attrValue = toAttribute(value, options.type);
-      if (
-        true && this.constructor.enabledWarnings.indexOf("migration") >= 0 &&
-        attrValue === undefined
-      ) {
-        console.warn(
-          `The attribute value for the ` +
-            `${name} property is undefined. The attribute will be ` +
-            `removed, but in the previous version of ReactiveElement, the ` +
-            `attribute would not have changed.`,
-        );
-      }
       this.__reflectingProperty = name;
       if (attrValue == null) {
         this.removeAttribute(attr);
@@ -405,7 +354,7 @@ class ReactiveElement1 extends HTMLElement {
     if (!this.isUpdatePending && shouldRequestUpdate) {
       this.__updatePromise = this.__enqueueUpdate();
     }
-    return true ? requestUpdateThenable : undefined;
+    return;
   }
   async __enqueueUpdate() {
     this.isUpdatePending = true;
@@ -428,26 +377,6 @@ class ReactiveElement1 extends HTMLElement {
       return;
     }
     if (!this.hasUpdated) {
-      if (true) {
-        const shadowedProperties = [];
-        this.constructor.elementProperties.forEach((_v, p) => {
-          if (this.hasOwnProperty(p) && !this.__instanceProperties?.has(p)) {
-            shadowedProperties.push(p);
-          }
-        });
-        if (shadowedProperties.length) {
-          console.warn(
-            `The following properties will not trigger updates as expected ` +
-              `because they are set using class fields: ` +
-              `${shadowedProperties.join(", ")}. ` +
-              `Native class fields and some compiled output will overwrite ` +
-              `accessors used for detecting changes. To fix this issue, ` +
-              `either initialize properties in the constructor or adjust ` +
-              `your compiler settings; for example, for TypeScript set ` +
-              `\`useDefineForClassFields: false\` in your \`tsconfig.tson\`.`,
-          );
-        }
-      }
     }
     if (this.__instanceProperties) {
       this.__instanceProperties.forEach((v, p) => this[p] = v);
@@ -482,17 +411,6 @@ class ReactiveElement1 extends HTMLElement {
       this.firstUpdated(changedProperties);
     }
     this.updated(changedProperties);
-    if (
-      true && this.isUpdatePending &&
-      this.constructor.enabledWarnings.indexOf("change-in-update") >= 0
-    ) {
-      console.warn(
-        `An update was requested (generally because a property was set) ` +
-          `after an update completed, causing a new update to be scheduled. ` +
-          `This is inefficient and should be avoided unless the next update ` +
-          `can only be scheduled as a side effect of the previous update.`,
-      );
-    }
   }
   __markUpdated() {
     this._$changedProperties = new Map();
@@ -524,31 +442,6 @@ class ReactiveElement1 extends HTMLElement {
 globalThis["reactiveElementPlatformSupport"]?.({
   ReactiveElement: ReactiveElement1,
 });
-if (true) {
-  ReactiveElement1.enabledWarnings = [
-    "change-in-update",
-  ];
-  const ensureOwnWarnings = function (ctor) {
-    if (
-      !ctor.hasOwnProperty(JSCompiler_renameProperty("enabledWarnings", ctor))
-    ) {
-      ctor.enabledWarnings = ctor.enabledWarnings.slice();
-    }
-  };
-  ReactiveElement1.enableWarning = function (warning) {
-    ensureOwnWarnings(this);
-    if (this.enabledWarnings.indexOf(warning) < 0) {
-      this.enabledWarnings.push(warning);
-    }
-  };
-  ReactiveElement1.disableWarning = function (warning) {
-    ensureOwnWarnings(this);
-    const i = this.enabledWarnings.indexOf(warning);
-    if (i >= 0) {
-      this.enabledWarnings.splice(i, 1);
-    }
-  };
-}
 (globalThis["reactiveElementVersions"] ??= []).push("1.0.0-rc.2");
 export { defaultConverter1 as defaultConverter };
 export { notEqual1 as notEqual };
