@@ -47,10 +47,12 @@ const unsafeCSS = (value) =>
     constructionToken,
   );
 const css = (strings, ...values) => {
-  const cssText1 = strings.length === 1 ? strings[0] : values.reduce(
-    (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
-    strings[0],
-  );
+  const cssText1 = strings.length === 1
+    ? strings[0]
+    : values.reduce(
+      (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+      strings[0],
+    );
   return new CSSResult(cssText1, constructionToken);
 };
 const adoptStyles = (renderRoot, styles) => {
@@ -546,10 +548,11 @@ if (true) {
   console.warn("lit-html is in dev mode. Not recommended for production!");
 }
 const extraGlobals1 = window;
-const wrap = true && extraGlobals1.ShadyDOM?.inUse &&
+const wrap =
+  true && extraGlobals1.ShadyDOM?.inUse &&
     extraGlobals1.ShadyDOM?.noPatch === true
-  ? extraGlobals1.ShadyDOM.wrap
-  : (node) => node;
+    ? extraGlobals1.ShadyDOM.wrap
+    : (node) => node;
 const trustedTypes = globalThis.trustedTypes;
 const policy = trustedTypes
   ? trustedTypes.createPolicy("lit-html", {
@@ -759,9 +762,7 @@ class Template {
                   index: nodeIndex,
                   name: m[2],
                   strings: statics,
-                  ctor: m[1] === "."
-                    ? PropertyPart
-                    : m[1] === "?"
+                  ctor: m[1] === "." ? PropertyPart : m[1] === "?"
                     ? BooleanAttributePart
                     : m[1] === "@"
                     ? EventPart
@@ -990,8 +991,7 @@ class ChildPart {
   _commitText(value) {
     const node2 = wrap(this._$startNode).nextSibling;
     if (
-      node2 !== null && node2.nodeType === 3 &&
-      (this._$endNode === null
+      node2 !== null && node2.nodeType === 3 && (this._$endNode === null
         ? wrap(node2).nextSibling === null
         : node2 === wrap(this._$endNode).previousSibling)
     ) {

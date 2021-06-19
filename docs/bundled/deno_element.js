@@ -8,13 +8,13 @@ const styleSheetCache = new Map();
 class CSSResult {
   _$cssResult$ = true;
   cssText;
-  constructor(cssText, safeToken) {
+  constructor(cssText1, safeToken) {
     if (safeToken !== constructionToken) {
       throw new Error(
         "CSSResult is not constructable. Use `unsafeCSS` or `css` instead.",
       );
     }
-    this.cssText = cssText;
+    this.cssText = cssText1;
   }
   get styleSheet() {
     let styleSheet = styleSheetCache.get(this.cssText);
@@ -46,7 +46,7 @@ const unsafeCSS = (value) =>
     typeof value === "string" ? value : String(value),
     constructionToken,
   );
-const css = (strings, ...values) => {
+const css2 = (strings, ...values) => {
   const cssText1 = strings.length === 1
     ? strings[0]
     : values.reduce(
@@ -607,13 +607,6 @@ const QUOTE_CHAR = 3;
 const singleQuoteAttrEndRegex = /'/g;
 const doubleQuoteAttrEndRegex = /"/g;
 const rawTextElement = /^(?:script|style|textarea)$/i;
-const tag = (_$litType$) =>
-  (strings, ...values) => ({
-    _$litType$,
-    strings,
-    values,
-  });
-const html2 = tag(1);
 const noChange = Symbol.for("lit-noChange");
 const nothing = Symbol.for("lit-nothing");
 const templateCache = new WeakMap();
@@ -648,7 +641,7 @@ let sanitizerFactoryInternal = noopSanitizer;
 const getTemplateHtml = (strings, type) => {
   const l = strings.length - 1;
   const attrNames = [];
-  let html1 = type === 2 ? "<svg>" : "";
+  let html = type === 2 ? "<svg>" : "";
   let rawTextEndRegex;
   let regex = textEndRegex;
   for (let i = 0; i < l; i++) {
@@ -714,7 +707,7 @@ const getTemplateHtml = (strings, type) => {
     const end = regex === tagEndRegex && strings[i + 1].startsWith("/>")
       ? " "
       : "";
-    html1 += regex === textEndRegex
+    html += regex === textEndRegex
       ? s + nodeMarker
       : attrNameEndIndex >= 0
       ? (attrNames.push(attrName),
@@ -723,7 +716,7 @@ const getTemplateHtml = (strings, type) => {
       : s + marker +
         (attrNameEndIndex === -2 ? (attrNames.push(undefined), i) : end);
   }
-  const htmlResult = html1 + (strings[l] || "<?>") +
+  const htmlResult = html + (strings[l] || "<?>") +
     (type === 2 ? "</svg>" : "");
   return [
     policy !== undefined ? policy.createHTML(htmlResult) : htmlResult,
@@ -1101,9 +1094,9 @@ class AttributePart {
   get tagName() {
     return this.element.tagName;
   }
-  constructor(element1, name, strings2, parent2, options3) {
+  constructor(element1, name1, strings2, parent2, options3) {
     this.element = element1;
-    this.name = name;
+    this.name = name1;
     this._$parent = parent2;
     this.options = options3;
     if (strings2.length > 2 || strings2[0] !== "" || strings2[1] !== "") {
@@ -1350,11 +1343,6 @@ const standardCustomElement = (tagName, descriptor) => {
     },
   };
 };
-const customElement = (tagName) =>
-  (classOrDescriptor) =>
-    typeof classOrDescriptor === "function"
-      ? legacyCustomElement(tagName, classOrDescriptor)
-      : standardCustomElement(tagName, classOrDescriptor);
 const standardProperty = (options5, element3) => {
   if (
     element3.kind === "method" && element3.descriptor &&
@@ -1387,6 +1375,636 @@ const standardProperty = (options5, element3) => {
 const legacyProperty = (options5, proto, name1) => {
   proto.constructor.createProperty(name1, options5);
 };
+const extraGlobals2 = window;
+const supportsAdoptingStyleSheets1 = window.ShadowRoot &&
+  (extraGlobals2.ShadyCSS === undefined ||
+    extraGlobals2.ShadyCSS.nativeShadow) &&
+  "adoptedStyleSheets" in Document.prototype &&
+  "replace" in CSSStyleSheet.prototype;
+const constructionToken1 = Symbol();
+const styleSheetCache1 = new Map();
+class CSSResult1 {
+  _$cssResult$ = true;
+  cssText;
+  constructor(cssText2, safeToken1) {
+    if (safeToken1 !== constructionToken1) {
+      throw new Error(
+        "CSSResult is not constructable. Use `unsafeCSS` or `css` instead.",
+      );
+    }
+    this.cssText = cssText2;
+  }
+  get styleSheet() {
+    let styleSheet = styleSheetCache1.get(this.cssText);
+    if (supportsAdoptingStyleSheets1 && styleSheet === undefined) {
+      styleSheetCache1.set(this.cssText, styleSheet = new CSSStyleSheet());
+      styleSheet.replaceSync(this.cssText);
+    }
+    return styleSheet;
+  }
+  toString() {
+    return this.cssText;
+  }
+}
+const textFromCSSResult1 = (value) => {
+  if (value._$cssResult$ === true) {
+    return value.cssText;
+  } else if (typeof value === "number") {
+    return value;
+  } else {
+    throw new Error(
+      `Value passed to 'css' function must be a 'css' function result: ` +
+        `${value}. Use 'unsafeCSS' to pass non-literal values, but take care ` +
+        `to ensure page security.`,
+    );
+  }
+};
+const unsafeCSS1 = (value) =>
+  new CSSResult1(
+    typeof value === "string" ? value : String(value),
+    constructionToken1,
+  );
+const css1 = (strings3, ...values) => {
+  const cssText3 = strings3.length === 1
+    ? strings3[0]
+    : values.reduce(
+      (acc, v, idx) => acc + textFromCSSResult1(v) + strings3[idx + 1],
+      strings3[0],
+    );
+  return new CSSResult1(cssText3, constructionToken1);
+};
+const adoptStyles1 = (renderRoot, styles) => {
+  if (supportsAdoptingStyleSheets1) {
+    renderRoot.adoptedStyleSheets = styles.map((s) =>
+      s instanceof CSSStyleSheet ? s : s.styleSheet
+    );
+  } else {
+    styles.forEach((s) => {
+      const style = document.createElement("style");
+      style.textContent = s.cssText;
+      renderRoot.appendChild(style);
+    });
+  }
+};
+const cssResultFromStyleSheet1 = (sheet) => {
+  let cssText3 = "";
+  for (const rule of sheet.cssRules) {
+    cssText3 += rule.cssText;
+  }
+  return unsafeCSS1(cssText3);
+};
+const getCompatibleStyle1 = supportsAdoptingStyleSheets1
+  ? (s) => s
+  : (s) => s instanceof CSSStyleSheet ? cssResultFromStyleSheet1(s) : s;
+let requestUpdateThenable1;
+if (true) {
+  console.warn(`Running in dev mode. Do not use in production!`);
+  if (
+    window.ShadyDOM?.inUse &&
+    globalThis["reactiveElementPlatformSupport"] === undefined
+  ) {
+    console.warn(
+      `Shadow DOM is being polyfilled via ShadyDOM but ` +
+        `the \`polyfill-support\` module has not been loaded.`,
+    );
+  }
+  requestUpdateThenable1 = {
+    then: (onfulfilled, _onrejected) => {
+      console.warn(
+        `\`requestUpdate\` no longer returns a Promise.` +
+          `Use \`updateComplete\` instead.`,
+      );
+      if (onfulfilled !== undefined) {
+        onfulfilled(false);
+      }
+    },
+  };
+}
+const JSCompiler_renameProperty1 = (prop, _obj) => prop;
+const defaultConverter1 = {
+  toAttribute(value, type) {
+    switch (type) {
+      case Boolean:
+        value = value ? "" : null;
+        break;
+      case Object:
+      case Array:
+        value = value == null ? value : JSON.stringify(value);
+        break;
+    }
+    return value;
+  },
+  fromAttribute(value, type) {
+    let fromValue = value;
+    switch (type) {
+      case Boolean:
+        fromValue = value !== null;
+        break;
+      case Number:
+        fromValue = value === null ? null : Number(value);
+        break;
+      case Object:
+      case Array:
+        try {
+          fromValue = JSON.parse(value);
+        } catch (e) {
+          fromValue = null;
+        }
+        break;
+    }
+    return fromValue;
+  },
+};
+const notEqual1 = (value, old) => {
+  return old !== value && (old === old || value === value);
+};
+const defaultPropertyDeclaration1 = {
+  attribute: true,
+  type: String,
+  converter: defaultConverter1,
+  reflect: false,
+  hasChanged: notEqual1,
+};
+const finalized1 = "finalized";
+class ReactiveElement1 extends HTMLElement {
+  static enabledWarnings;
+  static enableWarning;
+  static disableWarning;
+  static addInitializer(initializer) {
+    this._initializers ??= [];
+    this._initializers.push(initializer);
+  }
+  static _initializers;
+  static __attributeToPropertyMap;
+  static [finalized1] = true;
+  static elementProperties = new Map();
+  static properties;
+  static elementStyles = [];
+  static styles;
+  static get observedAttributes() {
+    this.finalize();
+    const attributes = [];
+    this.elementProperties.forEach((v, p) => {
+      const attr = this.__attributeNameForProperty(p, v);
+      if (attr !== undefined) {
+        this.__attributeToPropertyMap.set(attr, p);
+        attributes.push(attr);
+      }
+    });
+    return attributes;
+  }
+  static createProperty(name, options = defaultPropertyDeclaration1) {
+    if (options.state) {
+      options.attribute = false;
+    }
+    this.finalize();
+    this.elementProperties.set(name, options);
+    if (!options.noAccessor && !this.prototype.hasOwnProperty(name)) {
+      const key = typeof name === "symbol" ? Symbol() : `__${name}`;
+      const descriptor = this.getPropertyDescriptor(name, key, options);
+      if (descriptor !== undefined) {
+        Object.defineProperty(this.prototype, name, descriptor);
+      }
+    }
+  }
+  static getPropertyDescriptor(name, key, options) {
+    return {
+      get() {
+        return this[key];
+      },
+      set(value) {
+        const oldValue = this[name];
+        this[key] = value;
+        this.requestUpdate(name, oldValue, options);
+      },
+      configurable: true,
+      enumerable: true,
+    };
+  }
+  static getPropertyOptions(name) {
+    return this.elementProperties.get(name) || defaultPropertyDeclaration1;
+  }
+  static finalize() {
+    if (this.hasOwnProperty(finalized1)) {
+      return false;
+    }
+    this[finalized1] = true;
+    const superCtor = Object.getPrototypeOf(this);
+    superCtor.finalize();
+    this.elementProperties = new Map(superCtor.elementProperties);
+    this.__attributeToPropertyMap = new Map();
+    if (this.hasOwnProperty(JSCompiler_renameProperty1("properties", this))) {
+      const props = this.properties;
+      const propKeys = [
+        ...Object.getOwnPropertyNames(props),
+        ...Object.getOwnPropertySymbols(props),
+      ];
+      for (const p of propKeys) {
+        this.createProperty(p, props[p]);
+      }
+    }
+    this.elementStyles = this.finalizeStyles(this.styles);
+    if (true) {
+      const warnRemoved = (obj, name2) => {
+        if (obj[name2] !== undefined) {
+          console.warn(
+            `\`${name2}\` is implemented. It ` +
+              `has been removed from this version of ReactiveElement.` +
+              ` See the changelog at https://github.com/lit/lit/blob/main/packages/reactive-element/CHANGELOG.md`,
+          );
+        }
+      };
+      [
+        `initialize`,
+        `requestUpdateInternal`,
+        `_getUpdateComplete`,
+      ].forEach((name2) => warnRemoved(this.prototype, name2));
+    }
+    return true;
+  }
+  static shadowRootOptions = {
+    mode: "open",
+  };
+  static finalizeStyles(styles) {
+    const elementStyles = [];
+    if (Array.isArray(styles)) {
+      const set = new Set(styles.flat(Infinity).reverse());
+      for (const s of set) {
+        elementStyles.unshift(getCompatibleStyle1(s));
+      }
+    } else if (styles !== undefined) {
+      elementStyles.push(getCompatibleStyle1(styles));
+    }
+    return elementStyles;
+  }
+  renderRoot;
+  static __attributeNameForProperty(name, options) {
+    const attribute = options.attribute;
+    return attribute === false
+      ? undefined
+      : typeof attribute === "string"
+      ? attribute
+      : typeof name === "string"
+      ? name.toLowerCase()
+      : undefined;
+  }
+  __instanceProperties = new Map();
+  __updatePromise;
+  __pendingConnectionPromise = undefined;
+  __enableConnection = undefined;
+  isUpdatePending = false;
+  hasUpdated = false;
+  _$changedProperties;
+  __reflectingProperties;
+  __reflectingProperty = null;
+  __controllers;
+  constructor() {
+    super();
+    this._initialize();
+  }
+  _initialize() {
+    this.__updatePromise = new Promise((res) => this.enableUpdating = res);
+    this._$changedProperties = new Map();
+    this.__saveInstanceProperties();
+    this.requestUpdate();
+    this.constructor._initializers?.forEach((i) => i(this));
+  }
+  addController(controller) {
+    (this.__controllers ??= []).push(controller);
+    if (this.renderRoot !== undefined && this.isConnected) {
+      controller.hostConnected?.();
+    }
+  }
+  removeController(controller) {
+    this.__controllers?.splice(this.__controllers.indexOf(controller) >>> 0, 1);
+  }
+  __saveInstanceProperties() {
+    this.constructor.elementProperties.forEach((_v, p) => {
+      if (this.hasOwnProperty(p)) {
+        this.__instanceProperties.set(p, this[p]);
+        delete this[p];
+      }
+    });
+  }
+  createRenderRoot() {
+    const renderRoot = this.shadowRoot ??
+      this.attachShadow(this.constructor.shadowRootOptions);
+    adoptStyles1(renderRoot, this.constructor.elementStyles);
+    return renderRoot;
+  }
+  connectedCallback() {
+    if (this.renderRoot === undefined) {
+      this.renderRoot = this.createRenderRoot();
+    }
+    this.enableUpdating(true);
+    this.__controllers?.forEach((c) => c.hostConnected?.());
+    if (this.__enableConnection) {
+      this.__enableConnection();
+      this.__pendingConnectionPromise = this.__enableConnection = undefined;
+    }
+  }
+  enableUpdating(_requestedUpdate) {
+  }
+  disconnectedCallback() {
+    this.__controllers?.forEach((c) => c.hostDisconnected?.());
+    this.__pendingConnectionPromise = new Promise((r) =>
+      this.__enableConnection = r
+    );
+  }
+  attributeChangedCallback(name, _old, value) {
+    this._$attributeToProperty(name, value);
+  }
+  __propertyToAttribute(name, value, options = defaultPropertyDeclaration1) {
+    const attr = this.constructor.__attributeNameForProperty(name, options);
+    if (attr !== undefined && options.reflect === true) {
+      const toAttribute = options.converter?.toAttribute ??
+        defaultConverter1.toAttribute;
+      const attrValue = toAttribute(value, options.type);
+      if (
+        true && this.constructor.enabledWarnings.indexOf("migration") >= 0 &&
+        attrValue === undefined
+      ) {
+        console.warn(
+          `The attribute value for the ` +
+            `${name} property is undefined. The attribute will be ` +
+            `removed, but in the previous version of ReactiveElement, the ` +
+            `attribute would not have changed.`,
+        );
+      }
+      this.__reflectingProperty = name;
+      if (attrValue == null) {
+        this.removeAttribute(attr);
+      } else {
+        this.setAttribute(attr, attrValue);
+      }
+      this.__reflectingProperty = null;
+    }
+  }
+  _$attributeToProperty(name, value) {
+    const ctor = this.constructor;
+    const propName = ctor.__attributeToPropertyMap.get(name);
+    if (propName !== undefined && this.__reflectingProperty !== propName) {
+      const options5 = ctor.getPropertyOptions(propName);
+      const converter = options5.converter;
+      const fromAttribute =
+        (converter?.fromAttribute ?? (typeof converter === "function"
+          ? converter
+          : null)) ?? defaultConverter1.fromAttribute;
+      this.__reflectingProperty = propName;
+      this[propName] = fromAttribute(value, options5.type);
+      this.__reflectingProperty = null;
+    }
+  }
+  requestUpdate(name, oldValue, options) {
+    let shouldRequestUpdate = true;
+    if (name !== undefined) {
+      options = options || this.constructor.getPropertyOptions(name);
+      const hasChanged = options.hasChanged || notEqual1;
+      if (hasChanged(this[name], oldValue)) {
+        if (!this._$changedProperties.has(name)) {
+          this._$changedProperties.set(name, oldValue);
+        }
+        if (options.reflect === true && this.__reflectingProperty !== name) {
+          if (this.__reflectingProperties === undefined) {
+            this.__reflectingProperties = new Map();
+          }
+          this.__reflectingProperties.set(name, options);
+        }
+      } else {
+        shouldRequestUpdate = false;
+      }
+    }
+    if (!this.isUpdatePending && shouldRequestUpdate) {
+      this.__updatePromise = this.__enqueueUpdate();
+    }
+    return true ? requestUpdateThenable1 : undefined;
+  }
+  async __enqueueUpdate() {
+    this.isUpdatePending = true;
+    try {
+      await this.__updatePromise;
+      while (this.__pendingConnectionPromise) {
+        await this.__pendingConnectionPromise;
+      }
+    } catch (e) {
+      Promise.reject(e);
+    }
+    const result = this.performUpdate();
+    if (result != null) {
+      await result;
+    }
+    return !this.isUpdatePending;
+  }
+  performUpdate() {
+    if (!this.isUpdatePending) {
+      return;
+    }
+    if (!this.hasUpdated) {
+      if (true) {
+        const shadowedProperties = [];
+        this.constructor.elementProperties.forEach((_v, p) => {
+          if (this.hasOwnProperty(p) && !this.__instanceProperties?.has(p)) {
+            shadowedProperties.push(p);
+          }
+        });
+        if (shadowedProperties.length) {
+          console.warn(
+            `The following properties will not trigger updates as expected ` +
+              `because they are set using class fields: ` +
+              `${shadowedProperties.join(", ")}. ` +
+              `Native class fields and some compiled output will overwrite ` +
+              `accessors used for detecting changes. To fix this issue, ` +
+              `either initialize properties in the constructor or adjust ` +
+              `your compiler settings; for example, for TypeScript set ` +
+              `\`useDefineForClassFields: false\` in your \`tsconfig.tson\`.`,
+          );
+        }
+      }
+    }
+    if (this.__instanceProperties) {
+      this.__instanceProperties.forEach((v, p) => this[p] = v);
+      this.__instanceProperties = undefined;
+    }
+    let shouldUpdate = false;
+    const changedProperties = this._$changedProperties;
+    try {
+      shouldUpdate = this.shouldUpdate(changedProperties);
+      if (shouldUpdate) {
+        this.willUpdate(changedProperties);
+        this.__controllers?.forEach((c) => c.hostUpdate?.());
+        this.update(changedProperties);
+      } else {
+        this.__markUpdated();
+      }
+    } catch (e) {
+      shouldUpdate = false;
+      this.__markUpdated();
+      throw e;
+    }
+    if (shouldUpdate) {
+      this._$didUpdate(changedProperties);
+    }
+  }
+  willUpdate(_changedProperties) {
+  }
+  _$didUpdate(changedProperties) {
+    this.__controllers?.forEach((c) => c.hostUpdated?.());
+    if (!this.hasUpdated) {
+      this.hasUpdated = true;
+      this.firstUpdated(changedProperties);
+    }
+    this.updated(changedProperties);
+    if (
+      true && this.isUpdatePending &&
+      this.constructor.enabledWarnings.indexOf("change-in-update") >= 0
+    ) {
+      console.warn(
+        `An update was requested (generally because a property was set) ` +
+          `after an update completed, causing a new update to be scheduled. ` +
+          `This is inefficient and should be avoided unless the next update ` +
+          `can only be scheduled as a side effect of the previous update.`,
+      );
+    }
+  }
+  __markUpdated() {
+    this._$changedProperties = new Map();
+    this.isUpdatePending = false;
+  }
+  get updateComplete() {
+    return this.getUpdateComplete();
+  }
+  getUpdateComplete() {
+    return this.__updatePromise;
+  }
+  shouldUpdate(_changedProperties) {
+    return true;
+  }
+  update(_changedProperties) {
+    if (this.__reflectingProperties !== undefined) {
+      this.__reflectingProperties.forEach((v, k) =>
+        this.__propertyToAttribute(k, this[k], v)
+      );
+      this.__reflectingProperties = undefined;
+    }
+    this.__markUpdated();
+  }
+  updated(_changedProperties) {
+  }
+  firstUpdated(_changedProperties) {
+  }
+}
+globalThis["reactiveElementPlatformSupport"]?.({
+  ReactiveElement: ReactiveElement1,
+});
+if (true) {
+  ReactiveElement1.enabledWarnings = [
+    "change-in-update",
+  ];
+  const ensureOwnWarnings = function (ctor) {
+    if (
+      !ctor.hasOwnProperty(JSCompiler_renameProperty1("enabledWarnings", ctor))
+    ) {
+      ctor.enabledWarnings = ctor.enabledWarnings.slice();
+    }
+  };
+  ReactiveElement1.enableWarning = function (warning) {
+    ensureOwnWarnings(this);
+    if (this.enabledWarnings.indexOf(warning) < 0) {
+      this.enabledWarnings.push(warning);
+    }
+  };
+  ReactiveElement1.disableWarning = function (warning) {
+    ensureOwnWarnings(this);
+    const i = this.enabledWarnings.indexOf(warning);
+    if (i >= 0) {
+      this.enabledWarnings.splice(i, 1);
+    }
+  };
+}
+(globalThis["reactiveElementVersions"] ??= []).push("1.0.0-rc.2");
+const legacyPrototypeMethod1 = (descriptor, proto, name2) => {
+  Object.defineProperty(proto, name2, descriptor);
+};
+const decorateProperty1 = ({ finisher, descriptor }) =>
+  (protoOrDescriptor, name2) => {
+    if (name2 !== undefined) {
+      const ctor = protoOrDescriptor.constructor;
+      if (descriptor !== undefined) {
+        Object.defineProperty(protoOrDescriptor, name2, descriptor(name2));
+      }
+      finisher?.(ctor, name2);
+    } else {
+      const key = protoOrDescriptor.originalKey ?? protoOrDescriptor.key;
+      const info = descriptor != undefined
+        ? {
+          kind: "method",
+          placement: "prototype",
+          key,
+          descriptor: descriptor(protoOrDescriptor.key),
+        }
+        : {
+          ...protoOrDescriptor,
+          key,
+        };
+      if (finisher != undefined) {
+        info.finisher = function (ctor) {
+          finisher(ctor, key);
+        };
+      }
+      return info;
+    }
+  };
+const legacyCustomElement1 = (tagName, clazz) => {
+  window.customElements.define(tagName, clazz);
+  return clazz;
+};
+const standardCustomElement1 = (tagName, descriptor) => {
+  const { kind, elements } = descriptor;
+  return {
+    kind,
+    elements,
+    finisher(clazz) {
+      window.customElements.define(tagName, clazz);
+    },
+  };
+};
+const customElement = (tagName) =>
+  (classOrDescriptor) =>
+    typeof classOrDescriptor === "function"
+      ? legacyCustomElement1(tagName, classOrDescriptor)
+      : standardCustomElement1(tagName, classOrDescriptor);
+const standardProperty1 = (options5, element3) => {
+  if (
+    element3.kind === "method" && element3.descriptor &&
+    !("value" in element3.descriptor)
+  ) {
+    return {
+      ...element3,
+      finisher(clazz) {
+        clazz.createProperty(element3.key, options5);
+      },
+    };
+  } else {
+    return {
+      kind: "field",
+      key: Symbol(),
+      placement: "own",
+      descriptor: {},
+      originalKey: element3.key,
+      initializer() {
+        if (typeof element3.initializer === "function") {
+          this[element3.key] = element3.initializer.call(this);
+        }
+      },
+      finisher(clazz) {
+        clazz.createProperty(element3.key, options5);
+      },
+    };
+  }
+};
+const legacyProperty1 = (options5, proto, name2) => {
+  proto.constructor.createProperty(name2, options5);
+};
 var _class;
 var _dec = customElement("deno-element");
 let DenoElement2 = _class =
@@ -1397,7 +2015,7 @@ let DenoElement2 = _class =
           `\n    .green_text {\n      color: green;\n    }\n\n    .blue_text {\n      color: blue;\n    }\n\n    .red_text {\n      color: red;\n    }\n  `,
       ];
       render() {
-        return html2
+        return html
           `\n      <p>Hello world!</p>\n      <p>\n        I hope y'all make some amazing projects with\n        <span class="green_text">Deno</span> and\n        <span class="blue_text">Lit</span>!\n      </p>\n      <p class="red_text"><3</p>\n    `;
       }
     }) || _class,

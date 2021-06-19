@@ -1,4 +1,4 @@
-import { css, html, LitElement } from "../../v2.0.x/lit.ts";
+import { css, html, LitElement } from "./deps.ts";
 import { customElement } from "../../v2.0.x/lit-element/decorators.ts";
 
 @customElement("deno-element")

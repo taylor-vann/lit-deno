@@ -1,6 +1,8 @@
 #!/bin/bash
 
+deno bundle --config ./tsconfig.json ./scripts/deps.ts ./bundled/deps.js
+
 deno bundle \
     --config ../v2.0.x/tsconfig.json \
     ./scripts/deno_element.ts \
-    ./bundle/deno_element.js 
+    ./bundled/deno_element.js 

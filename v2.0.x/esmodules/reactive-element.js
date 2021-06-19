@@ -47,10 +47,12 @@ const unsafeCSS1 = (value) =>
     constructionToken,
   );
 const css1 = (strings, ...values) => {
-  const cssText1 = strings.length === 1 ? strings[0] : values.reduce(
-    (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
-    strings[0],
-  );
+  const cssText1 = strings.length === 1
+    ? strings[0]
+    : values.reduce(
+      (acc, v, idx) => acc + textFromCSSResult(v) + strings[idx + 1],
+      strings[0],
+    );
   return new CSSResult1(cssText1, constructionToken);
 };
 const adoptStyles1 = (renderRoot, styles) => {
