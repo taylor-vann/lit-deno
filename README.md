@@ -7,7 +7,7 @@ It is not officially supported by the Lit project. (yet? give it a star!)
 ## Get Started
 
 ```Typescript
-import { LitElement } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v0.1.3.x/src/lit.ts";"
+import { LitElement } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit.ts";"
 ```
 
 ## IMPORTANT DISCLOSURE
