@@ -1276,7 +1276,7 @@ let DenoElement2 = _class =
       ];
       render() {
         return html2
-          `\n      <p>Hello world!</p>\n      <p>\n        I hope y'all make some amazing projects with\n        <span class="green_text">Deno</span> and\n        <span class="blue_text">Lit</span>!\n      </p>\n      <p class="red_text"><3</p>\n    `;
+          `\n      <p>Hello world :)</p>\n      <p>\n        I hope y'all make some amazing projects with\n        <span class="green_text">Deno</span> and\n        <span class="blue_text">Lit</span>!\n      </p>\n      <p>best!</p>\n      <p>Brian Taylor Vann <span class="red_text"><3</span></p>\n    `;
       }
     }) || _class,
   ) || _class;
