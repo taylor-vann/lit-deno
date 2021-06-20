@@ -18,29 +18,21 @@ like webpack or rollup.
 
 ## Get Started
 
-Add Lit to a `dependencies.ts` file.
-
-NOTE: the import address is likely to change.
+Import Lit and create and declare your custom elements.
 
 ```Typescript
-export {
+import {
+  customElement,
   html,
   LitElement,
 } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit.ts";
-export { customElement } from "https://raw.githubusercontent.com/taylor-vann/lit-deno/main/v2.0.x/lit-element/decorators.ts";
-```
-
-Afterwards, create and declare your custom elements.
-
-```Typescript
-import { customElement, html, LitElement } from "../dependencies.ts";
 
 @customElement("my-deno-element")
 class MyDenoElement extends LitElement {
   render() {
     return html`
       <p>Hello world!</p>
-      <p>Lit + Deno rocks! <3</p>
+      <p>Lit + Deno = <3</p>
     `;
   }
 }
