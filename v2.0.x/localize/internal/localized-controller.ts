@@ -9,7 +9,7 @@ import { LOCALE_STATUS_EVENT } from "./locale-status-event.ts";
 import type {
   ReactiveController,
   ReactiveControllerHost,
-} from "../../lit/index.ts";
+} from "../../lit-element/index.ts";
 
 class LocalizeController implements ReactiveController {
   host: ReactiveControllerHost;

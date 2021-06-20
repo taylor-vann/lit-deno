@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
-import type { TemplateResult } from "../../lit/index.ts";
+import type { TemplateResult } from "../../lit-element/index.ts";
 import type { StrResult } from "./str-tag.ts";
 
 /**

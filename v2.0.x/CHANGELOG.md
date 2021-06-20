@@ -17,7 +17,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 <!-- ### Removed -->
 <!-- ### Fixed -->
 
-## [2.0.x] - 2021-06-19
+## [0.0.1] - 2021-06-19
 
 ### Changed
 
@@ -27,3 +27,7 @@ project adheres to [Semantic Versioning](http://semver.org/).
 ### Removed
 
 - Modules unable to easily be migrated to Deno
+
+### Added
+
+- Lit 2.0.0
