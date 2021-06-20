@@ -1,0 +1,1 @@
+deno bundle --config ./tsconfig.json ./build_lit_local.ts ./build_lit_local_bundled.js
